@@ -1,0 +1,109 @@
+Overview of changes in lightdm 0.2.2
+
+    * Make default themedir work when --prefix is not passed to configure
+    * Look for face images in ~/.face and ~/.face.icon
+    * Put .vapi file in unversioned vala directory
+    * Fix compiling without QT
+    * Choose the VT to open the display on
+    * Set correct group memberships for sessions (Yves-Alexis Perez)
+    * Set permissions on xauthority file so it can only be read by the owning
+      user (Yves-Alexis Perez)
+    * Set correct permissions on ~/.dmrc (Yves-Alexis Perez)
+    * Add --enable-liblightdm-gobject, --enable-liblightdm-qt configure option
+    * Set environment variables from PAM (Yves-Alexis Perez)
+
+Overview of changes in lightdm 0.2.1
+
+    * Use "lightdm" as default PAM service and make it configurable
+    * Rename libldmgreeter to libldmgreeter-gobject
+    * Add libldmgreeter-qt (David Edmundson)
+    * Fix gobject-introspection build
+    * Renamed libldmgreeter to liblightdm
+    * Install a .vapi file
+
+Overview of changes in lightdm 0.2.0
+
+    * Make default user configuration per-display
+    * Only automatically login the first time
+    * Fix WebKit theme loading and automatic login
+    * Do cross fade for sessions that support it
+      (set X-LightDM-Supports-Transitions=true in their xsession file)
+    * Load user settings from ~/.dmrc
+    * Add configuration for default language/layout
+    * Change language/layout/session when user selected in GTK+ greeter
+    * Set default keyboard layout on first login
+    * Don't run all sessions throught /etc/X11/XSession - make the session
+      wrapper optional and configurable.
+    * Make pkgconfig file require libxklavier
+    * Only compile greeters if have dependencies
+    * Include ck-connector code to reduce library dependencies
+    * Add introspection.m4 to the source tree
+    * Support using no greeter user in lightdm.conf
+    * Flush writes to main log file
+    * Allow non-privilidged user to write greeter log file in /var
+    * Fix bugs stopping running greeter as priviledged user (i.e. root)
+    * Don't default to running greeters with the GDM user - it may not exist!
+
+Overview of changes in lightdm 0.1.2
+
+    * Write PID file
+    * Make user switcher API work
+    * Add a AddDisplay D-Bus method to start new displays
+    * Feed signals to GLib main loop via a pipe
+    * Add an upstart script
+    * Make theme files more similar to existing themes
+    * Change dbus namespace from org.freedesktop.LightDisplayManager to
+      org.lightdm.LightDisplayManager
+    * Write debug log to /var/log/lightdm/lightdm.log instead of stdout.  Use
+      --debug for the previous behaviour
+    * Add exec_prefix into libldmgreeter.pc
+    * Change versioned include and pkgconfig files from 1 to 0
+    * Add themedir variable into pkgconfig file
+    * Connect language list in GTK greeter to login language
+
+Overview of changes in lightdm 0.1.1
+
+    * Change licence of libldmgreeter from GPL to LGPL
+    * Write X server and session output to log files
+    * Set PATH, DESKTOP_SESSION, GDMSESSION and USERNAME environment variables
+    * Run sessions through Xsession
+    * Close all X servers on exit
+    * Send SIGHUP to X server when returning to greeter (makes all clients quit)
+    * Change authorization after a session ends so previous session does not get
+      access
+    * Make shutdown buttons work in GTK+ greeter
+    * Make user manager configurable
+    * Make GTK+ greeter show username entry if no user list
+    * Hide C and POSIX languages in greeter
+    * Load language and layout from .dmrc file
+
+Overview of changes in lightdm 0.1.0
+
+    * Make --test-mode which runs as the current user
+    * Support displays acting as XDMCP terminals
+    * Support MIT-MAGIC-COOKIE-1 and XDM-AUTHORIZATION-1 authorization
+    * Support XDMCP over IPv6
+
+Overview of changes in lightdm 0.0.4
+
+    * Support XDMCP logins
+    * Support multi-head
+    * Clean up resources on exit
+    * Create gettext instance in WebKit greeter
+
+Overview of changes in lightdm 0.0.3
+
+    * Wait for signal from X server before starting session
+    * Add language API
+    * Add keyboard layout API
+    * Add gettext support to the WebKit greeter
+
+Overview of changes in lightdm 0.0.2
+
+    * Fix installation of D-Bus service file
+    * Allow DISPLAY env variable to be passed to X server so can run Xephyr
+    * Handle no automatic login in webkit theme
+
+Overview of changes in lightdm 0.0.1
+
+    * Initial release

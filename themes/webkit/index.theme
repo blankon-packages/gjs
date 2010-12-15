@@ -1,0 +1,6 @@
+[theme]
+name=WebKit
+description=WebKit Theme
+engine=webkit
+url=index.html
+session=gnome

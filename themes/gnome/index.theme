@@ -1,0 +1,7 @@
+[theme]
+name=GNOME
+description=GNOME Theme
+engine=gtk
+session=gnome
+gtkrc=gtkrc
+background-image=bg.jpg

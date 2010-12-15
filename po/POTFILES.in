@@ -1,0 +1,21 @@
+# List of source files containing translatable strings.
+# Please keep this file sorted alphabetically.
+[encoding: UTF-8]
+greeters/ldm-gtk-greeter.c
+greeters/ldm-webkit-greeter.c
+liblightdm-gobject/greeter.c
+liblightdm-gobject/language.c
+liblightdm-gobject/layout.c
+liblightdm-gobject/session.c
+liblightdm-gobject/user.c
+src/display.c
+src/display-manager.c
+src/lightdm.c
+src/pam-session.c
+src/session.c
+src/theme.c
+src/user-manager.c
+src/xdmcp-protocol.c
+src/xdmcp-server.c
+src/xdmcp-session.c
+src/xserver.c
