@@ -1,0 +1,158 @@
+lightdm (0.2.2-0ubuntu2) natty; urgency=low
+
+  * debian/copyright:
+    - Update copyright for liblightdm-gobject and liblightdm-qt
+
+ -- Robert Ancell <robert.ancell@canonical.com>  Wed, 15 Dec 2010 10:16:16 +1100
+
+lightdm (0.2.2-0ubuntu1) natty; urgency=low
+
+  * New upstream release
+  * debian/copyright:
+    - Update copyright for src/ck-connector.[ch]
+  * debian/liblightdm-gobject-0-dev:
+    - .vapi file has moved location
+  * debian/lightdm.upstart:
+    - Tidy up upstart config
+  * debian/rules:
+    - Compile with --with-greeter-user=lightdm
+
+ -- Robert Ancell <robert.ancell@canonical.com>  Thu, 09 Dec 2010 11:45:44 +1100
+
+lightdm (0.2.1-0ubuntu1) natty; urgency=low
+
+  [ Julien Lavergne ]
+  * debian/lightdm.{config,pam,postinst,postrm,prerm,upstart,init}
+   - Add configuration based on gdm and xdm ones.
+  * debian/rules:
+   - Use dh_installinit --no-start
+   - Remove .la and .a files.
+   - Pass --list-missing to dh_install.
+   - Don't use --with quilt with format 3.0.
+   - Use with autoreconf.
+  * debian/control:
+   - Add myself to Uploaders, and use ubuntu address for Maintainer.
+   - Build-depends on dh-autoreconf and gtk-doc-tools
+   - Improve the description.
+   - Add depends on libpam-runtime (>= 0.76-14) and libpam-modules for pam
+     support.
+   - Add depends on adduser.
+   - Provides x-display-manager.
+   - Add depends on libglib2.0-dev, libdbus-glib-1-dev and libxklavier-dev for
+     libldmgreeter-dev.
+  * debian/libldmgreeter-dev.install:
+   - Install .so
+  * debian/lightdm.install
+   - Install conf file for DBus.
+  * debian/lightdm.dirs
+   - Add /var directories for logs, and cache.
+  * debian/po & debian/lightdm.template:
+   - Add translations for display manager switch.
+  * debian/copyright:
+   - Update address for source code and copyright for debian/.
+  * debian/lightdm.conf:
+   - Sync with upstream modification.
+  * debian/lightdm.manpages
+   - Add the upstream manpage.
+
+  [ Robert Ancell ]
+  * New upstream release
+  * Rename from libldmgreeter to liblightdm
+  * debian/control:
+    - Use ubuntu-desktop Bzr link
+  * debian/gir1.0-lightdm-0.install:
+    - Install typelib into correct package
+  * debian/lightdm.postinst:
+  * debian/lightdm.postrm:
+    - Create lightdm user
+
+ -- Robert Ancell <robert.ancell@canonical.com>  Wed, 01 Dec 2010 08:40:37 +1100
+
+lightdm (0.2.0-0ubuntu1) maverick; urgency=low
+
+  * New upstream release
+  * debian/control:
+    - Use standards version 3.9.1
+  * debian/lightdm.conf:
+  * debian/rules:
+    - Make an Ubuntu specific default config file
+
+ -- Robert Ancell <robert.ancell@canonical.com>  Fri, 12 Nov 2010 13:58:43 +1100
+
+lightdm (0.1.2-0ubuntu2) maverick; urgency=low
+
+  * debian/lightdm-theme-gnome.install:
+  * debian/lightdm-theme-webkit.install:
+    - Fix install location of themes
+
+ -- Robert Ancell <robert.ancell@canonical.com>  Tue, 12 Oct 2010 15:52:24 +1100
+
+lightdm (0.1.2-0ubuntu1) maverick; urgency=low
+
+  * New upstream release
+
+ -- Robert Ancell <robert.ancell@canonical.com>  Fri, 10 Sep 2010 16:57:49 +1000
+
+lightdm (0.1.1-0ubuntu1) maverick; urgency=low
+
+  * New upstream release
+
+ -- Robert Ancell <robert.ancell@canonical.com>  Sat, 14 Aug 2010 22:06:43 +1000
+
+lightdm (0.1.0-0ubuntu2) maverick; urgency=low
+
+  * debian/lightdm-theme-gnome.install:
+    - Install gnome theme data
+
+ -- Robert Ancell <robert.ancell@canonical.com>  Thu, 22 Jul 2010 22:17:46 +0200
+
+lightdm (0.1.0-0ubuntu1) maverick; urgency=low
+
+  * New upstream release
+
+ -- Robert Ancell <robert.ancell@canonical.com>  Thu, 22 Jul 2010 21:57:35 +0200
+
+lightdm (0.0.4-0ubuntu1) maverick; urgency=low
+
+  * New upstream release
+  * debian/control:
+    - Build-depend on libxdmcp-dev, libxcb1-dev
+    - Use standards-version 3.9.0
+
+ -- Robert Ancell <robert.ancell@canonical.com>  Fri, 16 Jul 2010 10:12:40 +1000
+
+lightdm (0.0.3-0ubuntu2) maverick; urgency=low
+
+  * debian/control:
+    - Build-depend on libxklavier-dev
+
+ -- Robert Ancell <robert.ancell@canonical.com>  Sat, 10 Jul 2010 15:33:57 +1000
+
+lightdm (0.0.3-0ubuntu1) maverick; urgency=low
+
+  * New upstream release
+    - Wait for signal from X server before starting session
+    - Add language API
+    - Add keyboard layout API
+    - Add gettext support to the WebKit greeter
+
+ -- Robert Ancell <robert.ancell@canonical.com>  Sat, 10 Jul 2010 14:07:26 +1000
+
+lightdm (0.0.2-0ubuntu1maverick1) maverick; urgency=low
+
+  * New upstream release:
+    - Fix installation of D-Bus service file
+    - Allow DISPLAY env variable to be passed to X server so can run Xephyr
+    - Handle no automatic login in webkit theme
+  * debian/control:
+    - Remove invalid ${shlibs:Depends} lines on binary free packages
+  * debian/watch:
+    - Update watch location
+
+ -- Robert Ancell <robert.ancell@canonical.com>  Thu, 01 Jul 2010 11:47:58 +1000
+
+lightdm (0.0.1-0ubuntu1) maverick; urgency=low
+
+  * Initial release
+
+ -- Robert Ancell <robert.ancell@canonical.com>  Sun, 27 Jun 2010 11:14:01 +1000

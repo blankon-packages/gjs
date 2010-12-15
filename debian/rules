@@ -1,0 +1,26 @@
+#!/usr/bin/make -f 
+
+LDFLAGS+=-Wl,--as-needed
+
+%:
+	dh --with autoreconf $@
+
+override_dh_auto_configure:
+	dh_auto_configure -- --with-greeter-user=lightdm
+
+override_dh_install:
+	#Remove .la and .a files.
+	find debian/tmp/usr/lib/ -name *.a |xargs rm
+	find debian/tmp/usr/lib -name *.la |xargs rm
+	#Remove conf files from upstream
+	#find debian/tmp/etc/ -name *.conf |xargs rm
+	#find debian/tmp/etc/init -name *.conf |xargs rm
+	dh_install --list-missing
+
+# Generate PO template on build
+override_dh_auto_build:
+	cd po; intltool-update -p
+	dh_auto_build
+
+override_dh_installinit:
+	dh_installinit --no-start
