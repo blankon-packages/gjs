@@ -1,3 +1,10 @@
+lightdm (0.2.3-0ubuntu2) natty; urgency=low
+
+  * debian/control:
+    - Fix Vcs-Bzr link
+
+ -- Robert Ancell <robert.ancell@canonical.com>  Fri, 14 Jan 2011 14:44:48 -0600
+
 lightdm (0.2.3-0ubuntu1) natty; urgency=low
 
   * New upstream release

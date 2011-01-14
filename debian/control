@@ -23,7 +23,7 @@ Build-Depends: debhelper (>= 7.0.50~),
                dh-autoreconf,
                gtk-doc-tools
 Homepage: https://launchpad.net/lightdm
-Vcs-Bzr: https://code.launchpad.net/~ubuntu-destkop/lightdm/ubuntu
+Vcs-Bzr: https://code.launchpad.net/~ubuntu-desktop/lightdm/ubuntu
 
 Package: lightdm
 Architecture: any
