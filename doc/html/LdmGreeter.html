@@ -4,9 +4,9 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>LdmGreeter</title>
 <meta name="generator" content="DocBook XSL Stylesheets V1.75.2">
-<link rel="home" href="index.html" title="LightDM Greeter Reference Manual">
-<link rel="up" href="core.html" title="Part I. LightDM Greeter Core Reference">
-<link rel="prev" href="core.html" title="Part I. LightDM Greeter Core Reference">
+<link rel="home" href="index.html" title="LightDM Reference Manual">
+<link rel="up" href="core.html" title="Part I. liblightdm-gobject">
+<link rel="prev" href="core.html" title="Part I. liblightdm-gobject">
 <link rel="next" href="LdmLanguage.html" title="LdmLanguage">
 <meta name="generator" content="GTK-Doc V1.15 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
@@ -17,7 +17,7 @@
 <td><a accesskey="p" href="core.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
 <td><a accesskey="u" href="core.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
 <td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
-<th width="100%" align="center">LightDM Greeter Reference Manual</th>
+<th width="100%" align="center">LightDM Reference Manual</th>
 <td><a accesskey="n" href="LdmLanguage.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
 <tr><td colspan="5" class="shortcuts">
@@ -37,7 +37,7 @@
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
 <h2><span class="refentrytitle"><a name="LdmGreeter.top_of_page"></a>LdmGreeter</span></h2>
-<p>LdmGreeter — LightDM greeter object</p>
+<p>LdmGreeter — Manages connection to LightDM server and provides greeter functionality</p>
 </td>
 <td valign="top" align="right"></td>
 </tr></table></div>
@@ -141,7 +141,7 @@ const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.htm
 To connect to the display manager instanciate a <a class="link" href="LdmGreeter.html" title="LdmGreeter"><span class="type">LdmGreeter</span></a> object from inside the greeter process:
 </p>
 <div class="example">
-<a name="id592443"></a><p class="title"><b>Example 1. Connecting to the display manager</b></p>
+<a name="id496910"></a><p class="title"><b>Example 1. Connecting to the display manager</b></p>
 <div class="example-contents"><pre class="programlisting">
 LdmGreeter *greeter = ldm_greeter_new ();
 if (!ldm_greeter_connect (LDM_GREETER (greeter))) {
@@ -157,7 +157,7 @@ Information on how to connect to the display manager is passed using environment
 Once connected, start an authentication conversation like this:
 </p>
 <div class="example">
-<a name="id592462"></a><p class="title"><b>Example 2. Example Authorization Conversation</b></p>
+<a name="id496930"></a><p class="title"><b>Example 2. Example Authorization Conversation</b></p>
 <div class="example-contents"><pre class="programlisting">
 static void show_prompt_cb (LdmGreeter *greeter, const char *text)
 {
