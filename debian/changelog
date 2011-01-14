@@ -1,3 +1,11 @@
+lightdm (0.2.3-0ubuntu1) natty; urgency=low
+
+  * New upstream release
+  * debian/control:
+    - Build depend on libwebkitgtk-dev
+
+ -- Robert Ancell <robert.ancell@canonical.com>  Fri, 14 Jan 2011 14:39:15 -0600
+
 lightdm (0.2.2-0ubuntu2) natty; urgency=low
 
   * debian/copyright:
