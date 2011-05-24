@@ -11,9 +11,9 @@
     </sub>
   </chapters>
   <functions>
-    <function name="LdmGreeter" link="LdmGreeter.html#LdmGreeter-struct"/>
+    <function name="struct LdmGreeter" link="LdmGreeter.html#LdmGreeter-struct"/>
     <function name="ldm_greeter_new ()" link="LdmGreeter.html#ldm-greeter-new"/>
-    <function name="ldm_greeter_connect ()" link="LdmGreeter.html#ldm-greeter-connect"/>
+    <function name="ldm_greeter_connect_to_server ()" link="LdmGreeter.html#ldm-greeter-connect-to-server"/>
     <function name="ldm_greeter_get_hostname ()" link="LdmGreeter.html#ldm-greeter-get-hostname"/>
     <function name="ldm_greeter_get_theme ()" link="LdmGreeter.html#ldm-greeter-get-theme"/>
     <function name="ldm_greeter_get_string_property ()" link="LdmGreeter.html#ldm-greeter-get-string-property"/>
@@ -21,6 +21,7 @@
     <function name="ldm_greeter_get_boolean_property ()" link="LdmGreeter.html#ldm-greeter-get-boolean-property"/>
     <function name="ldm_greeter_get_num_users ()" link="LdmGreeter.html#ldm-greeter-get-num-users"/>
     <function name="ldm_greeter_get_users ()" link="LdmGreeter.html#ldm-greeter-get-users"/>
+    <function name="ldm_greeter_get_user_by_name ()" link="LdmGreeter.html#ldm-greeter-get-user-by-name"/>
     <function name="ldm_greeter_get_default_language ()" link="LdmGreeter.html#ldm-greeter-get-default-language"/>
     <function name="ldm_greeter_get_languages ()" link="LdmGreeter.html#ldm-greeter-get-languages"/>
     <function name="ldm_greeter_get_default_layout ()" link="LdmGreeter.html#ldm-greeter-get-default-layout"/>
@@ -35,9 +36,11 @@
     <function name="ldm_greeter_start_authentication ()" link="LdmGreeter.html#ldm-greeter-start-authentication"/>
     <function name="ldm_greeter_provide_secret ()" link="LdmGreeter.html#ldm-greeter-provide-secret"/>
     <function name="ldm_greeter_cancel_authentication ()" link="LdmGreeter.html#ldm-greeter-cancel-authentication"/>
+    <function name="ldm_greeter_get_in_authentication ()" link="LdmGreeter.html#ldm-greeter-get-in-authentication"/>
     <function name="ldm_greeter_get_is_authenticated ()" link="LdmGreeter.html#ldm-greeter-get-is-authenticated"/>
     <function name="ldm_greeter_get_authentication_user ()" link="LdmGreeter.html#ldm-greeter-get-authentication-user"/>
     <function name="ldm_greeter_login ()" link="LdmGreeter.html#ldm-greeter-login"/>
+    <function name="ldm_greeter_login_with_defaults ()" link="LdmGreeter.html#ldm-greeter-login-with-defaults"/>
     <function name="ldm_greeter_get_can_suspend ()" link="LdmGreeter.html#ldm-greeter-get-can-suspend"/>
     <function name="ldm_greeter_suspend ()" link="LdmGreeter.html#ldm-greeter-suspend"/>
     <function name="ldm_greeter_get_can_hibernate ()" link="LdmGreeter.html#ldm-greeter-get-can-hibernate"/>
@@ -54,39 +57,45 @@
     <function name="The &quot;can-suspend&quot; property" link="LdmGreeter.html#LdmGreeter--can-suspend"/>
     <function name="The &quot;default-session&quot; property" link="LdmGreeter.html#LdmGreeter--default-session"/>
     <function name="The &quot;hostname&quot; property" link="LdmGreeter.html#LdmGreeter--hostname"/>
+    <function name="The &quot;in-authentication&quot; property" link="LdmGreeter.html#LdmGreeter--in-authentication"/>
     <function name="The &quot;is-authenticated&quot; property" link="LdmGreeter.html#LdmGreeter--is-authenticated"/>
     <function name="The &quot;layout&quot; property" link="LdmGreeter.html#LdmGreeter--layout"/>
     <function name="The &quot;login-delay&quot; property" link="LdmGreeter.html#LdmGreeter--login-delay"/>
     <function name="The &quot;num-users&quot; property" link="LdmGreeter.html#LdmGreeter--num-users"/>
     <function name="The &quot;timed-login-user&quot; property" link="LdmGreeter.html#LdmGreeter--timed-login-user"/>
     <function name="The &quot;authentication-complete&quot; signal" link="LdmGreeter.html#LdmGreeter-authentication-complete"/>
+    <function name="The &quot;connected&quot; signal" link="LdmGreeter.html#LdmGreeter-connected"/>
     <function name="The &quot;quit&quot; signal" link="LdmGreeter.html#LdmGreeter-quit"/>
     <function name="The &quot;show-error&quot; signal" link="LdmGreeter.html#LdmGreeter-show-error"/>
     <function name="The &quot;show-message&quot; signal" link="LdmGreeter.html#LdmGreeter-show-message"/>
     <function name="The &quot;show-prompt&quot; signal" link="LdmGreeter.html#LdmGreeter-show-prompt"/>
     <function name="The &quot;timed-login&quot; signal" link="LdmGreeter.html#LdmGreeter-timed-login"/>
-    <function name="LdmLanguage" link="LdmLanguage.html#LdmLanguage-struct"/>
+    <function name="The &quot;user-added&quot; signal" link="LdmGreeter.html#LdmGreeter-user-added"/>
+    <function name="The &quot;user-changed&quot; signal" link="LdmGreeter.html#LdmGreeter-user-changed"/>
+    <function name="The &quot;user-removed&quot; signal" link="LdmGreeter.html#LdmGreeter-user-removed"/>
+    <function name="struct LdmLanguage" link="LdmLanguage.html#LdmLanguage-struct"/>
     <function name="ldm_language_get_code ()" link="LdmLanguage.html#ldm-language-get-code"/>
     <function name="ldm_language_get_name ()" link="LdmLanguage.html#ldm-language-get-name"/>
     <function name="ldm_language_get_territory ()" link="LdmLanguage.html#ldm-language-get-territory"/>
+    <function name="ldm_language_matches ()" link="LdmLanguage.html#ldm-language-matches"/>
     <function name="The &quot;code&quot; property" link="LdmLanguage.html#LdmLanguage--code"/>
     <function name="The &quot;name&quot; property" link="LdmLanguage.html#LdmLanguage--name"/>
     <function name="The &quot;territory&quot; property" link="LdmLanguage.html#LdmLanguage--territory"/>
-    <function name="LdmLayout" link="LdmLayout.html#LdmLayout-struct"/>
+    <function name="struct LdmLayout" link="LdmLayout.html#LdmLayout-struct"/>
     <function name="ldm_layout_get_name ()" link="LdmLayout.html#ldm-layout-get-name"/>
     <function name="ldm_layout_get_short_description ()" link="LdmLayout.html#ldm-layout-get-short-description"/>
     <function name="ldm_layout_get_description ()" link="LdmLayout.html#ldm-layout-get-description"/>
     <function name="The &quot;description&quot; property" link="LdmLayout.html#LdmLayout--description"/>
     <function name="The &quot;name&quot; property" link="LdmLayout.html#LdmLayout--name"/>
     <function name="The &quot;short-description&quot; property" link="LdmLayout.html#LdmLayout--short-description"/>
-    <function name="LdmSession" link="LdmSession.html#LdmSession-struct"/>
+    <function name="struct LdmSession" link="LdmSession.html#LdmSession-struct"/>
     <function name="ldm_session_get_key ()" link="LdmSession.html#ldm-session-get-key"/>
     <function name="ldm_session_get_name ()" link="LdmSession.html#ldm-session-get-name"/>
     <function name="ldm_session_get_comment ()" link="LdmSession.html#ldm-session-get-comment"/>
     <function name="The &quot;comment&quot; property" link="LdmSession.html#LdmSession--comment"/>
     <function name="The &quot;key&quot; property" link="LdmSession.html#LdmSession--key"/>
     <function name="The &quot;name&quot; property" link="LdmSession.html#LdmSession--name"/>
-    <function name="LdmUser" link="LdmUser.html#LdmUser-struct"/>
+    <function name="struct LdmUser" link="LdmUser.html#LdmUser-struct"/>
     <function name="ldm_user_get_name ()" link="LdmUser.html#ldm-user-get-name"/>
     <function name="ldm_user_get_real_name ()" link="LdmUser.html#ldm-user-get-real-name"/>
     <function name="ldm_user_get_display_name ()" link="LdmUser.html#ldm-user-get-display-name"/>
@@ -97,6 +106,7 @@
     <function name="ldm_user_get_logged_in ()" link="LdmUser.html#ldm-user-get-logged-in"/>
     <function name="The &quot;display-name&quot; property" link="LdmUser.html#LdmUser--display-name"/>
     <function name="The &quot;greeter&quot; property" link="LdmUser.html#LdmUser--greeter"/>
+    <function name="The &quot;home-directory&quot; property" link="LdmUser.html#LdmUser--home-directory"/>
     <function name="The &quot;image&quot; property" link="LdmUser.html#LdmUser--image"/>
     <function name="The &quot;language&quot; property" link="LdmUser.html#LdmUser--language"/>
     <function name="The &quot;layout&quot; property" link="LdmUser.html#LdmUser--layout"/>

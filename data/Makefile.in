@@ -35,15 +35,15 @@ POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
 subdir = data
-DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in \
-	$(srcdir)/org.lightdm.LightDisplayManager.conf.in
+DIST_COMMON = $(dist_conf_DATA) $(dist_dbusconf_DATA) \
+	$(dist_man1_MANS) $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 mkinstalldirs = $(install_sh) -d
 CONFIG_HEADER = $(top_builddir)/config.h
-CONFIG_CLEAN_FILES = org.lightdm.LightDisplayManager.conf
+CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
 AM_V_GEN = $(am__v_GEN_$(V))
 am__v_GEN_ = $(am__v_GEN_$(AM_DEFAULT_VERBOSITY))
@@ -85,8 +85,8 @@ man1dir = $(mandir)/man1
 am__installdirs = "$(DESTDIR)$(man1dir)" "$(DESTDIR)$(confdir)" \
 	"$(DESTDIR)$(dbusconfdir)"
 NROFF = nroff
-MANS = $(man1_MANS)
-DATA = $(conf_DATA) $(dbusconf_DATA)
+MANS = $(dist_man1_MANS)
+DATA = $(dist_conf_DATA) $(dist_dbusconf_DATA)
 RECURSIVE_CLEAN_TARGETS = mostlyclean-recursive clean-recursive	\
   distclean-recursive maintainer-clean-recursive
 AM_RECURSIVE_TARGETS = $(RECURSIVE_TARGETS:-recursive=) \
@@ -193,11 +193,11 @@ LIBOBJS = @LIBOBJS@
 LIBS = @LIBS@
 LIBTOOL = @LIBTOOL@
 LIGHTDM_CFLAGS = @LIGHTDM_CFLAGS@
-LIGHTDM_GTK_GREETER_CFLAGS = @LIGHTDM_GTK_GREETER_CFLAGS@
-LIGHTDM_GTK_GREETER_LIBS = @LIGHTDM_GTK_GREETER_LIBS@
+LIGHTDM_EXAMPLE_GTK_GREETER_CFLAGS = @LIGHTDM_EXAMPLE_GTK_GREETER_CFLAGS@
+LIGHTDM_EXAMPLE_GTK_GREETER_LIBS = @LIGHTDM_EXAMPLE_GTK_GREETER_LIBS@
+LIGHTDM_EXAMPLE_QT_GREETER_CFLAGS = @LIGHTDM_EXAMPLE_QT_GREETER_CFLAGS@
+LIGHTDM_EXAMPLE_QT_GREETER_LIBS = @LIGHTDM_EXAMPLE_QT_GREETER_LIBS@
 LIGHTDM_LIBS = @LIGHTDM_LIBS@
-LIGHTDM_WEBKIT_GREETER_CFLAGS = @LIGHTDM_WEBKIT_GREETER_CFLAGS@
-LIGHTDM_WEBKIT_GREETER_LIBS = @LIGHTDM_WEBKIT_GREETER_LIBS@
 LIPO = @LIPO@
 LN_S = @LN_S@
 LOG_DIR = @LOG_DIR@
@@ -231,6 +231,7 @@ SHELL = @SHELL@
 STRIP = @STRIP@
 THEME_DIR = @THEME_DIR@
 USE_NLS = @USE_NLS@
+VALAC = @VALAC@
 VALA_API_GEN = @VALA_API_GEN@
 VERSION = @VERSION@
 WARN_CFLAGS = @WARN_CFLAGS@
@@ -293,11 +294,10 @@ top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 SUBDIRS = init
 confdir = $(sysconfdir)
-conf_DATA = lightdm.conf
+dist_conf_DATA = lightdm.conf
 dbusconfdir = $(DBUS_SYS_DIR)
-dbusconf_DATA = org.lightdm.LightDisplayManager.conf
-man1_MANS = lightdm.1
-EXTRA_DIST = $(conf_DATA) $(dbusconf_DATA) $(man1_MANS)
+dist_dbusconf_DATA = org.lightdm.LightDisplayManager.conf
+dist_man1_MANS = lightdm.1
 DISTCLEANFILES = \
 	Makefile.in
 
@@ -334,18 +334,16 @@ $(top_srcdir)/configure: @MAINTAINER_MODE_TRUE@ $(am__configure_deps)
 $(ACLOCAL_M4): @MAINTAINER_MODE_TRUE@ $(am__aclocal_m4_deps)
 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
 $(am__aclocal_m4_deps):
-org.lightdm.LightDisplayManager.conf: $(top_builddir)/config.status $(srcdir)/org.lightdm.LightDisplayManager.conf.in
-	cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@
 
 mostlyclean-libtool:
 	-rm -f *.lo
 
 clean-libtool:
 	-rm -rf .libs _libs
-install-man1: $(man1_MANS)
+install-man1: $(dist_man1_MANS)
 	@$(NORMAL_INSTALL)
 	test -z "$(man1dir)" || $(MKDIR_P) "$(DESTDIR)$(man1dir)"
-	@list='$(man1_MANS)'; test -n "$(man1dir)" || exit 0; \
+	@list='$(dist_man1_MANS)'; test -n "$(man1dir)" || exit 0; \
 	{ for i in $$list; do echo "$$i"; done; \
 	} | while read p; do \
 	  if test -f $$p; then d=; else d="$(srcdir)/"; fi; \
@@ -369,17 +367,17 @@ install-man1: $(man1_MANS)
 
 uninstall-man1:
 	@$(NORMAL_UNINSTALL)
-	@list='$(man1_MANS)'; test -n "$(man1dir)" || exit 0; \
+	@list='$(dist_man1_MANS)'; test -n "$(man1dir)" || exit 0; \
 	files=`{ for i in $$list; do echo "$$i"; done; \
 	} | sed -e 's,.*/,,;h;s,.*\.,,;s,^[^1][0-9a-z]*$$,1,;x' \
 	      -e 's,\.[0-9a-z]*$$,,;$(transform);G;s,\n,.,'`; \
 	test -z "$$files" || { \
 	  echo " ( cd '$(DESTDIR)$(man1dir)' && rm -f" $$files ")"; \
 	  cd "$(DESTDIR)$(man1dir)" && rm -f $$files; }
-install-confDATA: $(conf_DATA)
+install-dist_confDATA: $(dist_conf_DATA)
 	@$(NORMAL_INSTALL)
 	test -z "$(confdir)" || $(MKDIR_P) "$(DESTDIR)$(confdir)"
-	@list='$(conf_DATA)'; test -n "$(confdir)" || list=; \
+	@list='$(dist_conf_DATA)'; test -n "$(confdir)" || list=; \
 	for p in $$list; do \
 	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
 	  echo "$$d$$p"; \
@@ -389,17 +387,17 @@ install-confDATA: $(conf_DATA)
 	  $(INSTALL_DATA) $$files "$(DESTDIR)$(confdir)" || exit $$?; \
 	done
 
-uninstall-confDATA:
+uninstall-dist_confDATA:
 	@$(NORMAL_UNINSTALL)
-	@list='$(conf_DATA)'; test -n "$(confdir)" || list=; \
+	@list='$(dist_conf_DATA)'; test -n "$(confdir)" || list=; \
 	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
 	test -n "$$files" || exit 0; \
 	echo " ( cd '$(DESTDIR)$(confdir)' && rm -f" $$files ")"; \
 	cd "$(DESTDIR)$(confdir)" && rm -f $$files
-install-dbusconfDATA: $(dbusconf_DATA)
+install-dist_dbusconfDATA: $(dist_dbusconf_DATA)
 	@$(NORMAL_INSTALL)
 	test -z "$(dbusconfdir)" || $(MKDIR_P) "$(DESTDIR)$(dbusconfdir)"
-	@list='$(dbusconf_DATA)'; test -n "$(dbusconfdir)" || list=; \
+	@list='$(dist_dbusconf_DATA)'; test -n "$(dbusconfdir)" || list=; \
 	for p in $$list; do \
 	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
 	  echo "$$d$$p"; \
@@ -409,9 +407,9 @@ install-dbusconfDATA: $(dbusconf_DATA)
 	  $(INSTALL_DATA) $$files "$(DESTDIR)$(dbusconfdir)" || exit $$?; \
 	done
 
-uninstall-dbusconfDATA:
+uninstall-dist_dbusconfDATA:
 	@$(NORMAL_UNINSTALL)
-	@list='$(dbusconf_DATA)'; test -n "$(dbusconfdir)" || list=; \
+	@list='$(dist_dbusconf_DATA)'; test -n "$(dbusconfdir)" || list=; \
 	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
 	test -n "$$files" || exit 0; \
 	echo " ( cd '$(DESTDIR)$(dbusconfdir)' && rm -f" $$files ")"; \
@@ -677,7 +675,8 @@ info: info-recursive
 
 info-am:
 
-install-data-am: install-confDATA install-dbusconfDATA install-man
+install-data-am: install-dist_confDATA install-dist_dbusconfDATA \
+	install-man
 
 install-dvi: install-dvi-recursive
 
@@ -721,7 +720,8 @@ ps: ps-recursive
 
 ps-am:
 
-uninstall-am: uninstall-confDATA uninstall-dbusconfDATA uninstall-man
+uninstall-am: uninstall-dist_confDATA uninstall-dist_dbusconfDATA \
+	uninstall-man
 
 uninstall-man: uninstall-man1
 
@@ -732,17 +732,18 @@ uninstall-man: uninstall-man1
 	all all-am check check-am clean clean-generic clean-libtool \
 	ctags ctags-recursive distclean distclean-generic \
 	distclean-libtool distclean-tags distdir dvi dvi-am html \
-	html-am info info-am install install-am install-confDATA \
-	install-data install-data-am install-dbusconfDATA install-dvi \
-	install-dvi-am install-exec install-exec-am install-html \
-	install-html-am install-info install-info-am install-man \
-	install-man1 install-pdf install-pdf-am install-ps \
-	install-ps-am install-strip installcheck installcheck-am \
-	installdirs installdirs-am maintainer-clean \
-	maintainer-clean-generic mostlyclean mostlyclean-generic \
-	mostlyclean-libtool pdf pdf-am ps ps-am tags tags-recursive \
-	uninstall uninstall-am uninstall-confDATA \
-	uninstall-dbusconfDATA uninstall-man uninstall-man1
+	html-am info info-am install install-am install-data \
+	install-data-am install-dist_confDATA \
+	install-dist_dbusconfDATA install-dvi install-dvi-am \
+	install-exec install-exec-am install-html install-html-am \
+	install-info install-info-am install-man install-man1 \
+	install-pdf install-pdf-am install-ps install-ps-am \
+	install-strip installcheck installcheck-am installdirs \
+	installdirs-am maintainer-clean maintainer-clean-generic \
+	mostlyclean mostlyclean-generic mostlyclean-libtool pdf pdf-am \
+	ps ps-am tags tags-recursive uninstall uninstall-am \
+	uninstall-dist_confDATA uninstall-dist_dbusconfDATA \
+	uninstall-man uninstall-man1
 
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.

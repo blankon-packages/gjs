@@ -1,3 +1,46 @@
+lightdm (0.3.5-0ubuntu1) oneiric; urgency=low
+
+  * New upstream release
+
+ -- Robert Ancell <robert.ancell@canonical.com>  Tue, 24 May 2011 15:38:04 +1000
+
+lightdm (0.3.4-0ubuntu1) oneiric; urgency=low
+
+  * New upstream release
+
+ -- Robert Ancell <robert.ancell@canonical.com>  Fri, 20 May 2011 14:56:09 +1000
+
+lightdm (0.3.3-0ubuntu1) natty; urgency=low
+
+  * New upstream release
+  * debian/lightdm-greeter-example-gtk.install:
+    - Install .ui file
+
+ -- Robert Ancell <robert.ancell@canonical.com>  Tue, 10 May 2011 17:45:50 +0200
+
+lightdm (0.3.2-0ubuntu1) natty; urgency=low
+
+  * New upstream release:
+  * debian/lightdm-greeter-*.install:
+    - Use new binary names
+  * debian/lightdm.conf:
+    - Start display on VT 7
+
+ -- Robert Ancell <robert.ancell@canonical.com>  Thu, 21 Apr 2011 15:31:24 +1000
+
+lightdm (0.3.0-0ubuntu1) natty; urgency=low
+
+  * New upstream release
+  * debian/control:
+    - Add build-depends on valac
+    - Drop build-depends on libwebkitgtk-dev
+    - Rename gir1.0-lightdm-0 to gir1.2-lightdm-0
+    - Webkit engine and theme dropped
+    - Merge theme and engines into one package
+    - Add vala-gtk, python-gtk and qt greeters
+
+ -- Robert Ancell <robert.ancell@canonical.com>  Sat, 16 Apr 2011 18:22:50 +1000
+
 lightdm (0.2.3-0ubuntu2) natty; urgency=low
 
   * debian/control:

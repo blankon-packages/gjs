@@ -12,7 +12,7 @@
 #include <locale.h>
 #include <langinfo.h>
 
-#include "language.h"
+#include "lightdm/language.h"
 
 enum {
     PROP_0,
@@ -55,6 +55,7 @@ ldm_language_new (const gchar *code)
 const gchar *
 ldm_language_get_code (LdmLanguage *language)
 {
+    g_return_val_if_fail (LDM_IS_LANGUAGE (language), NULL);
     return language->priv->code;
 }
 
@@ -69,6 +70,8 @@ ldm_language_get_code (LdmLanguage *language)
 const gchar *
 ldm_language_get_name (LdmLanguage *language)
 {
+    g_return_val_if_fail (LDM_IS_LANGUAGE (language), NULL);
+
     if (!language->priv->name)
     {
         char *current = setlocale(LC_ALL, NULL);
@@ -91,6 +94,8 @@ ldm_language_get_name (LdmLanguage *language)
 const gchar *
 ldm_language_get_territory (LdmLanguage *language)
 {
+    g_return_val_if_fail (LDM_IS_LANGUAGE (language), NULL);
+
     if (!language->priv->territory)
     {
         char *current = setlocale(LC_ALL, NULL);
@@ -100,6 +105,39 @@ ldm_language_get_territory (LdmLanguage *language)
     }
 
     return language->priv->territory;
+}
+
+static gboolean
+is_utf8 (const gchar *code)
+{
+    return g_str_has_suffix (code, ".utf8") || g_str_has_suffix (code, ".UTF-8");
+}
+
+/**
+ * ldm_language_matches:
+ * @language: A #LdmLanguage
+ * @code: A language code
+ * 
+ * Check if a language code matches this language.
+ * 
+ * Return value: TRUE if the code matches this language.
+ **/
+gboolean
+ldm_language_matches (LdmLanguage *language, const gchar *code)
+{
+    g_return_val_if_fail (LDM_IS_LANGUAGE (language), FALSE);
+    g_return_val_if_fail (code != NULL, FALSE);
+
+    /* Handle the fact the UTF-8 is specified both as '.utf8' and '.UTF-8' */
+    if (is_utf8 (language->priv->code) && is_utf8 (code))
+    {
+        /* Match the characters before the '.' */
+        int i;
+        for (i = 0; language->priv->code[i] && code[i] && language->priv->code[i] == code[i] && code[i] != '.' ; i++);
+        return language->priv->code[i] == '.' && code[i] == '.';
+    }
+
+    return g_str_equal (language->priv->code, code);
 }
 
 static void
@@ -115,7 +153,6 @@ ldm_language_set_property (GObject      *object,
                            GParamSpec   *pspec)
 {
     LdmLanguage *self;
-    gint i, n_pages;
 
     self = LDM_LANGUAGE (object);
 

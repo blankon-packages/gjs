@@ -7,7 +7,7 @@
 <link rel="home" href="index.html" title="LightDM Reference Manual">
 <link rel="up" href="core.html" title="Part I. liblightdm-gobject">
 <link rel="prev" href="LdmSession.html" title="LdmSession">
-<meta name="generator" content="GTK-Doc V1.15 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.17 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
@@ -29,7 +29,7 @@
                   <a href="#LdmUser.properties" class="shortcut">Properties</a>
 </td></tr>
 </table>
-<div class="refentry" title="LdmUser">
+<div class="refentry">
 <a name="LdmUser"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
@@ -38,12 +38,12 @@
 </td>
 <td valign="top" align="right"></td>
 </tr></table></div>
-<div class="refsynopsisdiv" title="Synopsis">
+<div class="refsynopsisdiv">
 <a name="LdmUser.synopsis"></a><h2>Synopsis</h2>
 <pre class="synopsis">
 #include &lt;lightdm/greeter.h&gt;
 
-                    <a class="link" href="LdmUser.html#LdmUser-struct" title="LdmUser">LdmUser</a>;
+struct              <a class="link" href="LdmUser.html#LdmUser-struct" title="struct LdmUser">LdmUser</a>;
 const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       <a class="link" href="LdmUser.html#ldm-user-get-name" title="ldm_user_get_name ()">ldm_user_get_name</a>                   (<em class="parameter"><code><a class="link" href="LdmUser.html" title="LdmUser"><span class="type">LdmUser</span></a> *user</code></em>);
 const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       <a class="link" href="LdmUser.html#ldm-user-get-real-name" title="ldm_user_get_real_name ()">ldm_user_get_real_name</a>              (<em class="parameter"><code><a class="link" href="LdmUser.html" title="LdmUser"><span class="type">LdmUser</span></a> *user</code></em>);
 const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       <a class="link" href="LdmUser.html#ldm-user-get-display-name" title="ldm_user_get_display_name ()">ldm_user_get_display_name</a>           (<em class="parameter"><code><a class="link" href="LdmUser.html" title="LdmUser"><span class="type">LdmUser</span></a> *user</code></em>);
@@ -54,18 +54,19 @@ const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.htm
 <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="LdmUser.html#ldm-user-get-logged-in" title="ldm_user_get_logged_in ()">ldm_user_get_logged_in</a>              (<em class="parameter"><code><a class="link" href="LdmUser.html" title="LdmUser"><span class="type">LdmUser</span></a> *user</code></em>);
 </pre>
 </div>
-<div class="refsect1" title="Object Hierarchy">
+<div class="refsect1">
 <a name="LdmUser.object-hierarchy"></a><h2>Object Hierarchy</h2>
 <pre class="synopsis">
   <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject">GObject</a>
    +----LdmUser
 </pre>
 </div>
-<div class="refsect1" title="Properties">
+<div class="refsect1">
 <a name="LdmUser.properties"></a><h2>Properties</h2>
 <pre class="synopsis">
   "<a class="link" href="LdmUser.html#LdmUser--display-name" title='The "display-name" property'>display-name</a>"             <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a>*                : Read
   "<a class="link" href="LdmUser.html#LdmUser--greeter" title='The "greeter" property'>greeter</a>"                  <a class="link" href="LdmGreeter.html" title="LdmGreeter"><span class="type">LdmGreeter</span></a>*           : Write / Construct Only
+  "<a class="link" href="LdmUser.html#LdmUser--home-directory" title='The "home-directory" property'>home-directory</a>"           <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a>*                : Read / Write / Construct Only
   "<a class="link" href="LdmUser.html#LdmUser--image" title='The "image" property'>image</a>"                    <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a>*                : Read / Write / Construct Only
   "<a class="link" href="LdmUser.html#LdmUser--language" title='The "language" property'>language</a>"                 <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a>*                : Read
   "<a class="link" href="LdmUser.html#LdmUser--layout" title='The "layout" property'>layout</a>"                   <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a>*                : Read
@@ -75,7 +76,7 @@ const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.htm
   "<a class="link" href="LdmUser.html#LdmUser--session" title='The "session" property'>session</a>"                  <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a>*                : Read
 </pre>
 </div>
-<div class="refsect1" title="Description">
+<div class="refsect1">
 <a name="LdmUser.description"></a><h2>Description</h2>
 <p>
 Object containing information about a user present on this system. <a class="link" href="LdmUser.html" title="LdmUser"><span class="type">LdmUser</span></a> objects are not created by the user, but provided by the <a class="link" href="LdmGreeter.html" title="LdmGreeter"><span class="type">LdmGreeter</span></a> object.
@@ -92,16 +93,16 @@ A user has the following properties:
 <p>
 </p>
 </div>
-<div class="refsect1" title="Details">
+<div class="refsect1">
 <a name="LdmUser.details"></a><h2>Details</h2>
-<div class="refsect2" title="LdmUser">
-<a name="LdmUser-struct"></a><h3>LdmUser</h3>
-<pre class="programlisting">typedef struct _LdmUser LdmUser;</pre>
+<div class="refsect2">
+<a name="LdmUser-struct"></a><h3>struct LdmUser</h3>
+<pre class="programlisting">struct LdmUser;</pre>
 <p>
 </p>
 </div>
 <hr>
-<div class="refsect2" title="ldm_user_get_name ()">
+<div class="refsect2">
 <a name="ldm-user-get-name"></a><h3>ldm_user_get_name ()</h3>
 <pre class="programlisting">const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       ldm_user_get_name                   (<em class="parameter"><code><a class="link" href="LdmUser.html" title="LdmUser"><span class="type">LdmUser</span></a> *user</code></em>);</pre>
 <p>
@@ -117,14 +118,13 @@ Get the name of a user.
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> The name of the given user
-</td>
+<td>The name of the given user</td>
 </tr>
 </tbody>
 </table></div>
 </div>
 <hr>
-<div class="refsect2" title="ldm_user_get_real_name ()">
+<div class="refsect2">
 <a name="ldm-user-get-real-name"></a><h3>ldm_user_get_real_name ()</h3>
 <pre class="programlisting">const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       ldm_user_get_real_name              (<em class="parameter"><code><a class="link" href="LdmUser.html" title="LdmUser"><span class="type">LdmUser</span></a> *user</code></em>);</pre>
 <p>
@@ -140,14 +140,13 @@ Get the real name of a user.
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> The real name of the given user (may be blank)
-</td>
+<td>The real name of the given user (may be blank)</td>
 </tr>
 </tbody>
 </table></div>
 </div>
 <hr>
-<div class="refsect2" title="ldm_user_get_display_name ()">
+<div class="refsect2">
 <a name="ldm-user-get-display-name"></a><h3>ldm_user_get_display_name ()</h3>
 <pre class="programlisting">const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       ldm_user_get_display_name           (<em class="parameter"><code><a class="link" href="LdmUser.html" title="LdmUser"><span class="type">LdmUser</span></a> *user</code></em>);</pre>
 <p>
@@ -163,14 +162,13 @@ Get the display name of a user.
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> The display name of the given user
-</td>
+<td>The display name of the given user</td>
 </tr>
 </tbody>
 </table></div>
 </div>
 <hr>
-<div class="refsect2" title="ldm_user_get_image ()">
+<div class="refsect2">
 <a name="ldm-user-get-image"></a><h3>ldm_user_get_image ()</h3>
 <pre class="programlisting">const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       ldm_user_get_image                  (<em class="parameter"><code><a class="link" href="LdmUser.html" title="LdmUser"><span class="type">LdmUser</span></a> *user</code></em>);</pre>
 <p>
@@ -186,14 +184,13 @@ Get the image URI for a user.
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> The image URI for the given user or NULL if no URI
-</td>
+<td>The image URI for the given user or NULL if no URI</td>
 </tr>
 </tbody>
 </table></div>
 </div>
 <hr>
-<div class="refsect2" title="ldm_user_get_language ()">
+<div class="refsect2">
 <a name="ldm-user-get-language"></a><h3>ldm_user_get_language ()</h3>
 <pre class="programlisting">const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       ldm_user_get_language               (<em class="parameter"><code><a class="link" href="LdmUser.html" title="LdmUser"><span class="type">LdmUser</span></a> *user</code></em>);</pre>
 <p>
@@ -209,14 +206,13 @@ Get the language for a user.
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> The language for the given user or NULL if using system defaults.
-</td>
+<td>The language for the given user or NULL if using system defaults.</td>
 </tr>
 </tbody>
 </table></div>
 </div>
 <hr>
-<div class="refsect2" title="ldm_user_get_layout ()">
+<div class="refsect2">
 <a name="ldm-user-get-layout"></a><h3>ldm_user_get_layout ()</h3>
 <pre class="programlisting">const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       ldm_user_get_layout                 (<em class="parameter"><code><a class="link" href="LdmUser.html" title="LdmUser"><span class="type">LdmUser</span></a> *user</code></em>);</pre>
 <p>
@@ -232,14 +228,13 @@ Get the keyboard layout for a user.
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> The keyboard layoyt for the given user or NULL if using system defaults.
-</td>
+<td>The keyboard layoyt for the given user or NULL if using system defaults.</td>
 </tr>
 </tbody>
 </table></div>
 </div>
 <hr>
-<div class="refsect2" title="ldm_user_get_session ()">
+<div class="refsect2">
 <a name="ldm-user-get-session"></a><h3>ldm_user_get_session ()</h3>
 <pre class="programlisting">const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       ldm_user_get_session                (<em class="parameter"><code><a class="link" href="LdmUser.html" title="LdmUser"><span class="type">LdmUser</span></a> *user</code></em>);</pre>
 <p>
@@ -255,14 +250,13 @@ Get the session for a user.
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> The session for the given user or NULL if using system defaults.
-</td>
+<td>The session for the given user or NULL if using system defaults.</td>
 </tr>
 </tbody>
 </table></div>
 </div>
 <hr>
-<div class="refsect2" title="ldm_user_get_logged_in ()">
+<div class="refsect2">
 <a name="ldm-user-get-logged-in"></a><h3>ldm_user_get_logged_in ()</h3>
 <pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            ldm_user_get_logged_in              (<em class="parameter"><code><a class="link" href="LdmUser.html" title="LdmUser"><span class="type">LdmUser</span></a> *user</code></em>);</pre>
 <p>
@@ -278,71 +272,77 @@ Check if a user is logged in.
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> TRUE if the user is currently logged in.
-</td>
+<td>TRUE if the user is currently logged in.</td>
 </tr>
 </tbody>
 </table></div>
 </div>
 </div>
-<div class="refsect1" title="Property Details">
+<div class="refsect1">
 <a name="LdmUser.property-details"></a><h2>Property Details</h2>
-<div class="refsect2" title='The "display-name" property'>
+<div class="refsect2">
 <a name="LdmUser--display-name"></a><h3>The <code class="literal">"display-name"</code> property</h3>
 <pre class="programlisting">  "display-name"             <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a>*                : Read</pre>
 <p>Users display name.</p>
 <p>Default value: NULL</p>
 </div>
 <hr>
-<div class="refsect2" title='The "greeter" property'>
+<div class="refsect2">
 <a name="LdmUser--greeter"></a><h3>The <code class="literal">"greeter"</code> property</h3>
 <pre class="programlisting">  "greeter"                  <a class="link" href="LdmGreeter.html" title="LdmGreeter"><span class="type">LdmGreeter</span></a>*           : Write / Construct Only</pre>
 <p>Greeter.</p>
 </div>
 <hr>
-<div class="refsect2" title='The "image" property'>
+<div class="refsect2">
+<a name="LdmUser--home-directory"></a><h3>The <code class="literal">"home-directory"</code> property</h3>
+<pre class="programlisting">  "home-directory"           <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a>*                : Read / Write / Construct Only</pre>
+<p>Home directory.</p>
+<p>Default value: NULL</p>
+</div>
+<hr>
+<div class="refsect2">
 <a name="LdmUser--image"></a><h3>The <code class="literal">"image"</code> property</h3>
 <pre class="programlisting">  "image"                    <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a>*                : Read / Write / Construct Only</pre>
 <p>Avatar image.</p>
 <p>Default value: NULL</p>
 </div>
 <hr>
-<div class="refsect2" title='The "language" property'>
+<div class="refsect2">
 <a name="LdmUser--language"></a><h3>The <code class="literal">"language"</code> property</h3>
 <pre class="programlisting">  "language"                 <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a>*                : Read</pre>
 <p>Language used by this user.</p>
 <p>Default value: NULL</p>
 </div>
 <hr>
-<div class="refsect2" title='The "layout" property'>
+<div class="refsect2">
 <a name="LdmUser--layout"></a><h3>The <code class="literal">"layout"</code> property</h3>
 <pre class="programlisting">  "layout"                   <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a>*                : Read</pre>
 <p>Keyboard layout used by this user.</p>
 <p>Default value: NULL</p>
 </div>
 <hr>
-<div class="refsect2" title='The "logged-in" property'>
+<div class="refsect2">
 <a name="LdmUser--logged-in"></a><h3>The <code class="literal">"logged-in"</code> property</h3>
 <pre class="programlisting">  "logged-in"                <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a>              : Read / Write / Construct Only</pre>
 <p>TRUE if the user is currently in a session.</p>
 <p>Default value: FALSE</p>
 </div>
 <hr>
-<div class="refsect2" title='The "name" property'>
+<div class="refsect2">
 <a name="LdmUser--name"></a><h3>The <code class="literal">"name"</code> property</h3>
 <pre class="programlisting">  "name"                     <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a>*                : Read / Write / Construct Only</pre>
 <p>Username.</p>
 <p>Default value: NULL</p>
 </div>
 <hr>
-<div class="refsect2" title='The "real-name" property'>
+<div class="refsect2">
 <a name="LdmUser--real-name"></a><h3>The <code class="literal">"real-name"</code> property</h3>
 <pre class="programlisting">  "real-name"                <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a>*                : Read / Write / Construct Only</pre>
 <p>Users real name.</p>
 <p>Default value: NULL</p>
 </div>
 <hr>
-<div class="refsect2" title='The "session" property'>
+<div class="refsect2">
 <a name="LdmUser--session"></a><h3>The <code class="literal">"session"</code> property</h3>
 <pre class="programlisting">  "session"                  <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a>*                : Read</pre>
 <p>Session used by this user.</p>
@@ -352,6 +352,6 @@ Check if a user is logged in.
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.15</div>
+          Generated by GTK-Doc V1.17</div>
 </body>
 </html>

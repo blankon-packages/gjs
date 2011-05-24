@@ -7,6 +7,7 @@ Standards-Version: 3.9.1
 Build-Depends: debhelper (>= 7.0.50~),
                quilt (>= 0.46-7~),
                intltool (>= 0.35.0),
+               valac,
                libglib2.0-dev,
                libpam0g-dev,
                libdbus-glib-1-dev,
@@ -15,7 +16,6 @@ Build-Depends: debhelper (>= 7.0.50~),
                libck-connector-dev,
                libxklavier-dev,
                libgtk2.0-dev,
-               libwebkitgtk-dev,
                gobject-introspection,
                valac-0.12,
                libgirepository1.0-dev,
@@ -33,46 +33,50 @@ Depends: ${misc:Depends},
          libpam-modules,
          adduser
 Recommends: xserver-xorg,
-            lightdm-theme-gnome | lightdm-theme-webkit
+            lightdm-greeter
 Provides: x-display-manager
 Description: Display Manager
  LightDM is a X display manager that:
   * Has a lightweight codebase
   * Is standards compliant (PAM, ConsoleKit, etc)
   * Has a well defined interface between the server and user interface
-  * Fully themeable (easiest with the webkit interface)
   * Cross-desktop (greeters can be written in any toolkit)
 
-Package: lightdm-engine-gtk
+Package: lightdm-greeter-example-gtk
 Architecture: any
 Depends: ${misc:Depends},
          ${shlibs:Depends}
 Recommends: lightdm
-Description: LightDM GTK+ Greeter Engine
- A LightDM greeter engine that runs themes that use the GTK+ toolkit.
+Provides: lightdm-greeter
+Description: LightDM GTK+ Greeter
+ A LightDM greeter that uses the GTK+ toolkit.
 
-Package: lightdm-engine-webkit
+Package: lightdm-greeter-example-vala-gtk
 Architecture: any
 Depends: ${misc:Depends},
          ${shlibs:Depends}
 Recommends: lightdm
-Description: LightDM GTK WebKit Greeter Engine
- A LightDM greeter engine that runs greeter themes that are written in
- HTML/CSS/Javascript.
+Provides: lightdm-greeter
+Description: LightDM GTK+ Greeter (Vala)
+ A LightDM greeter that uses the GTK+ toolkit and is written in Vala.
 
-Package: lightdm-theme-gnome
-Architecture: all
+Package: lightdm-greeter-example-python-gtk
+Architecture: any
 Depends: ${misc:Depends},
-         lightdm-engine-gtk
-Description: LightDM GNOME Greeter Theme
- A LightDM greeter theme that fits the GNOME style.
+         ${shlibs:Depends}
+Recommends: lightdm
+Provides: lightdm-greeter
+Description: LightDM GTK+ Greeter (Python)
+ A LightDM greeter that uses the GTK+ toolkit and is written in Python.
 
-Package: lightdm-theme-webkit
-Architecture: all
+Package: lightdm-greeter-example-qt
+Architecture: any
 Depends: ${misc:Depends},
-         lightdm-engine-webkit
-Description: LightDM WebKit Greeter Theme
- An example WebKit greeter theme for LightDM.
+         ${shlibs:Depends}
+Recommends: lightdm
+Provides: lightdm-greeter
+Description: LightDM Qt Greeter
+ A LightDM greeter that uses the Qt toolkit.
 
 Package: liblightdm-gobject-0-0
 Architecture: any
@@ -82,11 +86,13 @@ Recommends: lightdm
 Description: LightDM GObject client library
  A GObject based library for LightDM clients to use to interface with LightDM.
 
-Package: gir1.0-lightdm-0
+Package: gir1.2-lightdm-0
 Section: libs
 Architecture: any
 Depends: ${misc:Depends},
          liblightdm-gobject-0-0 (= ${binary:Version})
+Conflicts: gir1.0-lightdm-0
+Replaces: gir1.0-lightdm-0
 Description: Typelib file for liblightdm-0
  A GObject based library for LightDM clients to use to interface with LightDM.
 
@@ -95,8 +101,8 @@ Architecture: any
 Depends: ${misc:Depends},
          ${shlibs:Depends}
 Recommends: lightdm         
-Description: LightDM QT client library
- A QT based library for LightDM clients to use to interface with LightDM.
+Description: LightDM Qt client library
+ A Qt based library for LightDM clients to use to interface with LightDM.
 
 Package: liblightdm-gobject-0-dev
 Section: libdevel
@@ -119,7 +125,7 @@ Depends: ${misc:Depends},
          liblightdm-qt-0-0 (= ${binary:Version}),
          libqt4-dev
 Description: LightDM client library (development files)
- A QT based library for LightDM clients to use to interface with LightDM.
+ A Qt based library for LightDM clients to use to interface with LightDM.
  .
  This package contains header files and development information, which
  is useful for building LightDM greeters and user switchers.

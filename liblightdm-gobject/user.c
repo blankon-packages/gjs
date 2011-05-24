@@ -9,7 +9,7 @@
  * license.
  */
 
-#include "user.h"
+#include "user-private.h"
 
 enum {
     PROP_0,
@@ -17,6 +17,7 @@ enum {
     PROP_NAME,
     PROP_REAL_NAME,
     PROP_DISPLAY_NAME,
+    PROP_HOME_DIRECTORY,
     PROP_IMAGE,
     PROP_LANGUAGE,
     PROP_LAYOUT,
@@ -30,6 +31,7 @@ struct _LdmUserPrivate
 
     gchar *name;
     gchar *real_name;
+    gchar *home_directory;
     gchar *image;
     gboolean logged_in;
 
@@ -48,15 +50,36 @@ G_DEFINE_TYPE (LdmUser, ldm_user, G_TYPE_OBJECT);
  * @greeter: The greeter the user is connected to
  * @name: The username
  * @real_name: The real name of the user
+ * @home_directory: The home directory of the user
  * @image: The image URI
  * @logged_in: TRUE if this user is currently logged in
  * 
  * Return value: the new #LdmUser
  **/
 LdmUser *
-ldm_user_new (LdmGreeter *greeter, const gchar *name, const gchar *real_name, const gchar *image, gboolean logged_in)
+ldm_user_new (LdmGreeter *greeter, const gchar *name, const gchar *real_name, const gchar *home_directory, const gchar *image, gboolean logged_in)
 {
-    return g_object_new (LDM_TYPE_USER, "greeter", greeter, "name", name, "real-name", real_name, "image", image, "logged-in", logged_in, NULL);
+    return g_object_new (LDM_TYPE_USER, "greeter", greeter, "name", name, "real-name", real_name, "home-directory", home_directory, "image", image, "logged-in", logged_in, NULL);
+}
+
+gboolean
+ldm_user_update (LdmUser *user, const gchar *real_name, const gchar *home_directory, const gchar *image, gboolean logged_in)
+{
+    if (g_strcmp0 (user->priv->real_name, real_name) != 0 ||
+        g_strcmp0 (user->priv->home_directory, home_directory) != 0 ||
+        g_strcmp0 (user->priv->image, image) != 0 ||
+        user->priv->logged_in != logged_in)
+        return FALSE;
+  
+    g_free (user->priv->real_name);
+    user->priv->real_name = g_strdup (real_name);
+    g_free (user->priv->home_directory);
+    user->priv->home_directory = g_strdup (home_directory);
+    g_free (user->priv->image);
+    user->priv->image = g_strdup (image);
+    user->priv->logged_in = logged_in;
+
+    return TRUE;
 }
 
 /**
@@ -70,7 +93,16 @@ ldm_user_new (LdmGreeter *greeter, const gchar *name, const gchar *real_name, co
 const gchar *
 ldm_user_get_name (LdmUser *user)
 {
+    g_return_val_if_fail (LDM_IS_USER (user), NULL);
     return user->priv->name;
+}
+
+void
+ldm_user_set_name (LdmUser *user, const gchar *name)
+{
+    g_return_if_fail (LDM_IS_USER (user));
+    g_free (user->priv->name);
+    user->priv->name = g_strdup (name);
 }
 
 /**
@@ -84,7 +116,16 @@ ldm_user_get_name (LdmUser *user)
 const gchar *
 ldm_user_get_real_name (LdmUser *user)
 {
+    g_return_val_if_fail (LDM_IS_USER (user), NULL);
     return user->priv->real_name;
+}
+
+void
+ldm_user_set_real_name (LdmUser *user, const gchar *real_name)
+{
+    g_return_if_fail (LDM_IS_USER (user));
+    g_free (user->priv->real_name);
+    user->priv->real_name = g_strdup (real_name);
 }
 
 /**
@@ -98,10 +139,35 @@ ldm_user_get_real_name (LdmUser *user)
 const gchar *
 ldm_user_get_display_name (LdmUser *user)
 {
-    if (user->priv->real_name[0] != '\0')
+    g_return_val_if_fail (LDM_IS_USER (user), NULL);
+
+    if (user->priv->real_name)
         return user->priv->real_name;
     else
         return user->priv->name;
+}
+
+/**
+ * ldm_user_get_home_directory:
+ * @user: A #LdmUser
+ * 
+ * Get the home directory for a user.
+ * 
+ * Return value: The users home directory
+ */
+const gchar *
+ldm_user_get_home_directory (LdmUser *user)
+{
+    g_return_val_if_fail (LDM_IS_USER (user), NULL);
+    return user->priv->home_directory;
+}
+
+void
+ldm_user_set_home_directory (LdmUser *user, const gchar *home_directory)
+{
+    g_return_if_fail (LDM_IS_USER (user));
+    g_free (user->priv->home_directory);
+    user->priv->home_directory = g_strdup (home_directory);
 }
 
 /**
@@ -115,7 +181,16 @@ ldm_user_get_display_name (LdmUser *user)
 const gchar *
 ldm_user_get_image (LdmUser *user)
 {
+    g_return_val_if_fail (LDM_IS_USER (user), NULL);
     return user->priv->image;
+}
+
+void
+ldm_user_set_image (LdmUser *user, const gchar *image)
+{
+    g_return_if_fail (LDM_IS_USER (user));
+    g_free (user->priv->image);
+    user->priv->image = g_strdup (image);
 }
 
 static void
@@ -139,6 +214,7 @@ get_defaults (LdmUser *user)
 const gchar *
 ldm_user_get_language (LdmUser *user)
 {
+    g_return_val_if_fail (LDM_IS_USER (user), NULL);
     get_defaults (user);
     return user->priv->language;
 }
@@ -154,6 +230,7 @@ ldm_user_get_language (LdmUser *user)
 const gchar *
 ldm_user_get_layout (LdmUser *user)
 {
+    g_return_val_if_fail (LDM_IS_USER (user), NULL);
     get_defaults (user);
     return user->priv->layout;
 }
@@ -169,6 +246,7 @@ ldm_user_get_layout (LdmUser *user)
 const gchar *
 ldm_user_get_session (LdmUser *user)
 {
+    g_return_val_if_fail (LDM_IS_USER (user), NULL);
     get_defaults (user);
     return user->priv->session; 
 }
@@ -184,7 +262,15 @@ ldm_user_get_session (LdmUser *user)
 gboolean
 ldm_user_get_logged_in (LdmUser *user)
 {
+    g_return_val_if_fail (LDM_IS_USER (user), FALSE);
     return user->priv->logged_in;
+}
+
+void
+ldm_user_set_logged_in (LdmUser *user, gboolean logged_in)
+{
+    g_return_if_fail (LDM_IS_USER (user));
+    user->priv->logged_in = logged_in;
 }
 
 static void
@@ -200,7 +286,6 @@ ldm_user_set_property (GObject      *object,
                        GParamSpec   *pspec)
 {
     LdmUser *self;
-    gint i, n_pages;
 
     self = LDM_USER (object);
 
@@ -209,16 +294,19 @@ ldm_user_set_property (GObject      *object,
         self->priv->greeter = g_object_ref (g_value_get_object (value));
         break;
     case PROP_NAME:
-        self->priv->name = g_strdup (g_value_get_string (value));
+        ldm_user_set_name (self, g_value_get_string (value));
         break;
     case PROP_REAL_NAME:
-        self->priv->real_name = g_strdup (g_value_get_string (value));
+        ldm_user_set_real_name (self, g_value_get_string (value));
+        break;
+    case PROP_HOME_DIRECTORY:
+        ldm_user_set_home_directory (self, g_value_get_string (value));
         break;
     case PROP_IMAGE:
-        self->priv->image = g_strdup (g_value_get_string (value));
+        ldm_user_set_image (self, g_value_get_string (value));
         break;
     case PROP_LOGGED_IN:
-        self->priv->logged_in = g_value_get_boolean (value);
+        ldm_user_set_logged_in (self, g_value_get_boolean (value));
         break;
     default:
         G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -245,6 +333,9 @@ ldm_user_get_property (GObject    *object,
         break;
     case PROP_DISPLAY_NAME:
         g_value_set_string (value, ldm_user_get_display_name (self));
+        break;
+    case PROP_HOME_DIRECTORY:
+        g_value_set_string (value, ldm_user_get_home_directory (self));
         break;
     case PROP_IMAGE:
         g_value_set_string (value, ldm_user_get_image (self));
@@ -305,6 +396,13 @@ ldm_user_class_init (LdmUserClass *klass)
                                                         "Users display name",
                                                         NULL,
                                                         G_PARAM_READABLE));
+    g_object_class_install_property(object_class,
+                                    PROP_HOME_DIRECTORY,
+                                    g_param_spec_string("home-directory",
+                                                        "home-directory",
+                                                        "Home directory",
+                                                        NULL,
+                                                        G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
     g_object_class_install_property(object_class,
                                     PROP_IMAGE,
                                     g_param_spec_string("image",

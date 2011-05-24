@@ -249,8 +249,11 @@ handle_query (XDMCPServer *server, GSocket *socket, GSocketAddress *address, XDM
     else
     {
         response = xdmcp_packet_alloc (XDMCP_Unwilling);
-        response->Willing.hostname = g_strdup (server->priv->hostname);
-        response->Willing.status = g_strdup (server->priv->status);
+        response->Unwilling.hostname = g_strdup (server->priv->hostname);
+        if (strcmp (server->priv->authentication_name, "") != 0)
+            response->Unwilling.status = g_strdup_printf ("No matching authentication, server requires %s", server->priv->authentication_name);
+        else
+            response->Unwilling.status = g_strdup ("Server does not support authentication");
     }
   
     send_packet (socket, address, response);
@@ -338,10 +341,14 @@ handle_request (XDMCPServer *server, GSocket *socket, GSocketAddress *address, X
     /* Perform requested authorization */
     if (strcmp (server->priv->authorization_name, "MIT-MAGIC-COOKIE-1") == 0)
     {
+        XAuthorization *auth;
+
         /* Data is the cookie */
-        authorization_data = g_malloc (sizeof (guchar) * server->priv->authorization_data_length);
-        memcpy (authorization_data, server->priv->authorization_data, server->priv->authorization_data_length);
-        authorization_data_length = server->priv->authorization_data_length;
+        auth = xauth_new_cookie ();
+        authorization_data = xauth_copy_authorization_data (auth);
+        authorization_data_length = xauth_get_authorization_data_length (auth);
+        session_authorization_data = xauth_copy_authorization_data (auth);
+        session_authorization_data_length = xauth_get_authorization_data_length (auth);
     }
     else if (strcmp (server->priv->authorization_name, "XDM-AUTHORIZATION-1") == 0)
     {
@@ -428,7 +435,6 @@ handle_manage (XDMCPServer *server, GSocket *socket, GSocketAddress *address, XD
     session = get_session (server, packet->Manage.session_id);
     if (session)
     {
-        gchar *display_address;
         gboolean result;
 
         /* Ignore duplicate requests */
@@ -457,12 +463,10 @@ handle_manage (XDMCPServer *server, GSocket *socket, GSocketAddress *address, XD
 
             response = xdmcp_packet_alloc (XDMCP_Failed);
             response->Failed.session_id = packet->Manage.session_id;
-            response->Failed.status = g_strdup_printf ("Failed to connect to display %s", display_address);
+            response->Failed.status = g_strdup_printf ("Failed to connect to display :%d", packet->Manage.display_number);
             send_packet (socket, address, response);
             xdmcp_packet_free (response);
         }
-
-        g_free (display_address);
     }
     else
     {
@@ -629,6 +633,8 @@ xdmcp_server_finalize (GObject *object)
     g_free (self->priv->authorization_name);
     g_free (self->priv->authorization_data);
     g_hash_table_unref (self->priv->sessions);
+  
+    G_OBJECT_CLASS (xdmcp_server_parent_class)->finalize (object);  
 }
 
 static void
