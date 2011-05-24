@@ -13,7 +13,6 @@
 #define _DISPLAY_H_
 
 #include <glib-object.h>
-#include <dbus/dbus-glib.h>
 
 #include "xserver.h"
 #include "session.h"
@@ -40,7 +39,6 @@ typedef struct
     void (*start_session)(Display *display, Session *session);
     void (*end_session)(Display *display, Session *session);
     void (*exited)(Display *display);
-    void (*quit_greeter)(Display *display);
 } DisplayClass;
 
 GType display_get_type (void);
@@ -71,10 +69,6 @@ void display_set_greeter_theme (Display *display, const gchar *greeter_theme);
 
 const gchar *display_get_greeter_theme (Display *display);
 
-void display_set_default_language (Display *display, const gchar *language);
-
-const gchar *display_get_default_language (Display *display);
-
 void display_set_default_layout (Display *display, const gchar *layout);
 
 const gchar *display_get_default_layout (Display *display);
@@ -96,16 +90,6 @@ void display_set_vt (Display *display, gint vt);
 gint display_get_vt (Display *display);
 
 gboolean display_start (Display *display);
-
-// FIXME: Make greeter its own object?
-
-gboolean display_connect (Display *display, const gchar **theme, const gchar **language, const gchar **layout, const gchar **session, const gchar **username, gint *delay, GError *error);
-
-gboolean display_start_authentication (Display *display, const gchar *username, DBusGMethodInvocation *context);
-
-gboolean display_continue_authentication (Display *display, gchar **secrets, DBusGMethodInvocation *context);
-
-gboolean display_login (Display *display, gchar *username, gchar *session, gchar *language, GError *error);
 
 G_END_DECLS
 

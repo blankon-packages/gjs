@@ -35,7 +35,8 @@ POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
 subdir = data/init
-DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
+DIST_COMMON = $(dist_init_DATA) $(srcdir)/Makefile.am \
+	$(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
@@ -74,7 +75,7 @@ am__base_list = \
   sed '$$!N;$$!N;$$!N;$$!N;$$!N;$$!N;$$!N;s/\n/ /g' | \
   sed '$$!N;$$!N;$$!N;$$!N;s/\n/ /g'
 am__installdirs = "$(DESTDIR)$(initdir)"
-DATA = $(init_DATA)
+DATA = $(dist_init_DATA)
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 ACLOCAL = @ACLOCAL@
 ALL_LINGUAS = @ALL_LINGUAS@
@@ -148,11 +149,11 @@ LIBOBJS = @LIBOBJS@
 LIBS = @LIBS@
 LIBTOOL = @LIBTOOL@
 LIGHTDM_CFLAGS = @LIGHTDM_CFLAGS@
-LIGHTDM_GTK_GREETER_CFLAGS = @LIGHTDM_GTK_GREETER_CFLAGS@
-LIGHTDM_GTK_GREETER_LIBS = @LIGHTDM_GTK_GREETER_LIBS@
+LIGHTDM_EXAMPLE_GTK_GREETER_CFLAGS = @LIGHTDM_EXAMPLE_GTK_GREETER_CFLAGS@
+LIGHTDM_EXAMPLE_GTK_GREETER_LIBS = @LIGHTDM_EXAMPLE_GTK_GREETER_LIBS@
+LIGHTDM_EXAMPLE_QT_GREETER_CFLAGS = @LIGHTDM_EXAMPLE_QT_GREETER_CFLAGS@
+LIGHTDM_EXAMPLE_QT_GREETER_LIBS = @LIGHTDM_EXAMPLE_QT_GREETER_LIBS@
 LIGHTDM_LIBS = @LIGHTDM_LIBS@
-LIGHTDM_WEBKIT_GREETER_CFLAGS = @LIGHTDM_WEBKIT_GREETER_CFLAGS@
-LIGHTDM_WEBKIT_GREETER_LIBS = @LIGHTDM_WEBKIT_GREETER_LIBS@
 LIPO = @LIPO@
 LN_S = @LN_S@
 LOG_DIR = @LOG_DIR@
@@ -186,6 +187,7 @@ SHELL = @SHELL@
 STRIP = @STRIP@
 THEME_DIR = @THEME_DIR@
 USE_NLS = @USE_NLS@
+VALAC = @VALAC@
 VALA_API_GEN = @VALA_API_GEN@
 VERSION = @VERSION@
 WARN_CFLAGS = @WARN_CFLAGS@
@@ -247,8 +249,7 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 initdir = ${sysconfdir}/init
-init_DATA = lightdm.conf
-EXTRA_DIST = $(init_DATA)
+dist_init_DATA = lightdm.conf
 DISTCLEANFILES = \
 	Makefile.in
 
@@ -291,10 +292,10 @@ mostlyclean-libtool:
 
 clean-libtool:
 	-rm -rf .libs _libs
-install-initDATA: $(init_DATA)
+install-dist_initDATA: $(dist_init_DATA)
 	@$(NORMAL_INSTALL)
 	test -z "$(initdir)" || $(MKDIR_P) "$(DESTDIR)$(initdir)"
-	@list='$(init_DATA)'; test -n "$(initdir)" || list=; \
+	@list='$(dist_init_DATA)'; test -n "$(initdir)" || list=; \
 	for p in $$list; do \
 	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
 	  echo "$$d$$p"; \
@@ -304,9 +305,9 @@ install-initDATA: $(init_DATA)
 	  $(INSTALL_DATA) $$files "$(DESTDIR)$(initdir)" || exit $$?; \
 	done
 
-uninstall-initDATA:
+uninstall-dist_initDATA:
 	@$(NORMAL_UNINSTALL)
-	@list='$(init_DATA)'; test -n "$(initdir)" || list=; \
+	@list='$(dist_init_DATA)'; test -n "$(initdir)" || list=; \
 	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
 	test -n "$$files" || exit 0; \
 	echo " ( cd '$(DESTDIR)$(initdir)' && rm -f" $$files ")"; \
@@ -401,7 +402,7 @@ info: info-am
 
 info-am:
 
-install-data-am: install-initDATA
+install-data-am: install-dist_initDATA
 
 install-dvi: install-dvi-am
 
@@ -445,21 +446,21 @@ ps: ps-am
 
 ps-am:
 
-uninstall-am: uninstall-initDATA
+uninstall-am: uninstall-dist_initDATA
 
 .MAKE: install-am install-strip
 
 .PHONY: all all-am check check-am clean clean-generic clean-libtool \
 	distclean distclean-generic distclean-libtool distdir dvi \
 	dvi-am html html-am info info-am install install-am \
-	install-data install-data-am install-dvi install-dvi-am \
-	install-exec install-exec-am install-html install-html-am \
-	install-info install-info-am install-initDATA install-man \
+	install-data install-data-am install-dist_initDATA install-dvi \
+	install-dvi-am install-exec install-exec-am install-html \
+	install-html-am install-info install-info-am install-man \
 	install-pdf install-pdf-am install-ps install-ps-am \
 	install-strip installcheck installcheck-am installdirs \
 	maintainer-clean maintainer-clean-generic mostlyclean \
 	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
-	uninstall uninstall-am uninstall-initDATA
+	uninstall uninstall-am uninstall-dist_initDATA
 
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.

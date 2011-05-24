@@ -7,6 +7,7 @@ LdmLanguage
 ldm_language_get_code
 ldm_language_get_name
 ldm_language_get_territory
+ldm_language_matches
 <SUBSECTION Standard>
 LDM_IS_LANGUAGE
 LDM_IS_LANGUAGE_CLASS
@@ -66,6 +67,9 @@ LDM_USER_GET_CLASS
 LdmUserClass
 LdmUserPrivate
 ldm_user_new
+ldm_user_set_image
+ldm_user_set_logged_in
+ldm_user_set_real_name
 </SECTION>
 
 <SECTION>
@@ -94,7 +98,7 @@ ldm_session_new
 <TITLE>LdmGreeter</TITLE>
 LdmGreeter
 ldm_greeter_new
-ldm_greeter_connect
+ldm_greeter_connect_to_server
 ldm_greeter_get_hostname
 ldm_greeter_get_theme
 ldm_greeter_get_string_property
@@ -102,6 +106,7 @@ ldm_greeter_get_integer_property
 ldm_greeter_get_boolean_property
 ldm_greeter_get_num_users
 ldm_greeter_get_users
+ldm_greeter_get_user_by_name
 ldm_greeter_get_default_language
 ldm_greeter_get_languages
 ldm_greeter_get_default_layout
@@ -116,9 +121,11 @@ ldm_greeter_cancel_timed_login
 ldm_greeter_start_authentication
 ldm_greeter_provide_secret
 ldm_greeter_cancel_authentication
+ldm_greeter_get_in_authentication
 ldm_greeter_get_is_authenticated
 ldm_greeter_get_authentication_user
 ldm_greeter_login
+ldm_greeter_login_with_defaults
 ldm_greeter_get_can_suspend
 ldm_greeter_suspend
 ldm_greeter_get_can_hibernate

@@ -1,11 +1,12 @@
 dnl Process this file with autoconf to produce a configure script.
 
-AC_INIT(lightdm, 0.2.3)
+AC_INIT(lightdm, 0.3.5)
 AC_CONFIG_MACRO_DIR(m4)
 AC_CONFIG_HEADER(config.h)
 AM_INIT_AUTOMAKE
 LT_INIT
 AM_PROG_CC_C_O
+AM_PROG_VALAC
 AC_PROG_CXX
 AC_PROG_LIBTOOL
 AM_MAINTAINER_MODE
@@ -25,10 +26,9 @@ AC_CHECK_HEADERS(security/pam_appl.h, [], AC_MSG_ERROR(PAM not found))
 
 PKG_CHECK_MODULES(LIGHTDM, [
     glib-2.0
-    gio-2.0
+    gio-2.0 >= 2.26
     gio-unix-2.0
     gobject-2.0
-    dbus-glib-1
     xcb
     xdmcp
 ])
@@ -41,24 +41,31 @@ compile_liblightdm_gobject=no
 if test x"$enable_liblightdm_gobject" = "xauto"; then
     PKG_CHECK_MODULES(LIBLIGHTDM_GOBJECT, [
         glib-2.0
+        gio-2.0 >= 2.26
         gio-unix-2.0
         gobject-2.0
-        dbus-glib-1
         libxklavier
         x11
     ], compile_liblightdm_gobject=yes, compile_liblightdm_gobject=no)
 elif test x"$enable_liblightdm_gobject" = "xyes"; then
     PKG_CHECK_MODULES(LIBLIGHTDM_GOBJECT, [
         glib-2.0
+        gio-2.0 >= 2.26
         gio-unix-2.0
         gobject-2.0
-        dbus-glib-1
         libxklavier
         x11
     ])
     compile_liblightdm_gobject=yes
 fi
 AM_CONDITIONAL(COMPILE_LIBLIGHTDM_GOBJECT, test x"$compile_liblightdm_gobject" != "xno")
+
+if test x"$VALAC" = "x"; then
+    have_vala=no
+else
+    have_vala=yes
+fi
+AM_CONDITIONAL(HAVE_VALA_GTK_GREETER, test $have_vala = yes)
 
 AC_ARG_ENABLE(liblightdm-qt,
 	AS_HELP_STRING([--enable-liblightdm-qt],[Enable LightDM client QT libraries [[default=auto]]]),
@@ -68,29 +75,33 @@ compile_liblightdm_qt=no
 if test x"$enable_liblightdm_qt" = "xauto"; then
     PKG_CHECK_MODULES(LIBLIGHTDM_QT, [
         QtCore
-        QtGui
+        QtDBus
+        QtNetwork
     ], compile_liblightdm_qt=yes, compile_liblightdm_qt=no)
 elif test x"$enable_liblightdm_qt" = "xyes"; then
     PKG_CHECK_MODULES(LIBLIGHTDM_QT, [
         QtCore
-        QtGui
+        QtDBus
+        QtNetwork
     ])
     compile_liblightdm_qt=yes
 fi
 AM_CONDITIONAL(COMPILE_LIBLIGHTDM_QT, test x"$compile_liblightdm_qt" != "xno")
 
-PKG_CHECK_MODULES(LIGHTDM_GTK_GREETER, [
+have_qt=no
+if test x"$compile_liblightdm_qt" = "xyes"; then
+    PKG_CHECK_MODULES(LIGHTDM_EXAMPLE_QT_GREETER, [
+        QtCore
+        QtGui
+    ], have_qt=yes, have_qt=no)
+fi
+AM_CONDITIONAL(HAVE_QT_GREETER, test $have_qt = yes)
+
+PKG_CHECK_MODULES(LIGHTDM_EXAMPLE_GTK_GREETER, [
     gtk+-2.0
-    dbus-glib-1
+    gmodule-export-2.0
 ], have_gtk=yes, have_gtk=no)
 AM_CONDITIONAL(HAVE_GTK_GREETER, test $have_gtk = yes)
-
-PKG_CHECK_MODULES(LIGHTDM_WEBKIT_GREETER, [
-    gtk+-2.0
-    webkit-1.0
-    dbus-glib-1
-], have_webkit=yes, have_webkit=no)
-AM_CONDITIONAL(HAVE_WEBKIT_GREETER, test $have_webkit = yes)
 
 AC_PATH_PROG(GLIB_GENMARSHAL, glib-genmarshal)
 AC_PATH_PROG(DBUSBINDINGTOOL, dbus-binding-tool)
@@ -121,7 +132,7 @@ AC_ARG_WITH(log-dir,
 AC_SUBST(LOG_DIR)
 
 CACHE_DIR=${localstatedir}/cache/lightdm
-AC_ARG_WITH(log-dir,
+AC_ARG_WITH(cache-dir,
             AS_HELP_STRING(--with-cache-dir=<dir>,
                            Directory to cache information in),
     if test x$withval != x; then
@@ -215,7 +226,7 @@ AC_ARG_WITH(theme-dir,
 )
 AC_SUBST(THEME_DIR)
 
-GREETER_THEME=gnome
+GREETER_THEME=example-gtk-gnome
 AC_ARG_WITH(theme,
             AS_HELP_STRING(--with-theme=<theme>,
                            Default theme),
@@ -246,20 +257,27 @@ dnl ###########################################################################
 
 AC_OUTPUT([
 Makefile
-data/org.lightdm.LightDisplayManager.conf
 data/Makefile
 data/init/Makefile
 doc/Makefile
 greeters/Makefile
+greeters/gtk/Makefile
+greeters/python-gtk/Makefile
+greeters/qt/Makefile
+greeters/vala-gtk/Makefile
 liblightdm-gobject/liblightdm-gobject-0.pc
 liblightdm-gobject/Makefile
-liblightdm-qt/liblightdm-qt-0.pc
+liblightdm-gobject/lightdm/Makefile
 liblightdm-qt/Makefile
+liblightdm-qt/QLightDM/liblightdm-qt-0.pc
+liblightdm-qt/QLightDM/Makefile
 po/Makefile.in
 src/Makefile
 themes/Makefile
-themes/gnome/Makefile
-themes/webkit/Makefile
+themes/example-gtk-gnome/Makefile
+themes/example-python-gtk-gnome/Makefile
+themes/example-qt-kde/Makefile
+themes/example-vala-gtk-gnome/Makefile
 ])
 
 dnl ###########################################################################
@@ -287,6 +305,7 @@ echo "
         liblightdm-gobject:       $compile_liblightdm_gobject
         GObject introspection:    $found_introspection
         liblightdm-qt:            $compile_liblightdm_qt
-        GTK+:                     $have_gtk
-        Webkit:                   $have_webkit
+        GTK+ Greeter:             $have_gtk
+        Vala Greeter:             $have_vala
+        Qt Greeter:               $have_qt
 "

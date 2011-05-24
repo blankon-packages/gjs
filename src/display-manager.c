@@ -14,7 +14,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/stat.h>
-#include <dbus/dbus-glib.h>
 #include <xcb/xcb.h>
 #include <pwd.h>
 #include <fcntl.h>
@@ -23,7 +22,6 @@
 #include <linux/vt.h>
 
 #include "display-manager.h"
-#include "display-manager-glue.h"
 #include "xdmcp-server.h"
 #include "xserver.h"
 #include "theme.h"
@@ -134,21 +132,16 @@ get_authorization_path (DisplayManager *manager)
 static void
 start_session (Display *display, Session *session, gboolean is_greeter, DisplayManager *manager)
 {
-    gchar *string;
+    gchar *log_filename = NULL;
     XAuthorization *authorization;
 
     /* Connect using the session bus */
     if (manager->priv->test_mode)
     {
-        session_set_env (session, "DBUS_SESSION_BUS_ADDRESS", getenv ("DBUS_SESSION_BUS_ADDRESS"));
-        session_set_env (session, "XDG_SESSION_COOKIE", getenv ("XDG_SESSION_COOKIE"));
-        session_set_env (session, "LDM_BUS", "SESSION");
+        child_process_set_env (CHILD_PROCESS (session), "DBUS_SESSION_BUS_ADDRESS", getenv ("DBUS_SESSION_BUS_ADDRESS"));
+        child_process_set_env (CHILD_PROCESS (session), "XDG_SESSION_COOKIE", getenv ("XDG_SESSION_COOKIE"));
+        child_process_set_env (CHILD_PROCESS (session), "LDM_BUS", "SESSION");
     }
-
-    /* Address for greeter to connect to */
-    string = g_strdup_printf ("/org/lightdm/LightDisplayManager/Display%d", display_get_index (display));
-    session_set_env (session, "LDM_DISPLAY", string);
-    g_free (string);
 
     authorization = xserver_get_authorization (display_get_xserver (display));
     if (authorization)
@@ -164,26 +157,30 @@ start_session (Display *display, Session *session, gboolean is_greeter, DisplayM
     {
         gchar *filename;
         filename = g_strdup_printf ("%s-greeter.log", xserver_get_address (display_get_xserver (display)));
-        string = g_build_filename (manager->priv->log_dir, filename, NULL);
+        log_filename = g_build_filename (manager->priv->log_dir, filename, NULL);
         g_free (filename);
     }
     else
     {
         // FIXME: Copy old error file
         if (manager->priv->test_mode)
-            string = g_strdup (".xsession-errors");
+            log_filename = g_strdup (".xsession-errors");
         else
         {
             struct passwd *user_info = getpwnam (session_get_username (session));
             if (user_info)
-                string = g_build_filename (user_info->pw_dir, ".xsession-errors", NULL);
+                log_filename = g_build_filename (user_info->pw_dir, ".xsession-errors", NULL);
             else
                 g_warning ("Failed to get user info for user '%s'", session_get_username (session));
         }
     }
-    g_debug ("Logging to %s", string);
-    session_set_log_file (session, string);
-    g_free (string);
+  
+    if (log_filename)
+    {      
+        g_debug ("Logging to %s", log_filename);
+        child_process_set_log_file (CHILD_PROCESS (session), log_filename);
+        g_free (log_filename);
+    }
 }
 
 static void
@@ -253,14 +250,37 @@ string_to_xdm_auth_key (const gchar *key, guchar *data)
     }
 }
 
+static gint
+get_vt (DisplayManager *manager, gchar *config_section)
+{
+    gchar *tty;
+    gint console_fd;
+    int number;
+
+    if (manager->priv->test_mode)
+        return -1;
+
+    tty = g_key_file_get_string (manager->priv->config, config_section, "vt", NULL);
+    if (tty)
+        return atoi (tty);
+
+    console_fd = g_open ("/dev/console", O_RDONLY | O_NOCTTY);
+    if (console_fd < 0)
+        return -1;
+
+    ioctl (console_fd, VT_OPENQRY, &number);
+    close (console_fd);
+
+    return number;  
+}
+
 static XServer *
 make_xserver (DisplayManager *manager, gchar *config_section)
 {
-    gint display_number;
+    gint display_number, vt;
     XServer *xserver;
     XAuthorization *authorization = NULL;
     gchar *xdmcp_manager, *filename, *path, *xserver_command;
-    gint console_fd;
 
     if (config_section && g_key_file_has_key (manager->priv->config, config_section, "display-number", NULL))
         display_number = g_key_file_get_integer (manager->priv->config, config_section, "display-number", NULL);
@@ -303,29 +323,17 @@ make_xserver (DisplayManager *manager, gchar *config_section)
     filename = g_strdup_printf ("%s.log", xserver_get_address (xserver));
     path = g_build_filename (manager->priv->log_dir, filename, NULL);
     g_debug ("Logging to %s", path);
-    xserver_set_log_file (xserver, path);
+    child_process_set_log_file (CHILD_PROCESS (xserver), path);
     g_free (filename);
     g_free (path);
 
-    /* Open on a free terminal */
-    if (!manager->priv->test_mode)
+    vt = get_vt (manager, config_section);
+    if (vt >= 0)
     {
-        console_fd = g_open ("/dev/console", O_RDONLY | O_NOCTTY);
-        if (console_fd >= 0)
-        {
-            int number;
-            ioctl (console_fd, VT_OPENQRY, &number);
-            g_debug ("Starting on /dev/tty%d", number);
-            xserver_set_vt (xserver, number);
-            close (console_fd);
-        }
+        g_debug ("Starting on /dev/tty%d", vt);
+        xserver_set_vt (xserver, vt);
     }
 
-    /* Allow X server to be Xephyr */
-    if (getenv ("DISPLAY"))
-        xserver_set_env (xserver, "DISPLAY", getenv ("DISPLAY"));
-    if (getenv ("XAUTHORITY"))
-        xserver_set_env (xserver, "XAUTHORITY", getenv ("XAUTHORITY"));
     xserver_command = g_key_file_get_string (manager->priv->config, "LightDM", "xserver", NULL);
     if (xserver_command)
         xserver_set_command (xserver, xserver_command);
@@ -363,8 +371,8 @@ add_display (DisplayManager *manager)
     return display;
 }
 
-gboolean
-display_manager_add_display (DisplayManager *manager, GError *error)
+Display *
+display_manager_add_display (DisplayManager *manager)
 {
     Display *display;
     XServer *xserver;
@@ -376,11 +384,11 @@ display_manager_add_display (DisplayManager *manager, GError *error)
     display_start (display);
     g_object_unref (xserver);
 
-    return TRUE;
+    return display;
 }
 
-gboolean
-display_manager_switch_to_user (DisplayManager *manager, char *username, GError *error)
+void
+display_manager_switch_to_user (DisplayManager *manager, char *username)
 {
     GList *link;
     Display *display;
@@ -396,7 +404,7 @@ display_manager_switch_to_user (DisplayManager *manager, char *username, GError 
         {
             g_debug ("Switching to user %s session on display %s", username, xserver_get_address (display_get_xserver (display)));
             //display_focus (display);
-            return TRUE;
+            return;
         }
     }
 
@@ -406,8 +414,6 @@ display_manager_switch_to_user (DisplayManager *manager, char *username, GError 
     display_set_xserver (display, xserver);
     display_start (display);
     g_object_unref (xserver);
-
-    return TRUE;
 }
 
 static gboolean
@@ -514,10 +520,6 @@ display_manager_start (DisplayManager *manager)
 
         display = add_display (manager);
 
-        value = g_key_file_get_string (manager->priv->config, display_name, "language", NULL);
-        if (value)
-            display_set_default_language (display, value);
-        g_free (value);
         value = g_key_file_get_string (manager->priv->config, display_name, "layout", NULL);
         if (value)
             display_set_default_layout (display, value);
@@ -585,8 +587,10 @@ display_manager_start (DisplayManager *manager)
             string_to_xdm_auth_key (key, data);
             xdmcp_server_set_authentication (manager->priv->xdmcp_server, "XDM-AUTHENTICATION-1", data, 8);
             xdmcp_server_set_authorization (manager->priv->xdmcp_server, "XDM-AUTHORIZATION-1", data, 8);
+            g_free (key);
         }
-        g_free (key);
+        else
+            xdmcp_server_set_authorization (manager->priv->xdmcp_server, "MIT-MAGIC-COOKIE-1", NULL, 0);
 
         g_debug ("Starting XDMCP server on UDP/IP port %d", xdmcp_server_get_port (manager->priv->xdmcp_server));
         xdmcp_server_start (manager->priv->xdmcp_server); 
@@ -612,6 +616,8 @@ display_manager_finalize (GObject *object)
     for (link = self->priv->displays; link; link = link->next)
         g_object_unref (link->data);
     g_list_free (self->priv->displays);
+
+    G_OBJECT_CLASS (display_manager_parent_class)->finalize (object);
 }
 
 static void
@@ -631,6 +637,4 @@ display_manager_class_init (DisplayManagerClass *klass)
                       NULL, NULL,
                       g_cclosure_marshal_VOID__OBJECT,
                       G_TYPE_NONE, 1, DISPLAY_TYPE);
-
-    dbus_g_object_type_install_info (DISPLAY_MANAGER_TYPE, &dbus_glib_display_manager_object_info);
 }

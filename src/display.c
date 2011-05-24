@@ -18,17 +18,13 @@
 #include <gio/gdesktopappinfo.h>
 
 #include "display.h"
-#include "display-glue.h"
 #include "pam-session.h"
 #include "theme.h"
 #include "ldm-marshal.h"
-#include "ck-connector.h"
+#include "greeter.h"
 
 /* Length of time in milliseconds to wait for a session to load */
 #define USER_SESSION_TIMEOUT 5000
-
-/* Length of time in milliseconds to wait for a greeter to quit */
-#define GREETER_QUIT_TIMEOUT 1000
 
 enum {
     START_GREETER,
@@ -36,7 +32,6 @@ enum {
     START_SESSION,
     END_SESSION,
     EXITED,
-    QUIT_GREETER,
     LAST_SIGNAL
 };
 static guint signals[LAST_SIGNAL] = { 0 };
@@ -60,9 +55,6 @@ struct DisplayPrivate
     /* Number of times have logged in */
     gint login_count;
 
-    /* Language to use in greeter/sessions */
-    gchar *default_language;
-
     /* Layout to use in greeter/sessions */
     gchar *default_layout;
 
@@ -79,22 +71,18 @@ struct DisplayPrivate
     gchar *pam_service;
 
     /* Greeter session process */
-    Session *greeter_session;
-    gboolean greeter_connected;
-    guint greeter_quit_timeout;
+    Greeter *greeter_session;
     PAMSession *greeter_pam_session;
-    CkConnector *greeter_ck_session;
+    gchar *greeter_ck_cookie;
 
+    /* TRUE if the greeter can stay active during the session */
     gboolean supports_transitions;
 
     /* User session process */
     Session *user_session;
     guint user_session_timer;
     PAMSession *user_pam_session;
-    CkConnector *user_ck_session;
-
-    /* Current D-Bus call context */
-    DBusGMethodInvocation *dbus_context;
+    gchar *user_ck_cookie;
 
     /* Default login hint */
     gchar *default_user;
@@ -203,19 +191,6 @@ display_get_greeter_theme (Display *display)
 }
 
 void
-display_set_default_language (Display *display, const gchar *language)
-{
-    g_free (display->priv->default_language);
-    display->priv->default_language = g_strdup (language);
-}
-
-const gchar *
-display_get_default_language (Display *display)
-{
-    return display->priv->default_language;
-}
-
-void
 display_set_default_layout (Display *display, const gchar *layout)
 {
     g_free (display->priv->default_layout);
@@ -259,7 +234,7 @@ display_set_xserver (Display *display, XServer *xserver)
 {
     if (display->priv->xserver)
         g_object_unref (display->priv->xserver);
-    display->priv->xserver = g_object_ref (xserver);  
+    display->priv->xserver = g_object_ref (xserver);
 }
 
 XServer *
@@ -286,55 +261,115 @@ get_user_info (const gchar *username)
     return user_info;
 }
 
-static CkConnector *
+static gchar *
 start_ck_session (Display *display, const gchar *session_type, const gchar *username)
 {
-    CkConnector *session;
-    DBusError error;
+    GDBusProxy *proxy;
     char *display_device = NULL;
     const gchar *address, *hostname = "";
     struct passwd *user_info;
-    gboolean is_local = TRUE;
-    gboolean result;
-
-    session = ck_connector_new ();
+    GVariantBuilder arg_builder;
+    GVariant *result;
+    gchar *cookie = NULL;
+    GError *error = NULL;
 
     user_info = get_user_info (username);
     if (!user_info)
-        return session;
+        return NULL;
 
     if (xserver_get_vt (display->priv->xserver) >= 0)
         display_device = g_strdup_printf ("/dev/tty%d", xserver_get_vt (display->priv->xserver));
-
-    dbus_error_init (&error);
     address = xserver_get_address (display->priv->xserver);
-    result = ck_connector_open_session_with_parameters (session, &error,
-                                                        "unix-user", &user_info->pw_uid,
-                                                        "session-type", &session_type,
-                                                        "x11-display", &address,
-                                                        "x11-display-device", display_device ? &display_device : NULL,
-                                                        "remote-host-name", &hostname,
-                                                        "is-local", &is_local,
-                                                        NULL);
+
+    proxy = g_dbus_proxy_new_for_bus_sync (G_BUS_TYPE_SYSTEM,
+                                           G_DBUS_PROXY_FLAGS_NONE,
+                                           NULL,
+                                           "org.freedesktop.ConsoleKit",
+                                           "/org/freedesktop/ConsoleKit/Manager",
+                                           "org.freedesktop.ConsoleKit.Manager", 
+                                           NULL, NULL);
+    g_variant_builder_init (&arg_builder, G_VARIANT_TYPE ("(a(sv))"));
+    g_variant_builder_open (&arg_builder, G_VARIANT_TYPE ("a(sv)"));
+    g_variant_builder_add (&arg_builder, "(sv)", "unix-user", g_variant_new_int32 (user_info->pw_uid));
+    g_variant_builder_add (&arg_builder, "(sv)", "session-type", g_variant_new_string (session_type));
+    g_variant_builder_add (&arg_builder, "(sv)", "x11-display", g_variant_new_string (address));
+    if (display_device)
+        g_variant_builder_add (&arg_builder, "(sv)", "x11-display-device", g_variant_new_string (display_device));
+    g_variant_builder_add (&arg_builder, "(sv)", "remote-host-name", g_variant_new_string (hostname));
+    g_variant_builder_add (&arg_builder, "(sv)", "is-local", g_variant_new_boolean (TRUE));
+    g_variant_builder_close (&arg_builder);
+    result = g_dbus_proxy_call_sync (proxy,
+                                     "OpenSessionWithParameters",
+                                     g_variant_builder_end (&arg_builder),
+                                     G_DBUS_CALL_FLAGS_NONE,
+                                     -1,
+                                     NULL,
+                                     &error);
+    g_object_unref (proxy);
     g_free (display_device);
-
     if (!result)
-    {
-        g_warning ("Failed to open CK session: %s: %s", error.name, error.message);
-        ck_connector_unref (session);
+        g_warning ("Failed to open CK session: %s", error->message);
+    g_clear_error (&error);
+    if (!result)
         return NULL;
-    }
 
-    return session;
+    if (g_variant_is_of_type (result, G_VARIANT_TYPE ("(s)")))
+        g_variant_get (result, "(s)", &cookie);
+    else
+        g_warning ("Unexpected response from OpenSessionWithParameters: %s", g_variant_get_type_string (result));
+    g_variant_unref (result);
+
+    if (cookie)
+        g_debug ("Opened ConsoleKit session %s", cookie);
+
+    return cookie;
 }
 
 static void
-end_ck_session (CkConnector *session)
+end_ck_session (const gchar *cookie)
 {
-    if (!session)
+    GDBusProxy *proxy;
+    GVariant *result;
+    GError *error = NULL;
+
+    if (!cookie)
         return;
-    ck_connector_close_session (session, NULL); // FIXME: Handle errors
-    ck_connector_unref (session);
+
+    g_debug ("Ending ConsoleKit session %s", cookie);
+
+    proxy = g_dbus_proxy_new_for_bus_sync (G_BUS_TYPE_SYSTEM,
+                                           G_DBUS_PROXY_FLAGS_NONE,
+                                           NULL,
+                                           "org.freedesktop.ConsoleKit",
+                                           "/org/freedesktop/ConsoleKit/Manager",
+                                           "org.freedesktop.ConsoleKit.Manager", 
+                                           NULL, NULL);
+    result = g_dbus_proxy_call_sync (proxy,
+                                     "CloseSession",
+                                     g_variant_new ("(s)", cookie),
+                                     G_DBUS_CALL_FLAGS_NONE,
+                                     -1,
+                                     NULL,
+                                     &error);
+    g_object_unref (proxy);
+
+    if (!result)
+        g_warning ("Error ending ConsoleKit session: %s", error->message);
+    g_clear_error (&error);
+    if (!result)
+        return;
+
+    if (g_variant_is_of_type (result, G_VARIANT_TYPE ("(b)")))
+    {
+        gboolean is_closed;
+        g_variant_get (result, "(b)", &is_closed);
+        if (!is_closed)
+            g_warning ("ConsoleKit.Manager.CloseSession() returned false");
+    }
+    else
+        g_warning ("Unexpected response from CloseSession: %s", g_variant_get_type_string (result));
+
+    g_variant_unref (result);
 }
 
 static void
@@ -363,8 +398,9 @@ end_user_session (Display *display, gboolean clean_exit)
     g_object_unref (display->priv->user_pam_session);
     display->priv->user_pam_session = NULL;
 
-    end_ck_session (display->priv->user_ck_session);
-    display->priv->user_ck_session = NULL;
+    end_ck_session (display->priv->user_ck_cookie);
+    g_free (display->priv->user_ck_cookie);
+    display->priv->user_ck_cookie = NULL;
 
     if (!clean_exit)
         g_warning ("Session exited unexpectedly");
@@ -379,25 +415,31 @@ user_session_exited_cb (Session *session, gint status, Display *display)
 }
 
 static void
-user_session_killed_cb (Session *session, gint status, Display *display)
+user_session_terminated_cb (Session *session, gint signum, Display *display)
 {
     end_user_session (display, FALSE);
 }
 
-static void set_env_from_pam_session (Session *session, PAMSession *pam_session)
+static void
+set_env_from_pam_session (Session *session, PAMSession *pam_session)
 {
     gchar **pam_env;
 
     pam_env = pam_session_get_envlist (pam_session);
     if (pam_env)
     {
+        gchar *env_string;      
         int i;
+
+        env_string = g_strjoinv (" ", pam_env);
+        g_debug ("PAM returns environment %s", env_string);
+        g_free (env_string);
+
         for (i = 0; pam_env[i]; i++)
         {
-            g_debug ("pam_env[%d]=%s", i, pam_env[i]);
             gchar **pam_env_vars = g_strsplit (pam_env[i], "=", 2);
             if (pam_env_vars && pam_env_vars[0] && pam_env_vars[1])
-                session_set_env (session, pam_env_vars[0], pam_env_vars[1]);
+                child_process_set_env (CHILD_PROCESS (session), pam_env_vars[0], pam_env_vars[1]);
             else
                 g_warning ("Can't parse PAM environment variable %s", pam_env[i]);
             g_strfreev (pam_env_vars);
@@ -407,9 +449,22 @@ static void set_env_from_pam_session (Session *session, PAMSession *pam_session)
 }
 
 static void
+set_env_from_keyfile (Session *session, const gchar *name, GKeyFile *key_file, const gchar *section, const gchar *key)
+{
+    char *value;
+
+    value = g_key_file_get_string (key_file, section, key, NULL);
+    if (!value)
+        return;
+
+    child_process_set_env (CHILD_PROCESS (session), name, value);
+    g_free (value);
+}
+
+static void
 start_user_session (Display *display, const gchar *session, const gchar *language)
 {
-    gchar *filename, *path;
+    gchar *filename, *path, *old_language;
     struct passwd *user_info;
     GKeyFile *dmrc_file, *session_desktop_file;
     gboolean have_dmrc = FALSE, result;
@@ -443,13 +498,18 @@ start_user_session (Display *display, const gchar *session, const gchar *languag
         g_clear_error (&error);
         g_free (path);
     }
-  
+
     /* Update the .dmrc with changed settings */
     g_key_file_set_string (dmrc_file, "Desktop", "Session", session);
-    if (language)
+    old_language = g_key_file_get_string (dmrc_file, "Desktop", "Language", NULL);
+    if (language && (!old_language || !g_str_equal(language, old_language)))
+    {
         g_key_file_set_string (dmrc_file, "Desktop", "Language", language);
-    else if (!g_key_file_has_key (dmrc_file, "Desktop", "Language", NULL))
-        g_key_file_set_string (dmrc_file, "Desktop", "Language", display->priv->default_language);
+        /* We don't have advanced language checking, so reset these variables */
+        g_key_file_remove_key (dmrc_file, "Desktop", "Langlist", NULL);
+        g_key_file_remove_key (dmrc_file, "Desktop", "LCMess", NULL);
+    }
+    g_free (old_language);
     if (!g_key_file_has_key (dmrc_file, "Desktop", "Layout", NULL))
         g_key_file_set_string (dmrc_file, "Desktop", "Layout", display->priv->default_layout);
 
@@ -477,7 +537,6 @@ start_user_session (Display *display, const gchar *session, const gchar *languag
 
         if (session_command)
         {
-            gchar *session_language, *layout;
             gchar *data;
             gsize length;
 
@@ -487,28 +546,30 @@ start_user_session (Display *display, const gchar *session, const gchar *languag
                 session_command = g_strdup_printf ("%s '%s'", display->priv->session_wrapper, session_command);
                 g_free (old_command);
             }
-            display->priv->user_session = session_new (pam_session_get_username (display->priv->user_pam_session), session_command);
-
-            session_language = g_key_file_get_string (dmrc_file, "Desktop", "Language", NULL);
-
-            layout = g_key_file_get_string (dmrc_file, "Desktop", "Layout", NULL);
+            display->priv->user_session = session_new ();
+            session_set_username (display->priv->user_session, pam_session_get_username (display->priv->user_pam_session));
+            session_set_command (display->priv->user_session, session_command);
 
             g_signal_connect (G_OBJECT (display->priv->user_session), "exited", G_CALLBACK (user_session_exited_cb), display);
-            g_signal_connect (G_OBJECT (display->priv->user_session), "killed", G_CALLBACK (user_session_killed_cb), display);
-            session_set_env (display->priv->user_session, "DISPLAY", xserver_get_address (display->priv->xserver));
-            if (display->priv->user_ck_session)
-                session_set_env (display->priv->user_session, "XDG_SESSION_COOKIE", ck_connector_get_cookie (display->priv->user_ck_session));
-            session_set_env (display->priv->user_session, "DESKTOP_SESSION", session); // FIXME: Apparently deprecated?
-            session_set_env (display->priv->user_session, "GDMSESSION", session); // FIXME: Not cross-desktop
-            session_set_env (display->priv->user_session, "PATH", "/usr/local/bin:/usr/bin:/bin");                
-            session_set_env (display->priv->user_session, "LANG", session_language);
-            session_set_env (display->priv->user_session, "GDM_LANG", session_language); // FIXME: Not cross-desktop
-            session_set_env (display->priv->user_session, "GDM_KEYBOARD_LAYOUT", layout); // FIXME: Not cross-desktop
+            g_signal_connect (G_OBJECT (display->priv->user_session), "terminated", G_CALLBACK (user_session_terminated_cb), display);
+            child_process_set_env (CHILD_PROCESS (display->priv->user_session), "DISPLAY", xserver_get_address (display->priv->xserver));
+            if (display->priv->user_ck_cookie)
+                child_process_set_env (CHILD_PROCESS (display->priv->user_session), "XDG_SESSION_COOKIE", display->priv->user_ck_cookie);
+            child_process_set_env (CHILD_PROCESS (display->priv->user_session), "DESKTOP_SESSION", session); // FIXME: Apparently deprecated?
+            child_process_set_env (CHILD_PROCESS (display->priv->user_session), "GDMSESSION", session); // FIXME: Not cross-desktop
+            set_env_from_keyfile (display->priv->user_session, "LANG", dmrc_file, "Desktop", "Language");
+            set_env_from_keyfile (display->priv->user_session, "LANGUAGE", dmrc_file, "Desktop", "Langlist");
+            set_env_from_keyfile (display->priv->user_session, "LC_MESSAGES", dmrc_file, "Desktop", "LCMess");
+            //child_process_set_env (CHILD_PROCESS (display->priv->user_session), "GDM_LANG", session_language); // FIXME: Not cross-desktop
+            set_env_from_keyfile (display->priv->user_session, "GDM_KEYBOARD_LAYOUT", dmrc_file, "Desktop", "Layout"); // FIXME: Not cross-desktop
             set_env_from_pam_session (display->priv->user_session, display->priv->user_pam_session);
 
             g_signal_emit (display, signals[START_SESSION], 0, display->priv->user_session);
 
-            session_start (display->priv->user_session);
+            if (display->priv->supports_transitions)
+                session_start (display->priv->user_session, FALSE);
+            else
+                g_debug ("Waiting for greeter to quit before starting user session process");
 
             data = g_key_file_to_data (dmrc_file, &length, NULL);
 
@@ -517,7 +578,8 @@ start_user_session (Display *display, const gchar *session, const gchar *languag
             {
                 path = g_build_filename (user_info->pw_dir, ".dmrc", NULL);
                 g_file_set_contents (path, data, length, NULL);
-                chown (path, user_info->pw_uid, user_info->pw_gid);
+                if (chown (path, user_info->pw_uid, user_info->pw_gid) < 0)
+                    g_warning ("Error setting ownership on %s: %s", path, strerror (errno));
                 g_free (path);
             }
 
@@ -531,8 +593,6 @@ start_user_session (Display *display, const gchar *session, const gchar *languag
             g_free (path);
 
             g_free (data);
-            g_free (session_language); 
-            g_free (layout);         
         }
 
         g_free (session_command);
@@ -551,58 +611,81 @@ start_default_session (Display *display, const gchar *session, const gchar *lang
     display->priv->user_pam_session = pam_session_new (display->priv->pam_service, display->priv->default_user);
     pam_session_authorize (display->priv->user_pam_session);
 
-    display->priv->user_ck_session = start_ck_session (display, "", pam_session_get_username (display->priv->user_pam_session));
+    display->priv->user_ck_cookie = start_ck_session (display, "", pam_session_get_username (display->priv->user_pam_session));
     start_user_session (display, session, language);
 }
 
+static gboolean
+session_timeout_cb (Display *display)
+{
+    g_warning ("Session has not indicated it is ready, stopping greeter anyway");
+
+    /* Stop the greeter */
+    greeter_quit (display->priv->greeter_session);
+
+    display->priv->user_session_timer = 0;
+    return FALSE;
+}
+
 static void
-end_greeter_session (Display *display, gboolean clean_exit)
-{  
-    gboolean greeter_connected;
+greeter_login_cb (Greeter *greeter, const gchar *username, const gchar *session, const gchar *language, Display *display)
+{
+    /* Default session requested */
+    if (strcmp (session, "") == 0)
+        session = display->priv->default_session;
+
+    /* Default language requested */
+    if (strcmp (language, "") == 0)
+        language = NULL;
   
-    if (display->priv->greeter_quit_timeout)
+    display->priv->user_pam_session = greeter_get_pam_session (greeter);
+    display->priv->user_ck_cookie = start_ck_session (display, "", pam_session_get_username (display->priv->user_pam_session));
+
+    if (display->priv->default_user && strcmp (username, display->priv->default_user) == 0)
+        start_default_session (display, session, language);
+    else if (display->priv->user_pam_session &&
+             pam_session_get_in_session (display->priv->user_pam_session) &&
+             strcmp (username, pam_session_get_username (display->priv->user_pam_session)) == 0)
+        start_user_session (display, session, language);
+    else
     {
-        g_source_remove (display->priv->greeter_quit_timeout);
-        display->priv->greeter_quit_timeout = 0;
+        g_warning ("Ignoring request for login with unauthenticated user");
+        return;
     }
 
+    /* Stop session, waiting for user session to indicate it is ready (if supported) */
+    // FIXME: Hard-coded timeout
+    // FIXME: Greeter quit timeout
+    if (display->priv->supports_transitions)
+        display->priv->user_session_timer = g_timeout_add (USER_SESSION_TIMEOUT, (GSourceFunc) session_timeout_cb, display);
+    else
+        greeter_quit (display->priv->greeter_session);
+}
+
+static void
+greeter_quit_cb (Greeter *greeter, Display *display)
+{
+    g_debug ("Greeter quit");
+
     g_signal_emit (display, signals[END_GREETER], 0, display->priv->greeter_session);
-
-    greeter_connected = display->priv->greeter_connected;
-
-    g_object_unref (display->priv->greeter_session);
-    display->priv->greeter_session = NULL;
-    display->priv->greeter_connected = FALSE;
 
     pam_session_end (display->priv->greeter_pam_session);
     g_object_unref (display->priv->greeter_pam_session);
     display->priv->greeter_pam_session = NULL;
 
-    end_ck_session (display->priv->greeter_ck_session);
-    display->priv->greeter_ck_session = NULL;
+    g_object_unref (display->priv->greeter_session);
+    display->priv->greeter_session = NULL;
 
-    if (!clean_exit)
-        g_warning ("Greeter failed");
-    else if (!greeter_connected)
-        g_warning ("Greeter quit before connecting");
-    else if (!display->priv->user_session)
-        g_warning ("Greeter quit before session started");
-    else
-        return;
+    end_ck_session (display->priv->greeter_ck_cookie);
+    g_free (display->priv->greeter_ck_cookie);
+    display->priv->greeter_ck_cookie = NULL;   
 
-    // FIXME: Issue with greeter, don't want to start a new one, report error to user
-}
-
-static void
-greeter_session_exited_cb (Session *session, gint status, Display *display)
-{
-    end_greeter_session (display, status == 0);
-}
-
-static void
-greeter_session_killed_cb (Session *session, gint status, Display *display)
-{
-    end_greeter_session (display, FALSE);
+    /* Start session if waiting for greeter to quit */
+    if (display->priv->user_session && child_process_get_pid (CHILD_PROCESS (display->priv->user_session)) == 0)
+    {
+        g_debug ("Starting user session");
+        session_start (display->priv->user_session, FALSE);
+    }
 }
 
 static void
@@ -643,297 +726,54 @@ start_greeter (Display *display)
         display->priv->greeter_pam_session = pam_session_new (display->priv->pam_service, username);
         pam_session_authorize (display->priv->greeter_pam_session);
 
-        display->priv->greeter_ck_session = start_ck_session (display,
-                                                              "LoginWindow",
-                                                              username);
+        display->priv->greeter_ck_cookie = start_ck_session (display,
+                                                             "LoginWindow",
+                                                             username);
 
-        display->priv->greeter_connected = FALSE;
-        display->priv->greeter_session = session_new (username, command);
-        g_signal_connect (G_OBJECT (display->priv->greeter_session), "exited", G_CALLBACK (greeter_session_exited_cb), display);
-        g_signal_connect (G_OBJECT (display->priv->greeter_session), "killed", G_CALLBACK (greeter_session_killed_cb), display);
-        session_set_env (display->priv->greeter_session, "DISPLAY", xserver_get_address (display->priv->xserver));
-        if (display->priv->greeter_ck_session)
-            session_set_env (display->priv->greeter_session, "XDG_SESSION_COOKIE", ck_connector_get_cookie (display->priv->greeter_ck_session));
-        set_env_from_pam_session (display->priv->greeter_session, display->priv->greeter_pam_session);
+        display->priv->greeter_session = greeter_new ();
+        greeter_set_theme (display->priv->greeter_session, display->priv->greeter_theme);
+        greeter_set_default_user (display->priv->greeter_session, display->priv->default_user, display->priv->timeout);
+        greeter_set_layout (display->priv->greeter_session, display->priv->default_layout);
+        greeter_set_session (display->priv->greeter_session, display->priv->default_session);
+        g_signal_connect (G_OBJECT (display->priv->greeter_session), "login", G_CALLBACK (greeter_login_cb), display);
+        g_signal_connect (G_OBJECT (display->priv->greeter_session), "quit", G_CALLBACK (greeter_quit_cb), display);
+        session_set_username (SESSION (display->priv->greeter_session), username);
+        session_set_command (SESSION (display->priv->greeter_session), command);
+        child_process_set_env (CHILD_PROCESS (display->priv->greeter_session), "DISPLAY", xserver_get_address (display->priv->xserver));
+        if (display->priv->greeter_ck_cookie)
+            child_process_set_env (CHILD_PROCESS (display->priv->greeter_session), "XDG_SESSION_COOKIE", display->priv->greeter_ck_cookie);
+        set_env_from_pam_session (SESSION (display->priv->greeter_session), display->priv->greeter_pam_session);
 
         g_signal_emit (display, signals[START_GREETER], 0, display->priv->greeter_session);
 
-        session_start (display->priv->greeter_session);
+        session_start (SESSION (display->priv->greeter_session), TRUE);
 
         g_free (command);
         g_key_file_free (theme);
     }
 }
 
-#define TYPE_MESSAGE dbus_g_type_get_struct ("GValueArray", G_TYPE_INT, G_TYPE_STRING, G_TYPE_INVALID)
-
 static void
-pam_messages_cb (PAMSession *session, int num_msg, const struct pam_message **msg, Display *display)
-{
-    GPtrArray *request;
-    int i;
-    DBusGMethodInvocation *context;
-
-    /* Respond to d-bus query with messages */
-    request = g_ptr_array_new ();
-    for (i = 0; i < num_msg; i++)
-    {
-        GValue value = { 0 };
-      
-        g_value_init (&value, TYPE_MESSAGE);
-        g_value_take_boxed (&value, dbus_g_type_specialized_construct (TYPE_MESSAGE));
-        // FIXME: Need to convert to UTF-8
-        dbus_g_type_struct_set (&value, 0, msg[i]->msg_style, 1, msg[i]->msg, G_MAXUINT);
-        g_ptr_array_add (request, g_value_get_boxed (&value));
-    }
-
-    context = display->priv->dbus_context;
-    display->priv->dbus_context = NULL;
-    dbus_g_method_return (context, 0, request);
-}
-
-static void
-authenticate_result_cb (PAMSession *session, int result, Display *display)
-{
-    GPtrArray *request;
-    DBusGMethodInvocation *context;
-
-    g_debug ("Authenticate result for user %s: %s", pam_session_get_username (display->priv->user_pam_session), pam_session_strerror (display->priv->user_pam_session, result));
-
-    if (result == PAM_SUCCESS)
-    {
-        run_script ("PostLogin");
-        pam_session_authorize (session);
-    }
-
-    /* Respond to D-Bus request */
-    request = g_ptr_array_new ();
-    context = display->priv->dbus_context;
-    display->priv->dbus_context = NULL;
-
-    dbus_g_method_return (context, result, request);
-}
-
-static void
-session_started_cb (PAMSession *session, Display *display)
-{
-    display->priv->user_ck_session = start_ck_session (display, "", pam_session_get_username (display->priv->user_pam_session));
-}
-
-gboolean
-display_connect (Display *display,
-                 const gchar **theme,
-                 const gchar **language, const gchar **layout, const gchar **session,
-                 const gchar **username, gint *delay, GError *error)
-{
-    if (!display->priv->greeter_connected)
-    {
-        display->priv->greeter_connected = TRUE;
-        g_debug ("Greeter connected");
-    }
-
-    *theme = g_build_filename (THEME_DIR, display->priv->greeter_theme, "index.theme", NULL);
-    *language = g_strdup (display->priv->default_language);
-    *layout = g_strdup (display->priv->default_layout);
-    *session = g_strdup (display->priv->default_session);
-    *username = g_strdup (display->priv->default_user);
-    *delay = display->priv->timeout;
-
-    return TRUE;
-}
-
-gboolean
-display_start_authentication (Display *display, const gchar *username, DBusGMethodInvocation *context)
-{
-    GError *error = NULL;
-
-    // FIXME: Only allow calls from the correct greeter
-
-    if (!display->priv->greeter_session || display->priv->user_session)
-    {
-        dbus_g_method_return_error (context, NULL);
-        return TRUE;
-    }
-
-    /* Abort existing authentication */
-    if (display->priv->user_pam_session)
-    {
-        g_signal_handlers_disconnect_matched (display->priv->user_pam_session, G_SIGNAL_MATCH_DATA, 0, 0, NULL, NULL, display);
-        pam_session_end (display->priv->user_pam_session);
-        if (display->priv->dbus_context)
-            dbus_g_method_return_error (display->priv->dbus_context, NULL);
-
-        g_object_unref (display->priv->user_pam_session);
-    }
-
-    g_debug ("Greeter start authentication for %s", username);
-
-    /* Store D-Bus request to respond to */
-    display->priv->dbus_context = context;
-
-    display->priv->user_pam_session = pam_session_new (display->priv->pam_service, username);
-    g_signal_connect (G_OBJECT (display->priv->user_pam_session), "got-messages", G_CALLBACK (pam_messages_cb), display);
-    g_signal_connect (G_OBJECT (display->priv->user_pam_session), "authentication-result", G_CALLBACK (authenticate_result_cb), display);
-    g_signal_connect (G_OBJECT (display->priv->user_pam_session), "started", G_CALLBACK (session_started_cb), display);
-
-    if (!pam_session_start (display->priv->user_pam_session, &error))
-    {
-        g_warning ("Failed to start authentication: %s", error->message);
-        display->priv->dbus_context = NULL;
-        dbus_g_method_return_error (context, NULL);
-        return FALSE;
-    }
-    g_clear_error (&error);
-
-    return TRUE;
-}
-
-gboolean
-display_continue_authentication (Display *display, gchar **secrets, DBusGMethodInvocation *context)
-{
-    int num_messages;
-    const struct pam_message **messages;
-    struct pam_response *response;
-    int i, j, n_secrets = 0;
-
-    /* Not connected */
-    if (!display->priv->greeter_connected)
-    {
-        dbus_g_method_return_error (context, NULL);
-        return TRUE;
-    }
-
-    /* Not in authorization */
-    if (display->priv->user_pam_session == NULL)
-    {
-        dbus_g_method_return_error (context, NULL);
-        return TRUE;
-    }
-
-    /* Already in another call */
-    if (display->priv->dbus_context != NULL)
-    {
-        dbus_g_method_return_error (context, NULL);
-        return TRUE;
-    }
-
-    // FIXME: Only allow calls from the correct greeter
-
-    num_messages = pam_session_get_num_messages (display->priv->user_pam_session);
-    messages = pam_session_get_messages (display->priv->user_pam_session);
-
-    /* Check correct number of responses */
-    for (i = 0; i < num_messages; i++)
-    {
-        int msg_style = messages[i]->msg_style;
-        if (msg_style == PAM_PROMPT_ECHO_OFF || msg_style == PAM_PROMPT_ECHO_ON)
-            n_secrets++;
-    }
-    if (g_strv_length (secrets) != n_secrets)
-    {
-        pam_session_end (display->priv->user_pam_session);
-        // FIXME: Throw error
-        return FALSE;
-    }
-
-    g_debug ("Continue authentication");
-
-    /* Build response */
-    response = calloc (num_messages, sizeof (struct pam_response));  
-    for (i = 0, j = 0; i < num_messages; i++)
-    {
-        int msg_style = messages[i]->msg_style;
-        if (msg_style == PAM_PROMPT_ECHO_OFF || msg_style == PAM_PROMPT_ECHO_ON)
-        {
-            response[i].resp = strdup (secrets[j]); // FIXME: Need to convert from UTF-8
-            j++;
-        }
-    }
-
-    display->priv->dbus_context = context;
-    pam_session_respond (display->priv->user_pam_session, response);
-
-    return TRUE;
-}
-
-static gboolean
-quit_greeter_cb (gpointer data)
-{
-    Display *display = data;
-    g_warning ("Greeter did not quit, sending kill signal");
-    session_stop (display->priv->greeter_session);
-    display->priv->greeter_quit_timeout = 0;
-    return TRUE;
-}
-
-static void
-quit_greeter (Display *display)
-{
-    g_signal_emit (display, signals[QUIT_GREETER], 0);
-    if (display->priv->greeter_quit_timeout)
-        g_source_remove (display->priv->greeter_quit_timeout);
-    display->priv->greeter_quit_timeout = g_timeout_add (GREETER_QUIT_TIMEOUT, quit_greeter_cb, display);
-}
-
-static gboolean
-session_timeout_cb (Display *display)
-{
-    g_warning ("Session has not indicated it is ready, stopping greeter anyway");
-
-    /* Stop the greeter */
-    quit_greeter (display);
-
-    display->priv->user_session_timer = 0;
-    return FALSE;
-}
-
-gboolean
-display_login (Display *display, gchar *username, gchar *session, gchar *language, GError *error)
-{
-    if (display->priv->user_session != NULL)
-    {
-        g_warning ("Ignoring request to log in when already logged in");
-        return TRUE;
-    }
-
-    g_debug ("Greeter login for user %s on session %s", username, session);
-  
-    /* Default session requested */
-    if (strcmp (session, "") == 0)
-        session = display->priv->default_session;
-
-    /* Default language requested */
-    if (strcmp (language, "") == 0)
-        language = NULL;
-
-    if (display->priv->default_user && strcmp (username, display->priv->default_user) == 0)
-        start_default_session (display, session, language);
-    else if (display->priv->user_pam_session &&
-             pam_session_get_in_session (display->priv->user_pam_session) &&
-             strcmp (username, pam_session_get_username (display->priv->user_pam_session)) == 0)
-        start_user_session (display, session, language);
-    else
-    {
-        g_warning ("Ignoring request for login with unauthenticated user");
-        return FALSE;
-    }
-
-    /* Stop session, waiting for user session to indicate it is ready (if supported) */
-    // FIXME: Hard-coded timeout
-    if (display->priv->supports_transitions)
-        display->priv->user_session_timer = g_timeout_add (USER_SESSION_TIMEOUT, (GSourceFunc) session_timeout_cb, display);
-    else
-        quit_greeter (display);
-
-    return TRUE;
-}
-
-static void
-xserver_exit_cb (XServer *server, Display *display)
+end_display (Display *display)
 {
     g_object_unref (display->priv->xserver);
     display->priv->xserver = NULL;
     g_signal_emit (display, signals[EXITED], 0);
+}
+
+static void
+xserver_exit_cb (XServer *server, int status, Display *display)
+{
+    if (status != 0)
+        g_warning ("X server exited with value %d", status);
+    end_display (display);
+}
+
+static void
+xserver_terminate_cb (XServer *server, int signum, Display *display)
+{
+    g_warning ("X server terminated with signal %d", signum);
+    end_display (display);
 }
 
 static void
@@ -958,6 +798,7 @@ display_start (Display *display)
     g_return_val_if_fail (display->priv->xserver != NULL, FALSE);
     g_signal_connect (G_OBJECT (display->priv->xserver), "ready", G_CALLBACK (xserver_ready_cb), display);
     g_signal_connect (G_OBJECT (display->priv->xserver), "exited", G_CALLBACK (xserver_exit_cb), display);
+    g_signal_connect (G_OBJECT (display->priv->xserver), "terminated", G_CALLBACK (xserver_terminate_cb), display);
     return xserver_start (display->priv->xserver);
 }
 
@@ -968,7 +809,6 @@ display_init (Display *display)
     if (strcmp (GREETER_USER, "") != 0)
         display->priv->greeter_user = g_strdup (GREETER_USER);
     display->priv->greeter_theme = g_strdup (GREETER_THEME);
-    display->priv->default_language = getenv ("LANG") ? g_strdup (getenv ("LANG")) : g_strdup ("C");
     display->priv->default_layout = g_strdup ("us"); // FIXME: Is there a better default to get?
     display->priv->default_session = g_strdup (DEFAULT_SESSION);
 }
@@ -988,16 +828,19 @@ display_finalize (GObject *object)
         g_object_unref (self->priv->user_session);
     if (self->priv->user_pam_session)
         g_object_unref (self->priv->user_pam_session);
-    end_ck_session (self->priv->greeter_ck_session);
-    end_ck_session (self->priv->user_ck_session);
-    if (self->priv->xserver)  
+    end_ck_session (self->priv->greeter_ck_cookie);
+    g_free (self->priv->greeter_ck_cookie);
+    end_ck_session (self->priv->user_ck_cookie);
+    g_free (self->priv->user_ck_cookie);
+    if (self->priv->xserver)
         g_object_unref (self->priv->xserver);
     g_free (self->priv->greeter_user);
     g_free (self->priv->greeter_theme);
     g_free (self->priv->default_user);
-    g_free (self->priv->default_language);
     g_free (self->priv->default_layout);
     g_free (self->priv->default_session);
+
+    G_OBJECT_CLASS (display_parent_class)->finalize (object);
 }
 
 static void
@@ -1053,15 +896,4 @@ display_class_init (DisplayClass *klass)
                       NULL, NULL,
                       g_cclosure_marshal_VOID__VOID,
                       G_TYPE_NONE, 0);
-
-    signals[QUIT_GREETER] =
-        g_signal_new ("quit_greeter",
-                      G_TYPE_FROM_CLASS (klass),
-                      G_SIGNAL_RUN_LAST,
-                      G_STRUCT_OFFSET (DisplayClass, quit_greeter),
-                      NULL, NULL,
-                      g_cclosure_marshal_VOID__VOID,
-                      G_TYPE_NONE, 0);
-
-    dbus_g_object_type_install_info (DISPLAY_TYPE, &dbus_glib_display_object_info);
 }

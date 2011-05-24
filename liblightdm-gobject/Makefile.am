@@ -1,26 +1,27 @@
+SUBDIRS = lightdm
+
 lib_LTLIBRARIES = liblightdm-gobject-0.la
 
 CLEANFILES =
 
-liblightdm_gobject_0include_HEADERS = \
-	greeter.h \
-	language.h \
-	layout.h \
-	session.h \
-	user.h
-liblightdm_gobject_0includedir=$(includedir)/lightdm-gobject-0/lightdm
-
 liblightdm_gobject_0_la_LIBADD = $(LIBLIGHTDM_GOBJECT_LIBS)
 liblightdm_gobject_0_la_CFLAGS = $(LIBLIGHTDM_GOBJECT_CFLAGS) \
+	$(WARN_CFLAGS) \
 	-DXSESSIONS_DIR=\"$(XSESSIONS_DIR)\"
 
 liblightdm_gobject_0_la_SOURCES= \
 	greeter.c \
+	greeter-protocol.h \
 	language.c \
 	layout.c \
 	session.c \
 	user.c \
-	$(liblightdm_gobject_0include_HEADERS)
+	user-private.h \
+	lightdm/greeter.h \
+	lightdm/language.h \
+	lightdm/layout.h \
+	lightdm/session.h \
+	lightdm/user.h
 
 if HAVE_INTROSPECTION
 
@@ -42,18 +43,10 @@ gir_DATA = LightDM-0.gir
 typelibdir = $(libdir)/girepository-1.0
 typelib_DATA = LightDM-0.typelib
 
-vapidir = $(datadir)/vala/vapi
-vapi_DATA = LightDM-0.vapi
-
-LightDM-0.vapi: LightDM-0.gir Makefile.am
-	$(VALA_API_GEN) --library=LightDM-0 \
-		--pkg glib-2.0 \
-		--vapidir=$(top_builddir)/src \
-		$<
-
-CLEANFILES += $(vapi_DATA)
-
 endif
+
+vapidir = $(datadir)/vala/vapi
+dist_vapi_DATA = liblightdm-gobject-0.vapi
 
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = liblightdm-gobject-0.pc

@@ -8,7 +8,7 @@
 <link rel="up" href="core.html" title="Part I. liblightdm-gobject">
 <link rel="prev" href="LdmLayout.html" title="LdmLayout">
 <link rel="next" href="LdmUser.html" title="LdmUser">
-<meta name="generator" content="GTK-Doc V1.15 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.17 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
@@ -30,7 +30,7 @@
                   <a href="#LdmSession.properties" class="shortcut">Properties</a>
 </td></tr>
 </table>
-<div class="refentry" title="LdmSession">
+<div class="refentry">
 <a name="LdmSession"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
@@ -39,25 +39,25 @@
 </td>
 <td valign="top" align="right"></td>
 </tr></table></div>
-<div class="refsynopsisdiv" title="Synopsis">
+<div class="refsynopsisdiv">
 <a name="LdmSession.synopsis"></a><h2>Synopsis</h2>
 <pre class="synopsis">
 #include &lt;lightdm/greeter.h&gt;
 
-                    <a class="link" href="LdmSession.html#LdmSession-struct" title="LdmSession">LdmSession</a>;
+struct              <a class="link" href="LdmSession.html#LdmSession-struct" title="struct LdmSession">LdmSession</a>;
 const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       <a class="link" href="LdmSession.html#ldm-session-get-key" title="ldm_session_get_key ()">ldm_session_get_key</a>                 (<em class="parameter"><code><a class="link" href="LdmSession.html" title="LdmSession"><span class="type">LdmSession</span></a> *session</code></em>);
 const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       <a class="link" href="LdmSession.html#ldm-session-get-name" title="ldm_session_get_name ()">ldm_session_get_name</a>                (<em class="parameter"><code><a class="link" href="LdmSession.html" title="LdmSession"><span class="type">LdmSession</span></a> *session</code></em>);
 const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       <a class="link" href="LdmSession.html#ldm-session-get-comment" title="ldm_session_get_comment ()">ldm_session_get_comment</a>             (<em class="parameter"><code><a class="link" href="LdmSession.html" title="LdmSession"><span class="type">LdmSession</span></a> *session</code></em>);
 </pre>
 </div>
-<div class="refsect1" title="Object Hierarchy">
+<div class="refsect1">
 <a name="LdmSession.object-hierarchy"></a><h2>Object Hierarchy</h2>
 <pre class="synopsis">
   <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject">GObject</a>
    +----LdmSession
 </pre>
 </div>
-<div class="refsect1" title="Properties">
+<div class="refsect1">
 <a name="LdmSession.properties"></a><h2>Properties</h2>
 <pre class="synopsis">
   "<a class="link" href="LdmSession.html#LdmSession--comment" title='The "comment" property'>comment</a>"                  <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a>*                : Read / Write / Construct Only
@@ -65,22 +65,22 @@ const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.htm
   "<a class="link" href="LdmSession.html#LdmSession--name" title='The "name" property'>name</a>"                     <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a>*                : Read / Write / Construct Only
 </pre>
 </div>
-<div class="refsect1" title="Description">
+<div class="refsect1">
 <a name="LdmSession.description"></a><h2>Description</h2>
 <p>
 Object containing information about a session type. <a class="link" href="LdmSession.html" title="LdmSession"><span class="type">LdmSession</span></a> objects are not created by the user, but provided by the <a class="link" href="LdmGreeter.html" title="LdmGreeter"><span class="type">LdmGreeter</span></a> object.
 </p>
 </div>
-<div class="refsect1" title="Details">
+<div class="refsect1">
 <a name="LdmSession.details"></a><h2>Details</h2>
-<div class="refsect2" title="LdmSession">
-<a name="LdmSession-struct"></a><h3>LdmSession</h3>
-<pre class="programlisting">typedef struct _LdmSession LdmSession;</pre>
+<div class="refsect2">
+<a name="LdmSession-struct"></a><h3>struct LdmSession</h3>
+<pre class="programlisting">struct LdmSession;</pre>
 <p>
 </p>
 </div>
 <hr>
-<div class="refsect2" title="ldm_session_get_key ()">
+<div class="refsect2">
 <a name="ldm-session-get-key"></a><h3>ldm_session_get_key ()</h3>
 <pre class="programlisting">const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       ldm_session_get_key                 (<em class="parameter"><code><a class="link" href="LdmSession.html" title="LdmSession"><span class="type">LdmSession</span></a> *session</code></em>);</pre>
 <p>
@@ -96,14 +96,13 @@ Get the key for a session
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> The session key
-</td>
+<td>The session key</td>
 </tr>
 </tbody>
 </table></div>
 </div>
 <hr>
-<div class="refsect2" title="ldm_session_get_name ()">
+<div class="refsect2">
 <a name="ldm-session-get-name"></a><h3>ldm_session_get_name ()</h3>
 <pre class="programlisting">const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       ldm_session_get_name                (<em class="parameter"><code><a class="link" href="LdmSession.html" title="LdmSession"><span class="type">LdmSession</span></a> *session</code></em>);</pre>
 <p>
@@ -119,14 +118,13 @@ Get the name for a session
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> The session name
-</td>
+<td>The session name</td>
 </tr>
 </tbody>
 </table></div>
 </div>
 <hr>
-<div class="refsect2" title="ldm_session_get_comment ()">
+<div class="refsect2">
 <a name="ldm-session-get-comment"></a><h3>ldm_session_get_comment ()</h3>
 <pre class="programlisting">const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       ldm_session_get_comment             (<em class="parameter"><code><a class="link" href="LdmSession.html" title="LdmSession"><span class="type">LdmSession</span></a> *session</code></em>);</pre>
 <p>
@@ -142,30 +140,29 @@ Get the comment for a session
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td> The session comment
-</td>
+<td>The session comment</td>
 </tr>
 </tbody>
 </table></div>
 </div>
 </div>
-<div class="refsect1" title="Property Details">
+<div class="refsect1">
 <a name="LdmSession.property-details"></a><h2>Property Details</h2>
-<div class="refsect2" title='The "comment" property'>
+<div class="refsect2">
 <a name="LdmSession--comment"></a><h3>The <code class="literal">"comment"</code> property</h3>
 <pre class="programlisting">  "comment"                  <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a>*                : Read / Write / Construct Only</pre>
 <p>Session comment.</p>
 <p>Default value: NULL</p>
 </div>
 <hr>
-<div class="refsect2" title='The "key" property'>
+<div class="refsect2">
 <a name="LdmSession--key"></a><h3>The <code class="literal">"key"</code> property</h3>
 <pre class="programlisting">  "key"                      <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a>*                : Read / Write / Construct Only</pre>
 <p>Session key.</p>
 <p>Default value: NULL</p>
 </div>
 <hr>
-<div class="refsect2" title='The "name" property'>
+<div class="refsect2">
 <a name="LdmSession--name"></a><h3>The <code class="literal">"name"</code> property</h3>
 <pre class="programlisting">  "name"                     <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a>*                : Read / Write / Construct Only</pre>
 <p>Session name.</p>
@@ -175,6 +172,6 @@ Get the comment for a session
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.15</div>
+          Generated by GTK-Doc V1.17</div>
 </body>
 </html>
