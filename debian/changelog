@@ -1,3 +1,11 @@
+lightdm (0.3.6-0ubuntu1) oneiric; urgency=low
+
+  * New upstream release
+  * debian/lightdm.conf:
+    - Start display on active VT
+
+ -- Robert Ancell <robert.ancell@canonical.com>  Mon, 30 May 2011 16:43:37 +1000
+
 lightdm (0.3.5-0ubuntu1) oneiric; urgency=low
 
   * New upstream release
