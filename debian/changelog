@@ -1,3 +1,9 @@
+lightdm (0.3.7-0ubuntu1) oneiric; urgency=low
+
+  * New upstream release
+
+ -- Robert Ancell <robert.ancell@canonical.com>  Mon, 30 May 2011 20:22:39 +1000
+
 lightdm (0.3.6-0ubuntu1) oneiric; urgency=low
 
   * New upstream release
