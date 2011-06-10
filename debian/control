@@ -63,7 +63,12 @@ Description: LightDM GTK+ Greeter (Vala)
 Package: lightdm-greeter-example-python-gtk
 Architecture: any
 Depends: ${misc:Depends},
-         ${shlibs:Depends}
+         ${shlibs:Depends},
+         ${python:Depends},
+         python-gobject,
+         gir1.2-lightdm-0,
+         gir1.2-gtk-2.0,
+         gir1.2-gdkpixbuf-2.0
 Recommends: lightdm
 Provides: lightdm-greeter
 Description: LightDM GTK+ Greeter (Python)

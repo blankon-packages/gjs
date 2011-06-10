@@ -1,4 +1,16 @@
-lightdm (0.3.7-0ubuntu1) oneiric; urgency=low
+lightdm (0.3.7-0ubuntu2) oneiric; urgency=low
+
+  * debian/control:
+    - Add ${python:Depends} and required dependencies for
+      lightdm-greeter-example-python-gtk package (LP: #787409)
+  * debian/patches/01_handle_all_signals.patch:
+    - Correctly handle signals from external processes (LP: #789389)
+  * debian/patches/02_process_exit.patch:
+    - Fix crash when child processes quit (LP: #795050)
+
+ -- Robert Ancell <robert.ancell@canonical.com>  Fri, 10 Jun 2011 16:24:56 +1000
+
+lightdm (0.3.7-0ubuntu1) oneric; urgency=low
 
   * New upstream release
 
