@@ -1,3 +1,10 @@
+lightdm (0.4.0-0ubuntu4) oneiric; urgency=low
+
+  * debian/control: don't depends on gnome-icon-theme-full, the purpose of the
+    binary is to not be installed by default, icons should be moved rather
+
+ -- Sebastien Bacher <seb128@ubuntu.com>  Fri, 17 Jun 2011 11:28:05 +0200
+
 lightdm (0.4.0-0ubuntu3) oneiric; urgency=low
 
   * debian/control:

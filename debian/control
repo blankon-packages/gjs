@@ -45,8 +45,7 @@ Description: Display Manager
 Package: lightdm-greeter-example-gtk
 Architecture: any
 Depends: ${misc:Depends},
-         ${shlibs:Depends},
-         gnome-icon-theme-full
+         ${shlibs:Depends}
 Recommends: lightdm
 Provides: lightdm-greeter
 Description: LightDM GTK+ Greeter
@@ -55,8 +54,7 @@ Description: LightDM GTK+ Greeter
 Package: lightdm-greeter-example-vala-gtk
 Architecture: any
 Depends: ${misc:Depends},
-         ${shlibs:Depends},
-         gnome-icon-theme-full
+         ${shlibs:Depends}
 Recommends: lightdm
 Provides: lightdm-greeter
 Description: LightDM GTK+ Greeter (Vala)
@@ -70,8 +68,7 @@ Depends: ${misc:Depends},
          python-gobject,
          gir1.2-lightdm-0,
          gir1.2-gtk-2.0,
-         gir1.2-gdkpixbuf-2.0,
-         gnome-icon-theme-full
+         gir1.2-gdkpixbuf-2.0
 Recommends: lightdm
 Provides: lightdm-greeter
 Description: LightDM GTK+ Greeter (Python)
