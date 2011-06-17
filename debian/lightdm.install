@@ -2,3 +2,4 @@ usr/bin
 usr/share/man
 etc/dbus-1/
 debian/lightdm.conf etc/lightdm
+debian/Xsession etc/lightdm
