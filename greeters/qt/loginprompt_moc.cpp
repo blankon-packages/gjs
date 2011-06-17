@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'loginprompt.h'
 **
-** Created: Mon May 23 11:05:46 2011
+** Created: Fri Jun 17 12:31:54 2011
 **      by: The Qt Meta Object Compiler version 62 (Qt 4.7.2)
 **
 ** WARNING! All changes made in this file will be lost!
@@ -23,25 +23,29 @@ static const uint qt_meta_data_LoginPrompt[] = {
        5,       // revision
        0,       // classname
        0,    0, // classinfo
-       3,   14, // methods
+       4,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
        0,       // flags
-       0,       // signalCount
+       1,       // signalCount
+
+ // signals: signature, parameters, type, tag, flags
+      13,   12,   12,   12, 0x05,
 
  // slots: signature, parameters, type, tag, flags
-      13,   12,   12,   12, 0x08,
-      44,   36,   12,   12, 0x08,
-      83,   75,   12,   12, 0x08,
+      28,   12,   12,   12, 0x08,
+      59,   51,   12,   12, 0x08,
+      98,   90,   12,   12, 0x08,
 
        0        // eod
 };
 
 static const char qt_meta_stringdata_LoginPrompt[] = {
-    "LoginPrompt\0\0onLoginButtonClicked()\0"
-    "success\0onAuthenticationComplete(bool)\0"
-    "message\0prompt(QString)\0"
+    "LoginPrompt\0\0startSession()\0"
+    "onLoginButtonClicked()\0success\0"
+    "onAuthenticationComplete(bool)\0message\0"
+    "prompt(QString)\0"
 };
 
 const QMetaObject LoginPrompt::staticMetaObject = {
@@ -73,13 +77,20 @@ int LoginPrompt::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
         switch (_id) {
-        case 0: onLoginButtonClicked(); break;
-        case 1: onAuthenticationComplete((*reinterpret_cast< bool(*)>(_a[1]))); break;
-        case 2: prompt((*reinterpret_cast< const QString(*)>(_a[1]))); break;
+        case 0: startSession(); break;
+        case 1: onLoginButtonClicked(); break;
+        case 2: onAuthenticationComplete((*reinterpret_cast< bool(*)>(_a[1]))); break;
+        case 3: prompt((*reinterpret_cast< const QString(*)>(_a[1]))); break;
         default: ;
         }
-        _id -= 3;
+        _id -= 4;
     }
     return _id;
+}
+
+// SIGNAL 0
+void LoginPrompt::startSession()
+{
+    QMetaObject::activate(this, &staticMetaObject, 0, 0);
 }
 QT_END_MOC_NAMESPACE

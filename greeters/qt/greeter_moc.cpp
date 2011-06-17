@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'greeter.h'
 **
-** Created: Mon May 23 11:05:46 2011
+** Created: Fri Jun 17 12:31:53 2011
 **      by: The Qt Meta Object Compiler version 62 (Qt 4.7.2)
 **
 ** WARNING! All changes made in this file will be lost!
@@ -23,18 +23,21 @@ static const uint qt_meta_data_Greeter[] = {
        5,       // revision
        0,       // classname
        0,    0, // classinfo
-       0,    0, // methods
+       1,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
        0,       // flags
        0,       // signalCount
 
+ // slots: signature, parameters, type, tag, flags
+       9,    8,    8,    8, 0x08,
+
        0        // eod
 };
 
 static const char qt_meta_stringdata_Greeter[] = {
-    "Greeter\0"
+    "Greeter\0\0onStartSession()\0"
 };
 
 const QMetaObject Greeter::staticMetaObject = {
@@ -64,6 +67,13 @@ int Greeter::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     _id = QWidget::qt_metacall(_c, _id, _a);
     if (_id < 0)
         return _id;
+    if (_c == QMetaObject::InvokeMetaMethod) {
+        switch (_id) {
+        case 0: onStartSession(); break;
+        default: ;
+        }
+        _id -= 1;
+    }
     return _id;
 }
 QT_END_MOC_NAMESPACE

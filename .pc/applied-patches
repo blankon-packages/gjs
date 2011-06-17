@@ -1,2 +1,2 @@
-01_handle_all_signals.patch
-02_process_exit.patch
+01_resize_grip.patch
+02_disable_tests.patch

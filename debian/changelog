@@ -1,3 +1,36 @@
+lightdm (0.4.0-0ubuntu2) oneiric; urgency=low
+
+  * debian/copyright:
+    - Drop copyright reference to obsolete ck-connector.[ch]
+  * debian/patches/02_disable_tests.patch:
+    - Disable regression tests as they're not running on the buildd's correctly
+
+ -- Robert Ancell <robert.ancell@canonical.com>  Fri, 17 Jun 2011 13:55:12 +1000
+
+lightdm (0.4.0-0ubuntu1) oneiric; urgency=low
+
+  * New upstream release
+  * debian/control:
+    - Add build-depends on dbus for regression tests
+    - lightdm pre-depends on dpkg (>= 1.15.7.2) to get dpkg-maintscript-helper
+      support
+    - Drop build-depends on libdbus-glib-1-dev, libck-connector-dev
+  * debian/lightdm.conf:
+    - Update to latest format
+  * debian/lightdm.postinst:
+  * debian/lightdm.postrm:
+  * debian/lightdm.preinst:
+    - Move config file from /etc/lightdm.conf to /etc/lightdm/lightdm.conf
+  * debian/lightdm-autologin.pam:
+    - Add autologin PAM session
+  * debian/patches/01_resize_grip.patch:
+    - Don't show resize grip on window
+  * debian/patches/01_handle_all_signals.patch:
+  * debian/patches/02_process_exit.patch:
+    - Applied upstream
+
+ -- Robert Ancell <robert.ancell@canonical.com>  Fri, 17 Jun 2011 12:31:14 +1000
+
 lightdm (0.3.7-0ubuntu2) oneiric; urgency=low
 
   * debian/control:

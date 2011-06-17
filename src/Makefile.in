@@ -38,7 +38,11 @@ bin_PROGRAMS = lightdm$(EXEEXT)
 subdir = src
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
-am__aclocal_m4_deps = $(top_srcdir)/configure.ac
+am__aclocal_m4_deps = $(top_srcdir)/m4/gtk-doc.m4 \
+	$(top_srcdir)/m4/intltool.m4 $(top_srcdir)/m4/introspection.m4 \
+	$(top_srcdir)/m4/libtool.m4 $(top_srcdir)/m4/ltoptions.m4 \
+	$(top_srcdir)/m4/ltsugar.m4 $(top_srcdir)/m4/ltversion.m4 \
+	$(top_srcdir)/m4/lt~obsolete.m4 $(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 mkinstalldirs = $(install_sh) -d
@@ -48,10 +52,12 @@ CONFIG_CLEAN_VPATH_FILES =
 am__installdirs = "$(DESTDIR)$(bindir)"
 PROGRAMS = $(bin_PROGRAMS)
 am_lightdm_OBJECTS = lightdm-child-process.$(OBJEXT) \
-	lightdm-display.$(OBJEXT) lightdm-display-manager.$(OBJEXT) \
-	lightdm-greeter.$(OBJEXT) lightdm-lightdm.$(OBJEXT) \
-	lightdm-ldm-marshal.$(OBJEXT) lightdm-pam-session.$(OBJEXT) \
-	lightdm-session.$(OBJEXT) lightdm-theme.$(OBJEXT) \
+	lightdm-configuration.$(OBJEXT) lightdm-display.$(OBJEXT) \
+	lightdm-display-manager.$(OBJEXT) lightdm-dmrc.$(OBJEXT) \
+	lightdm-greeter.$(OBJEXT) lightdm-guest-manager.$(OBJEXT) \
+	lightdm-lightdm.$(OBJEXT) lightdm-ldm-marshal.$(OBJEXT) \
+	lightdm-pam-session.$(OBJEXT) lightdm-session.$(OBJEXT) \
+	lightdm-theme.$(OBJEXT) lightdm-user.$(OBJEXT) \
 	lightdm-xauth.$(OBJEXT) lightdm-xdmcp-protocol.$(OBJEXT) \
 	lightdm-xdmcp-server.$(OBJEXT) lightdm-xdmcp-session.$(OBJEXT) \
 	lightdm-xserver.$(OBJEXT)
@@ -108,7 +114,6 @@ CACHE_DIR = @CACHE_DIR@
 CC = @CC@
 CCDEPMODE = @CCDEPMODE@
 CFLAGS = @CFLAGS@
-CONFIG_FILE = @CONFIG_FILE@
 CPP = @CPP@
 CPPFLAGS = @CPPFLAGS@
 CXX = @CXX@
@@ -119,8 +124,11 @@ CYGPATH_W = @CYGPATH_W@
 DATADIRNAME = @DATADIRNAME@
 DBUSBINDINGTOOL = @DBUSBINDINGTOOL@
 DBUS_SYS_DIR = @DBUS_SYS_DIR@
+DEFAULT_CONFIG_FILE = @DEFAULT_CONFIG_FILE@
+DEFAULT_GREETER_THEME = @DEFAULT_GREETER_THEME@
+DEFAULT_PAM_AUTOLOGIN_SERVICE = @DEFAULT_PAM_AUTOLOGIN_SERVICE@
 DEFAULT_PAM_SERVICE = @DEFAULT_PAM_SERVICE@
-DEFAULT_SESSION = @DEFAULT_SESSION@
+DEFAULT_XSESSION = @DEFAULT_XSESSION@
 DEFS = @DEFS@
 DEPDIR = @DEPDIR@
 DSYMUTIL = @DSYMUTIL@
@@ -131,9 +139,11 @@ ECHO_T = @ECHO_T@
 EGREP = @EGREP@
 EXEEXT = @EXEEXT@
 FGREP = @FGREP@
+GLIB_CFLAGS = @GLIB_CFLAGS@
 GLIB_GENMARSHAL = @GLIB_GENMARSHAL@
+GLIB_LIBS = @GLIB_LIBS@
 GMSGFMT = @GMSGFMT@
-GREETER_THEME = @GREETER_THEME@
+GREETER_THEME_DIR = @GREETER_THEME_DIR@
 GREETER_USER = @GREETER_USER@
 GREP = @GREP@
 GTKDOC_CHECK = @GTKDOC_CHECK@
@@ -203,13 +213,14 @@ SED = @SED@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
 STRIP = @STRIP@
-THEME_DIR = @THEME_DIR@
 USE_NLS = @USE_NLS@
 VALAC = @VALAC@
 VALA_API_GEN = @VALA_API_GEN@
 VERSION = @VERSION@
 WARN_CFLAGS = @WARN_CFLAGS@
 XAUTH_DIR = @XAUTH_DIR@
+XCB_CFLAGS = @XCB_CFLAGS@
+XCB_LIBS = @XCB_LIBS@
 XGETTEXT = @XGETTEXT@
 XSERVER_BINARY = @XSERVER_BINARY@
 XSESSIONS_DIR = @XSESSIONS_DIR@
@@ -269,13 +280,19 @@ top_srcdir = @top_srcdir@
 lightdm_SOURCES = \
 	child-process.c \
 	child-process.h \
+	configuration.c \
+	configuration.h \
 	display.c \
 	display.h \
 	display-manager.c \
 	display-manager.h \
+	dmrc.c \
+	dmrc.h \
 	greeter.c \
 	greeter.h \
 	greeter-protocol.h \
+	guest-manager.c \
+	guest-manager.h \
 	lightdm.c \
 	ldm-marshal.c \
 	ldm-marshal.h \
@@ -285,6 +302,8 @@ lightdm_SOURCES = \
 	session.h \
 	theme.c \
 	theme.h \
+	user.c \
+	user.h \
 	xauth.c \
 	xauth.h \
 	xdmcp-protocol.c \
@@ -304,12 +323,12 @@ BUILT_SOURCES = \
 lightdm_CFLAGS = \
 	$(LIGHTDM_CFLAGS) \
 	$(WARN_CFLAGS) \
-	-DCONFIG_FILE=\"$(CONFIG_FILE)\" \
+	-DDEFAULT_CONFIG_FILE=\"$(DEFAULT_CONFIG_FILE)\" \
 	-DLOG_DIR=\"$(LOG_DIR)\" \
-	-DTHEME_ENGINE_DIR=\"$(libexecdir)\" \
+	-DGREETER_THEME_ENGINE_DIR=\"$(libexecdir)\" \
 	-DXAUTH_DIR=\"$(XAUTH_DIR)\" \
 	-DCACHE_DIR=\"$(CACHE_DIR)\" \
-	-DTHEME_DIR=\"$(THEME_DIR)\" \
+	-DGREETER_THEME_DIR=\"$(GREETER_THEME_DIR)\" \
 	-DLIGHTDM_BINARY=\"lightdm\"
 
 lightdm_LDADD = \
@@ -317,8 +336,7 @@ lightdm_LDADD = \
 	-lpam
 
 EXTRA_DIST = ldm-marshal.list \
-	display-manager.xml \
-	user-manager.xml
+	display-manager.xml
 
 CLEANFILES = \
 	$(BUILT_SOURCES)
@@ -415,14 +433,18 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lightdm-child-process.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lightdm-configuration.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lightdm-display-manager.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lightdm-display.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lightdm-dmrc.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lightdm-greeter.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lightdm-guest-manager.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lightdm-ldm-marshal.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lightdm-lightdm.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lightdm-pam-session.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lightdm-session.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lightdm-theme.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lightdm-user.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lightdm-xauth.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lightdm-xdmcp-protocol.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lightdm-xdmcp-server.Po@am__quote@
@@ -469,6 +491,22 @@ lightdm-child-process.obj: child-process.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(lightdm_CFLAGS) $(CFLAGS) -c -o lightdm-child-process.obj `if test -f 'child-process.c'; then $(CYGPATH_W) 'child-process.c'; else $(CYGPATH_W) '$(srcdir)/child-process.c'; fi`
 
+lightdm-configuration.o: configuration.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(lightdm_CFLAGS) $(CFLAGS) -MT lightdm-configuration.o -MD -MP -MF $(DEPDIR)/lightdm-configuration.Tpo -c -o lightdm-configuration.o `test -f 'configuration.c' || echo '$(srcdir)/'`configuration.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/lightdm-configuration.Tpo $(DEPDIR)/lightdm-configuration.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='configuration.c' object='lightdm-configuration.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(lightdm_CFLAGS) $(CFLAGS) -c -o lightdm-configuration.o `test -f 'configuration.c' || echo '$(srcdir)/'`configuration.c
+
+lightdm-configuration.obj: configuration.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(lightdm_CFLAGS) $(CFLAGS) -MT lightdm-configuration.obj -MD -MP -MF $(DEPDIR)/lightdm-configuration.Tpo -c -o lightdm-configuration.obj `if test -f 'configuration.c'; then $(CYGPATH_W) 'configuration.c'; else $(CYGPATH_W) '$(srcdir)/configuration.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/lightdm-configuration.Tpo $(DEPDIR)/lightdm-configuration.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='configuration.c' object='lightdm-configuration.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(lightdm_CFLAGS) $(CFLAGS) -c -o lightdm-configuration.obj `if test -f 'configuration.c'; then $(CYGPATH_W) 'configuration.c'; else $(CYGPATH_W) '$(srcdir)/configuration.c'; fi`
+
 lightdm-display.o: display.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(lightdm_CFLAGS) $(CFLAGS) -MT lightdm-display.o -MD -MP -MF $(DEPDIR)/lightdm-display.Tpo -c -o lightdm-display.o `test -f 'display.c' || echo '$(srcdir)/'`display.c
 @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/lightdm-display.Tpo $(DEPDIR)/lightdm-display.Po
@@ -501,6 +539,22 @@ lightdm-display-manager.obj: display-manager.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(lightdm_CFLAGS) $(CFLAGS) -c -o lightdm-display-manager.obj `if test -f 'display-manager.c'; then $(CYGPATH_W) 'display-manager.c'; else $(CYGPATH_W) '$(srcdir)/display-manager.c'; fi`
 
+lightdm-dmrc.o: dmrc.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(lightdm_CFLAGS) $(CFLAGS) -MT lightdm-dmrc.o -MD -MP -MF $(DEPDIR)/lightdm-dmrc.Tpo -c -o lightdm-dmrc.o `test -f 'dmrc.c' || echo '$(srcdir)/'`dmrc.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/lightdm-dmrc.Tpo $(DEPDIR)/lightdm-dmrc.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='dmrc.c' object='lightdm-dmrc.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(lightdm_CFLAGS) $(CFLAGS) -c -o lightdm-dmrc.o `test -f 'dmrc.c' || echo '$(srcdir)/'`dmrc.c
+
+lightdm-dmrc.obj: dmrc.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(lightdm_CFLAGS) $(CFLAGS) -MT lightdm-dmrc.obj -MD -MP -MF $(DEPDIR)/lightdm-dmrc.Tpo -c -o lightdm-dmrc.obj `if test -f 'dmrc.c'; then $(CYGPATH_W) 'dmrc.c'; else $(CYGPATH_W) '$(srcdir)/dmrc.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/lightdm-dmrc.Tpo $(DEPDIR)/lightdm-dmrc.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='dmrc.c' object='lightdm-dmrc.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(lightdm_CFLAGS) $(CFLAGS) -c -o lightdm-dmrc.obj `if test -f 'dmrc.c'; then $(CYGPATH_W) 'dmrc.c'; else $(CYGPATH_W) '$(srcdir)/dmrc.c'; fi`
+
 lightdm-greeter.o: greeter.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(lightdm_CFLAGS) $(CFLAGS) -MT lightdm-greeter.o -MD -MP -MF $(DEPDIR)/lightdm-greeter.Tpo -c -o lightdm-greeter.o `test -f 'greeter.c' || echo '$(srcdir)/'`greeter.c
 @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/lightdm-greeter.Tpo $(DEPDIR)/lightdm-greeter.Po
@@ -516,6 +570,22 @@ lightdm-greeter.obj: greeter.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='greeter.c' object='lightdm-greeter.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(lightdm_CFLAGS) $(CFLAGS) -c -o lightdm-greeter.obj `if test -f 'greeter.c'; then $(CYGPATH_W) 'greeter.c'; else $(CYGPATH_W) '$(srcdir)/greeter.c'; fi`
+
+lightdm-guest-manager.o: guest-manager.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(lightdm_CFLAGS) $(CFLAGS) -MT lightdm-guest-manager.o -MD -MP -MF $(DEPDIR)/lightdm-guest-manager.Tpo -c -o lightdm-guest-manager.o `test -f 'guest-manager.c' || echo '$(srcdir)/'`guest-manager.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/lightdm-guest-manager.Tpo $(DEPDIR)/lightdm-guest-manager.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='guest-manager.c' object='lightdm-guest-manager.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(lightdm_CFLAGS) $(CFLAGS) -c -o lightdm-guest-manager.o `test -f 'guest-manager.c' || echo '$(srcdir)/'`guest-manager.c
+
+lightdm-guest-manager.obj: guest-manager.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(lightdm_CFLAGS) $(CFLAGS) -MT lightdm-guest-manager.obj -MD -MP -MF $(DEPDIR)/lightdm-guest-manager.Tpo -c -o lightdm-guest-manager.obj `if test -f 'guest-manager.c'; then $(CYGPATH_W) 'guest-manager.c'; else $(CYGPATH_W) '$(srcdir)/guest-manager.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/lightdm-guest-manager.Tpo $(DEPDIR)/lightdm-guest-manager.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='guest-manager.c' object='lightdm-guest-manager.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(lightdm_CFLAGS) $(CFLAGS) -c -o lightdm-guest-manager.obj `if test -f 'guest-manager.c'; then $(CYGPATH_W) 'guest-manager.c'; else $(CYGPATH_W) '$(srcdir)/guest-manager.c'; fi`
 
 lightdm-lightdm.o: lightdm.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(lightdm_CFLAGS) $(CFLAGS) -MT lightdm-lightdm.o -MD -MP -MF $(DEPDIR)/lightdm-lightdm.Tpo -c -o lightdm-lightdm.o `test -f 'lightdm.c' || echo '$(srcdir)/'`lightdm.c
@@ -596,6 +666,22 @@ lightdm-theme.obj: theme.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='theme.c' object='lightdm-theme.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(lightdm_CFLAGS) $(CFLAGS) -c -o lightdm-theme.obj `if test -f 'theme.c'; then $(CYGPATH_W) 'theme.c'; else $(CYGPATH_W) '$(srcdir)/theme.c'; fi`
+
+lightdm-user.o: user.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(lightdm_CFLAGS) $(CFLAGS) -MT lightdm-user.o -MD -MP -MF $(DEPDIR)/lightdm-user.Tpo -c -o lightdm-user.o `test -f 'user.c' || echo '$(srcdir)/'`user.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/lightdm-user.Tpo $(DEPDIR)/lightdm-user.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='user.c' object='lightdm-user.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(lightdm_CFLAGS) $(CFLAGS) -c -o lightdm-user.o `test -f 'user.c' || echo '$(srcdir)/'`user.c
+
+lightdm-user.obj: user.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(lightdm_CFLAGS) $(CFLAGS) -MT lightdm-user.obj -MD -MP -MF $(DEPDIR)/lightdm-user.Tpo -c -o lightdm-user.obj `if test -f 'user.c'; then $(CYGPATH_W) 'user.c'; else $(CYGPATH_W) '$(srcdir)/user.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/lightdm-user.Tpo $(DEPDIR)/lightdm-user.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='user.c' object='lightdm-user.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(lightdm_CFLAGS) $(CFLAGS) -c -o lightdm-user.obj `if test -f 'user.c'; then $(CYGPATH_W) 'user.c'; else $(CYGPATH_W) '$(srcdir)/user.c'; fi`
 
 lightdm-xauth.o: xauth.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(lightdm_CFLAGS) $(CFLAGS) -MT lightdm-xauth.o -MD -MP -MF $(DEPDIR)/lightdm-xauth.Tpo -c -o lightdm-xauth.o `test -f 'xauth.c' || echo '$(srcdir)/'`xauth.c

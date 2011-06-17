@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010 Robert Ancell.
+ * Copyright (C) 2010-2011 Robert Ancell.
  * Author: Robert Ancell <robert.ancell@canonical.com>
  * 
  * This program is free software: you can redistribute it and/or modify it under
@@ -10,17 +10,14 @@
  */
 
 #include <string.h>
+#include <errno.h>
 #include <unistd.h>
-#include <pwd.h>
 #include <sys/stat.h>
 
 #include "xauth.h"
 
 struct XAuthorizationPrivate
 {
-    /* User who is using this authorization */
-    gchar *username;
-
     /* Authorization scheme */
     gchar *authorization_name;
 
@@ -44,7 +41,8 @@ xauth_new (const gchar *name, const guchar *data, gsize data_length)
     return auth;
 }
 
-XAuthorization *xauth_new_cookie (void)
+XAuthorization *
+xauth_new_cookie (void)
 {
     guchar cookie[16];
     gint i;
@@ -102,7 +100,7 @@ write_string (GString *string, const gchar *value)
 }
 
 GFile *
-xauth_write (XAuthorization *auth, const gchar *username, const gchar *path, GError **error)
+xauth_write (XAuthorization *auth, User *user, const gchar *path, GError **error)
 {
     GFile *file;
     GFileOutputStream *stream;
@@ -118,21 +116,14 @@ xauth_write (XAuthorization *auth, const gchar *username, const gchar *path, GEr
         g_object_unref (file);
         return FALSE;
     }
-    
+
     /* NOTE: Would like to do:
      * g_file_set_attribute_string (file, G_FILE_ATTRIBUTE_OWNER_USER, username, G_FILE_QUERY_INFO_NONE, NULL, error))
      * but not supported. */
-    if (username)
+    if (user && getuid () == 0)
     {
-        int result = -1;
-        struct passwd *info;
-
-        info = getpwnam (username);
-        if (info)
-            result = chown (path, info->pw_uid, info->pw_gid);
-
-        if (result != 0)
-            g_warning ("Failed to set authorization owner");
+        if (chown (path, user_get_uid (user), user_get_gid (user)) < 0)
+            g_warning ("Failed to set authorization owner: %s", strerror (errno));
     }
 
     data = g_string_sized_new (1024);
@@ -169,7 +160,6 @@ xauth_finalize (GObject *object)
 
     self = XAUTH (object);
 
-    g_free (self->priv->username);
     g_free (self->priv->authorization_name);
     g_free (self->priv->authorization_data);
 

@@ -1,0 +1,23 @@
+=== modified file 'greeters/gtk/lightdm-example-gtk-greeter.c'
+Index: lightdm-0.4.0/greeters/gtk/lightdm-example-gtk-greeter.c
+===================================================================
+--- lightdm-0.4.0.orig/greeters/gtk/lightdm-example-gtk-greeter.c	2011-06-09 16:00:20.000000000 +1000
++++ lightdm-0.4.0/greeters/gtk/lightdm-example-gtk-greeter.c	2011-06-14 16:01:18.255288627 +1000
+@@ -468,6 +468,8 @@
+     message_label = GTK_WIDGET (gtk_builder_get_object (builder, "message_label"));
+     session_combo = GTK_WIDGET (gtk_builder_get_object (builder, "session_combobox"));
+   
++    gtk_window_set_has_resize_grip (GTK_WINDOW (window), FALSE);
++
+     gtk_label_set_text (GTK_LABEL (gtk_builder_get_object (builder, "hostname_label")), ldm_greeter_get_hostname (greeter));
+ 
+     background_image = ldm_greeter_get_string_property (greeter, "background-image");
+Index: lightdm-0.4.0/po/POTFILES.in
+===================================================================
+--- lightdm-0.4.0.orig/po/POTFILES.in	2011-06-14 16:01:25.395288623 +1000
++++ lightdm-0.4.0/po/POTFILES.in	2011-06-14 16:01:32.215288619 +1000
+@@ -23,3 +23,4 @@
+ src/xdmcp-server.c
+ src/xdmcp-session.c
+ src/xserver.c
++.pc/01_resize_grip.patch/greeters/gtk/lightdm-example-gtk-greeter.c

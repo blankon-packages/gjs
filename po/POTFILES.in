@@ -23,3 +23,4 @@ src/xdmcp-protocol.c
 src/xdmcp-server.c
 src/xdmcp-session.c
 src/xserver.c
+.pc/01_resize_grip.patch/greeters/gtk/lightdm-example-gtk-greeter.c

@@ -1,6 +1,6 @@
 dnl Process this file with autoconf to produce a configure script.
 
-AC_INIT(lightdm, 0.3.7)
+AC_INIT(lightdm, 0.4.0)
 AC_CONFIG_MACRO_DIR(m4)
 AC_CONFIG_HEADER(config.h)
 AM_INIT_AUTOMAKE
@@ -28,10 +28,17 @@ PKG_CHECK_MODULES(LIGHTDM, [
     glib-2.0
     gio-2.0 >= 2.26
     gio-unix-2.0
-    gobject-2.0
     xcb
     xdmcp
 ])
+
+PKG_CHECK_MODULES(GLIB, [
+    glib-2.0
+])
+
+PKG_CHECK_MODULES(XCB, [
+    xcb
+])    
 
 AC_ARG_ENABLE(liblightdm-gobject,
 	AS_HELP_STRING([--enable-liblightdm-gobject],[Enable LightDM client gobject libraries [[default=yes]]]),
@@ -111,15 +118,15 @@ dnl ###########################################################################
 dnl Configurable values
 dnl ###########################################################################
 
-CONFIG_FILE=${sysconfdir}/lightdm.conf
+DEFAULT_CONFIG_FILE=${sysconfdir}/lightdm/lightdm.conf
 AC_ARG_WITH(config-file,
             AS_HELP_STRING(--with-config-file=<file>,
                            Configuration file to load),
     if test x$withval != x; then
-        CONFIG_FILE="$withval"
+        DEFAULT_CONFIG_FILE="$withval"
     fi
 )
-AC_SUBST(CONFIG_FILE)
+AC_SUBST(DEFAULT_CONFIG_FILE)
 
 LOG_DIR=${localstatedir}/log/lightdm
 AC_ARG_WITH(log-dir,
@@ -183,16 +190,16 @@ AC_ARG_WITH(xsession-dir,
 AC_SUBST(XSESSIONS_DIR)
 AC_DEFINE_UNQUOTED(XSESSIONS_DIR, "$XSESSIONS_DIR", X session directory)
 
-DEFAULT_SESSION=gnome
-AC_ARG_WITH(default-session,
-            AS_HELP_STRING(--with-default-session=<name>,
-                           Default session to launch),
+DEFAULT_XSESSION=gnome
+AC_ARG_WITH(default-xsession,
+            AS_HELP_STRING(--with-default-xsession=<name>,
+                           Default X session to launch),
     if test x$withval != x; then
-        DEFAULT_SESSION="$withval"
+        DEFAULT_XSESSION="$withval"
     fi
 )
-AC_SUBST(DEFAULT_SESSION)
-AC_DEFINE_UNQUOTED(DEFAULT_SESSION, "$DEFAULT_SESSION", Default session)
+AC_SUBST(DEFAULT_XSESSION)
+AC_DEFINE_UNQUOTED(DEFAULT_XSESSION, "$DEFAULT_XSESSION", Default X session)
 
 GREETER_USER=
 AC_ARG_WITH(greeter-user,
@@ -216,26 +223,37 @@ AC_ARG_WITH(default-pam-service,
 AC_SUBST(DEFAULT_PAM_SERVICE)
 AC_DEFINE_UNQUOTED(DEFAULT_PAM_SERVICE, "$DEFAULT_PAM_SERVICE", Default PAM service to use)
 
-THEME_DIR=${datarootdir}/lightdm/themes
-AC_ARG_WITH(theme-dir,
-            AS_HELP_STRING(--with-theme-dir=<dir>,
-                           Directory containing greeter themes),
+DEFAULT_PAM_AUTOLOGIN_SERVICE=lightdm-autologin
+AC_ARG_WITH(default-pam-autologin-service,
+            AS_HELP_STRING(--with-default-pam-autologin-service=<name>,
+                           Default PAM service to use for automatic logins),
     if test x$withval != x; then
-        THEME_DIR="$withval"
+        DEFAULT_PAM_AUTOLOGIN_SERVICE="$withval"
     fi
 )
-AC_SUBST(THEME_DIR)
+AC_SUBST(DEFAULT_PAM_AUTOLOGIN_SERVICE)
+AC_DEFINE_UNQUOTED(DEFAULT_PAM_AUTOLOGIN_SERVICE, "$DEFAULT_PAM_AUTOLOGIN_SERVICE", Default PAM service to use for automatic logins)
 
-GREETER_THEME=example-gtk-gnome
+GREETER_THEME_DIR=${datarootdir}/lightdm/themes
+AC_ARG_WITH(greeter-theme-dir,
+            AS_HELP_STRING(--with-greeter-theme-dir=<dir>,
+                           Directory containing greeter themes),
+    if test x$withval != x; then
+        GREETER_THEME_DIR="$withval"
+    fi
+)
+AC_SUBST(GREETER_THEME_DIR)
+
+DEFAULT_GREETER_THEME=example-gtk-gnome
 AC_ARG_WITH(theme,
             AS_HELP_STRING(--with-theme=<theme>,
                            Default theme),
     if test x$withval != x; then
-        GREETER_THEME="$withval"
+        DEFAULT_GREETER_THEME="$withval"
     fi
 )
-AC_SUBST(GREETER_THEME)
-AC_DEFINE_UNQUOTED(GREETER_THEME, "$GREETER_THEME", Default theme)
+AC_SUBST(DEFAULT_GREETER_THEME)
+AC_DEFINE_UNQUOTED(DEFAULT_GREETER_THEME, "$DEFAULT_GREETER_THEME", Default greeter theme)
 
 dnl ###########################################################################
 dnl Documentation
@@ -273,6 +291,9 @@ liblightdm-qt/QLightDM/liblightdm-qt-0.pc
 liblightdm-qt/QLightDM/Makefile
 po/Makefile.in
 src/Makefile
+tests/Makefile
+tests/data/passwd
+tests/src/Makefile
 themes/Makefile
 themes/example-gtk-gnome/Makefile
 themes/example-python-gtk-gnome/Makefile
@@ -289,17 +310,18 @@ echo "
                     ===========================
 
         prefix:                   $prefix
-        Config file:              $CONFIG_FILE
+        Config file:              $DEFAULT_CONFIG_FILE
         Log directory:            $LOG_DIR        
         D-Bus system directory:   $DBUS_SYS_DIR
         X server binary:          $XSERVER_BINARY
         X authorization dir:      $XAUTH_DIR
-        XSessions dir:            $XSESSIONS_DIR
-        Default session:          $DEFAULT_SESSION
+        X session dir:            $XSESSIONS_DIR
+        Default X session:        $DEFAULT_XSESSION
         Greeter user:             $GREETER_USER
         PAM service:              $DEFAULT_PAM_SERVICE
-        Theme directory:          $THEME_DIR
-        Theme:                    $GREETER_THEME
+        PAM service (autologins): $DEFAULT_PAM_AUTOLOGIN_SERVICE
+        Greeter theme directory:  $GREETER_THEME_DIR
+        Default greeter theme:    $DEFAULT_GREETER_THEME
 
         Greeters:
         liblightdm-gobject:       $compile_liblightdm_gobject

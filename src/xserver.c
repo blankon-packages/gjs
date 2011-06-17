@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010 Robert Ancell.
+ * Copyright (C) 2010-2011 Robert Ancell.
  * Author: Robert Ancell <robert.ancell@canonical.com>
  * 
  * This program is free software: you can redistribute it and/or modify it under
@@ -40,6 +40,12 @@ struct XServerPrivate
 
     /* Command to run the X server */
     gchar *command;
+
+    /* Config file to use */
+    gchar *config_file;
+
+    /* Server layout to use */
+    gchar *layout;
 
     /* TRUE if the xserver has started */
     gboolean ready;
@@ -97,25 +103,63 @@ xserver_new (XServerType type, const gchar *hostname, gint display_number)
 XServerType
 xserver_get_server_type (XServer *server)
 {
+    g_return_val_if_fail (server != NULL, 0);
     return server->priv->type;
 }
 
 void
 xserver_set_command (XServer *server, const gchar *command)
 {
+    g_return_if_fail (server != NULL);
+
     g_free (server->priv->command);
     server->priv->command = g_strdup (command);
+}
+
+void
+xserver_set_config_file (XServer *server, const gchar *config_file)
+{
+    g_return_if_fail (server != NULL);
+
+    g_free (server->priv->config_file);
+    server->priv->config_file = g_strdup (config_file);
+}
+
+const gchar *
+xserver_get_config_file (XServer *server)
+{
+    g_return_val_if_fail (server != NULL, NULL);
+    return server->priv->config_file;
+}
+
+void
+xserver_set_layout (XServer *server, const gchar *layout)
+{
+    g_return_if_fail (server != NULL);
+
+    g_free (server->priv->layout);
+    server->priv->layout = g_strdup (layout);
+}
+
+const gchar *
+xserver_get_layout (XServer *server)
+{
+    g_return_val_if_fail (server != NULL, NULL);
+    return server->priv->layout;
 }
 
 const gchar *
 xserver_get_command (XServer *server)
 {
+    g_return_val_if_fail (server != NULL, NULL);
     return server->priv->command;
 }
 
 void
 xserver_set_log_file (XServer *server, const gchar *log_file)
 {
+    g_return_if_fail (server != NULL);
+
     g_free (server->priv->log_file);
     server->priv->log_file = g_strdup (log_file);
 }
@@ -123,35 +167,43 @@ xserver_set_log_file (XServer *server, const gchar *log_file)
 const gchar *
 xserver_get_log_file (XServer *server)
 {
+    g_return_val_if_fail (server != NULL, NULL);
     return server->priv->log_file;
 }
   
 void
 xserver_set_port (XServer *server, guint port)
 {
+    g_return_if_fail (server != NULL);
     server->priv->port = port;
 }
 
-guint xserver_get_port (XServer *server)
+guint
+xserver_get_port (XServer *server)
 {
+    g_return_val_if_fail (server != NULL, 0);
     return server->priv->port;
 }
 
 const gchar *
 xserver_get_hostname (XServer *server)
 {
+    g_return_val_if_fail (server != NULL, NULL);
     return server->priv->hostname;
 }
 
 gint
 xserver_get_display_number (XServer *server)
 {
+    g_return_val_if_fail (server != NULL, 0);
     return server->priv->display_number;
 }
 
 const gchar *
 xserver_get_address (XServer *server)
 {
+    g_return_val_if_fail (server != NULL, NULL);
+
     if (!server->priv->address)
     {
         if (server->priv->type == XSERVER_TYPE_REMOTE)
@@ -166,6 +218,8 @@ xserver_get_address (XServer *server)
 void
 xserver_set_authentication (XServer *server, const gchar *name, const guchar *data, gsize data_length)
 {
+    g_return_if_fail (server != NULL);
+
     g_free (server->priv->authentication_name);
     server->priv->authentication_name = g_strdup (name);
     g_free (server->priv->authentication_data);
@@ -177,65 +231,108 @@ xserver_set_authentication (XServer *server, const gchar *name, const guchar *da
 const gchar *
 xserver_get_authentication_name (XServer *server)
 {
+    g_return_val_if_fail (server != NULL, NULL);
     return server->priv->authentication_name;
 }
 
 const guchar *
 xserver_get_authentication_data (XServer *server)
 {
+    g_return_val_if_fail (server != NULL, NULL);
     return server->priv->authentication_data;
 }
 
 gsize
 xserver_get_authentication_data_length (XServer *server)
 {
+    g_return_val_if_fail (server != NULL, 0);
     return server->priv->authentication_data_length;
+}
+
+static void
+write_authorization_file (XServer *server)
+{
+    GError *error = NULL;
+
+    /* Stop if not using authorization or already written */
+    if (!server->priv->authorization || server->priv->authorization_file)
+        return;
+
+    g_debug ("Writing X server authorization to %s", server->priv->authorization_path);
+
+    server->priv->authorization_file = xauth_write (server->priv->authorization, NULL, server->priv->authorization_path, &error);
+    if (!server->priv->authorization_file)
+        g_warning ("Failed to write authorization: %s", error->message);
+    g_clear_error (&error);
 }
 
 void
 xserver_set_authorization (XServer *server, XAuthorization *authorization, const gchar *path)
 {
-    if (server->priv->authorization)
-        g_object_unref (server->priv->authorization);
-    server->priv->authorization = g_object_ref (authorization);
-    if (path)
-        server->priv->authorization_path = g_strdup (path);
-  
-    /* If already running then change authorization immediately */
+    gboolean rewrite = FALSE;
+
+    g_return_if_fail (server != NULL);
+
+    /* Delete existing authorization */
     if (server->priv->authorization_file)
     {
-        GError *error = NULL;
-
+        g_file_delete (server->priv->authorization_file, NULL, NULL);
         g_object_unref (server->priv->authorization_file);
-        server->priv->authorization_file = xauth_write (server->priv->authorization, NULL, server->priv->authorization_path, &error);
-        if (!server->priv->authorization_file)
-            g_warning ("Failed to write authorization: %s", error->message);
-        g_clear_error (&error);
+        server->priv->authorization_file = NULL;
+        rewrite = TRUE;
     }
+
+    if (server->priv->authorization)
+        g_object_unref (server->priv->authorization);
+    server->priv->authorization = NULL;
+    if (authorization)
+        server->priv->authorization = g_object_ref (authorization);
+
+    /* Update path if it has changed */
+    if (path != server->priv->authorization_path)
+    {
+        g_free (server->priv->authorization_path);
+        server->priv->authorization_path = g_strdup (path);
+    }
+
+    /* If already running then change authorization immediately */
+    if (rewrite)
+        write_authorization_file (server);
 }
 
 XAuthorization *
 xserver_get_authorization (XServer *server)
 {
+    g_return_val_if_fail (server != NULL, NULL);
     return server->priv->authorization;
 }
 
-void
-xserver_set_vt (XServer *xserver, gint vt)
+const gchar *
+xserver_get_authorization_path (XServer *server)
 {
-    xserver->priv->vt = vt;  
+    g_return_val_if_fail (server != NULL, NULL);
+    return server->priv->authorization_path;
+}
+
+void
+xserver_set_vt (XServer *server, gint vt)
+{
+    g_return_if_fail (server != NULL);
+    server->priv->vt = vt;
 }
 
 gint
-xserver_get_vt (XServer *xserver)
+xserver_get_vt (XServer *server)
 {
-    return xserver->priv->vt;
+    g_return_val_if_fail (server != NULL, 0);
+    return server->priv->vt;
 }
 
 void
-xserver_set_no_root (XServer *xserver, gboolean no_root)
+xserver_set_no_root (XServer *server, gboolean no_root)
 {
-    xserver->priv->no_root = no_root;
+    g_return_if_fail (server != NULL);
+    server->priv->no_root = no_root;
 }
 
 static gboolean
@@ -243,16 +340,10 @@ xserver_connect (XServer *server)
 {
     gchar *xauthority = NULL;
 
-    /* Write the authorization file */
-    if (server->priv->authorization)
-    {
-        GError *error = NULL;
+    g_return_val_if_fail (server != NULL, FALSE);
 
-        server->priv->authorization_file = xauth_write (server->priv->authorization, NULL, server->priv->authorization_path, &error);
-        if (!server->priv->authorization_file)
-            g_warning ("Failed to write authorization: %s", error->message);
-        g_clear_error (&error);
-    }
+    /* Write the authorization file */
+    write_authorization_file (server);
 
     /* NOTE: We have to do this hack as xcb_connect_to_display_with_auth_info can't be used
      * for XDM-AUTHORIZATION-1 and the authorization data requires to know the source port */
@@ -283,7 +374,9 @@ xserver_start (XServer *server)
     gboolean result;
     GString *command;
 
+    g_return_val_if_fail (server != NULL, FALSE);
     //g_return_val_if_fail (server->priv->pid == 0, FALSE);
+    g_return_val_if_fail (server->priv->command != NULL, FALSE);
  
     /* Check if we can connect to the remote server */
     if (server->priv->type == XSERVER_TYPE_REMOTE)
@@ -297,22 +390,20 @@ xserver_start (XServer *server)
     }
 
     /* Write the authorization file */
-    if (server->priv->authorization)
-    {
-        GError *error = NULL;
-
-        server->priv->authorization_file = xauth_write (server->priv->authorization, NULL, server->priv->authorization_path, &error);
-        if (!server->priv->authorization_file)
-            g_warning ("Failed to write authorization: %s", error->message);
-        g_clear_error (&error);
-    }
+    write_authorization_file (server);
 
     command = g_string_new (server->priv->command);
     g_string_append_printf (command, " :%d", server->priv->display_number);
     //g_string_append_printf (command, " vt%d");
 
+    if (server->priv->config_file)
+        g_string_append_printf (command, " -config %s", server->priv->config_file);
+
+    if (server->priv->layout)
+        g_string_append_printf (command, " -layout %s", server->priv->layout);
+
     if (server->priv->authorization)
-         g_string_append_printf (command, " -auth %s", server->priv->authorization_path);
+        g_string_append_printf (command, " -auth %s", server->priv->authorization_path);
 
     if (server->priv->type == XSERVER_TYPE_LOCAL_TERMINAL)
     {
@@ -338,13 +429,13 @@ xserver_start (XServer *server)
         g_string_append_printf (command, " vt%d", server->priv->vt);
 
     if (server->priv->no_root)
-        g_string_append (command, " -nr");
+        g_string_append (command, " -background none");
 
     g_debug ("Launching X Server");
 
     result = child_process_start (CHILD_PROCESS (server),
-                                  NULL, /* Username (run as current user) */
-                                  NULL, /* Environment (inherit parent) */
+                                  user_get_current (),
+                                  NULL,
                                   command->str,
                                   FALSE,
                                   &error);
@@ -352,7 +443,7 @@ xserver_start (XServer *server)
     if (!result)
         g_warning ("Unable to create display: %s", error->message);
     else
-        g_debug ("Waiting for signal from X server :%d", server->priv->display_number);
+        g_debug ("Waiting for ready signal from X server :%d", server->priv->display_number);
     g_clear_error (&error);
 
     return result;
@@ -361,6 +452,10 @@ xserver_start (XServer *server)
 void
 xserver_disconnect_clients (XServer *server)
 {
+    g_return_if_fail (server != NULL);
+  
+    g_debug ("Sending signal to X server to disconnect clients");
+
     server->priv->ready = FALSE;
     child_process_signal (CHILD_PROCESS (server), SIGHUP);
 }
@@ -369,7 +464,6 @@ static void
 xserver_init (XServer *server)
 {
     server->priv = G_TYPE_INSTANCE_GET_PRIVATE (server, XSERVER_TYPE, XServerPrivate);
-    server->priv->command = g_strdup (XSERVER_BINARY);
     server->priv->authentication_name = g_strdup ("");
     server->priv->vt = -1;
 }
@@ -385,6 +479,8 @@ xserver_finalize (GObject *object)
         xcb_disconnect (self->priv->connection);
 
     g_free (self->priv->command);
+    g_free (self->priv->config_file);
+    g_free (self->priv->layout);
     g_free (self->priv->hostname);
     g_free (self->priv->authentication_name);
     g_free (self->priv->authentication_data);

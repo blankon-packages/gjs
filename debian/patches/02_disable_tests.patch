@@ -1,0 +1,28 @@
+Index: lightdm-0.4.0/tests/Makefile.am
+===================================================================
+--- lightdm-0.4.0.orig/tests/Makefile.am	2011-06-17 13:54:16.331961544 +1000
++++ lightdm-0.4.0/tests/Makefile.am	2011-06-17 13:54:25.341961548 +1000
+@@ -1,14 +1,14 @@
+ SUBDIRS = src
+ 
+-TESTS = \
+-	test-headless \
+-	test-no-config \
+-	test-autologin \
+-	test-login-gobject \
+-	test-login-gobject-wrong-password \
+-	test-login-gobject-invalid-user \
+-	test-login-gobject-logout \
+-	test-login-gobject-session-crash
++#TESTS = \
++#	test-headless \
++#	test-no-config \
++#	test-autologin \
++#	test-login-gobject \
++#	test-login-gobject-wrong-password \
++#	test-login-gobject-invalid-user \
++#	test-login-gobject-logout \
++#	test-login-gobject-session-crash
+ 
+ EXTRA_DIST = \
+ 	$(TESTS) \

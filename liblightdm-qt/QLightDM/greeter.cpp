@@ -1,3 +1,15 @@
+/*
+ * Copyright (C) 2010-2011 David Edmundson
+ * Copyright (C) 2010-2011 Robert Ancell
+ * Author: David Edmundson <kde@davidedmundson.co.uk>
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 3 of the License, or (at your option) any
+ * later version. See http://www.gnu.org/copyleft/lgpl.html the full text of the
+ * license.
+ */
+
 #include "greeter.h"
 
 #include "user.h"
@@ -20,16 +32,19 @@ typedef enum
 {
     /* Messages from the greeter to the server */
     GREETER_MESSAGE_CONNECT                 = 1,
-    GREETER_MESSAGE_START_AUTHENTICATION    = 2,
-    GREETER_MESSAGE_CONTINUE_AUTHENTICATION = 3,
-    GREETER_MESSAGE_LOGIN                   = 4,
-    GREETER_MESSAGE_CANCEL_AUTHENTICATION   = 5,
+    GREETER_MESSAGE_LOGIN                   = 2,
+    GREETER_MESSAGE_LOGIN_AS_GUEST          = 3,
+    GREETER_MESSAGE_CONTINUE_AUTHENTICATION = 4,
+    GREETER_MESSAGE_START_SESSION           = 5,
+    GREETER_MESSAGE_CANCEL_AUTHENTICATION   = 6,
+    GREETER_MESSAGE_GET_USER_DEFAULTS       = 7,
 
     /* Messages from the server to the greeter */
     GREETER_MESSAGE_CONNECTED               = 101,
     GREETER_MESSAGE_QUIT                    = 102,
     GREETER_MESSAGE_PROMPT_AUTHENTICATION   = 103,
-    GREETER_MESSAGE_END_AUTHENTICATION      = 104
+    GREETER_MESSAGE_END_AUTHENTICATION      = 104,
+    GREETER_MESSAGE_USER_DEFAULTS           = 106
 } GreeterMessage;
 
 #define HEADER_SIZE 8
@@ -40,18 +55,19 @@ class GreeterPrivate
 {
 public:
     QString theme;
-    QString defaultLayout;
     QString defaultSession;
     QString timedUser;
     int loginDelay;
-    
+    bool guestAccountSupported;
+    int greeterCount;
+
     SessionsModel *sessionsModel;
     Config *config;
 
     QDBusInterface* lightdmInterface;
     QDBusInterface* powerManagementInterface;
     QDBusInterface* consoleKitInterface;
-  
+
     int toServerFd;
     int fromServerFd;
     QSocketNotifier *n;
@@ -161,7 +177,7 @@ void Greeter::connectToServer()
         busType = QDBusConnection::sessionBus();
     }
 
-    d->lightdmInterface = new QDBusInterface("org.lightdm.LightDisplayManager", "/org/lightdm/LightDisplayManager", "org.lightdm.LightDisplayManager", busType);
+    d->lightdmInterface = new QDBusInterface("org.freedesktop.DisplayManager", "/org/freedesktop/DisplayManager", "org.freedesktop.DisplayManager", busType);
     d->powerManagementInterface = new QDBusInterface("org.freedesktop.PowerManagement","/org/freedesktop/PowerManagement", "org.freedesktop.PowerManagement");
     d->consoleKitInterface = new QDBusInterface("org.freedesktop.ConsoleKit", "/org/freedesktop/ConsoleKit/Manager", "org.freedesktop.ConsoleKit");
 
@@ -195,19 +211,26 @@ void Greeter::connectToServer()
     qDebug() << "Connecting to display manager...";
     writeHeader(GREETER_MESSAGE_CONNECT, 0);
     flush();
-
-
-
 }
 
-void Greeter::startAuthentication(const QString &username)
+void Greeter::login(const QString &username)
 {
     d->inAuthentication = true;
     d->isAuthenticated = false;
     d->authenticationUser = username;
     qDebug() << "Starting authentication for user " << username << "...";
-    writeHeader(GREETER_MESSAGE_START_AUTHENTICATION, stringLength(username));
+    writeHeader(GREETER_MESSAGE_LOGIN, stringLength(username));
     writeString(username);
+    flush();
+}
+
+void Greeter::loginAsGuest()
+{
+    d->inAuthentication = true;
+    d->isAuthenticated = false;
+    d->authenticationUser = "";
+    qDebug() << "Starting authentication for guest account";
+    writeHeader(GREETER_MESSAGE_LOGIN_AS_GUEST, 0);
     flush();     
 }
 
@@ -243,19 +266,13 @@ QString Greeter::authenticationUser() const
     return d->authenticationUser;
 }
 
-void Greeter::login(const QString &username, const QString &session, const QString &language)
+void Greeter::startSession(const QString &session, const QString &language)
 {
-    qDebug() << "Logging in as " << username << " for session " << session << " with language " << language;
-    writeHeader(GREETER_MESSAGE_LOGIN, stringLength(username) + stringLength(session) + stringLength(language));
-    writeString(username);
+    qDebug() << "Starting session " << session << " with language " << language;
+    writeHeader(GREETER_MESSAGE_START_SESSION, stringLength(session) + stringLength(language));
     writeString(session);
     writeString(language);
     flush();
-}
-
-void Greeter::loginWithDefaults(const QString &username)
-{
-    login(username, NULL, NULL);
 }
 
 void Greeter::onRead(int fd)
@@ -304,11 +321,12 @@ void Greeter::onRead(int fd)
     {
     case GREETER_MESSAGE_CONNECTED:
         d->theme = readString(&offset);
-        d->defaultLayout = readString(&offset);
         d->defaultSession = readString(&offset);
         d->timedUser = readString(&offset);
         d->loginDelay = readInt(&offset);
-        qDebug() << "Connected theme=" << d->theme << " default-layout=" << d->defaultLayout << " default-session=" << d->defaultSession << " timed-user=" << d->timedUser << " login-delay" << d->loginDelay;
+        d->guestAccountSupported = readInt(&offset) != 0;
+        d->greeterCount = readInt(&offset);
+        qDebug() << "Connected theme=" << d->theme << " default-session=" << d->defaultSession << " timed-user=" << d->timedUser << " login-delay" << d->loginDelay << " guestAccountSupported" << d->guestAccountSupported;
 
         /* Set timeout for default login */
         if(d->timedUser != "" && d->loginDelay > 0)
@@ -383,14 +401,19 @@ QString Greeter::defaultLanguage() const
     return getenv("LANG");
 }
 
-QString Greeter::defaultLayout() const
-{
-    return d->defaultLayout;
-}
-
 QString Greeter::defaultSession() const
 {
     return d->defaultSession;
+}
+
+bool Greeter::guestAccountSupported() const
+{
+    return d->guestAccountSupported;
+}
+
+bool Greeter::isFirst() const
+{
+    return d->greeterCount == 0;
 }
 
 QString Greeter::timedLoginUser() const

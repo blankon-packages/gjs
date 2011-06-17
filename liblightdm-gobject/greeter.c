@@ -68,7 +68,7 @@ struct _LdmGreeterPrivate
     GDBusProxy *lightdm_proxy;
 
     GIOChannel *to_server_channel, *from_server_channel;
-    gchar *read_buffer;
+    guint8 *read_buffer;
     gsize n_read;
 
     Display *display;
@@ -93,7 +93,6 @@ struct _LdmGreeterPrivate
     gboolean have_languages;
     GList *languages;
 
-    gchar *default_layout;
     XklEngine *xkl_engine;
     XklConfigRec *xkl_config;
     gboolean have_layouts;
@@ -111,11 +110,14 @@ struct _LdmGreeterPrivate
     gchar *timed_user;
     gint login_delay;
     guint login_timeout;
+    gboolean guest_account_supported;
+    guint greeter_count;
 };
 
 G_DEFINE_TYPE (LdmGreeter, ldm_greeter, G_TYPE_OBJECT);
 
 #define HEADER_SIZE 8
+#define MAX_MESSAGE_LENGTH 1024
 
 /**
  * ldm_greeter_new:
@@ -148,29 +150,43 @@ int_length ()
 }
 
 static void
-write_int (LdmGreeter *greeter, guint32 value)
+write_message (LdmGreeter *greeter, guint8 *message, gint message_length)
 {
-    gchar buffer[4];
-    buffer[0] = value >> 24;
-    buffer[1] = (value >> 16) & 0xFF;
-    buffer[2] = (value >> 8) & 0xFF;
-    buffer[3] = value & 0xFF;
-    if (g_io_channel_write_chars (greeter->priv->to_server_channel, buffer, int_length (), NULL, NULL) != G_IO_STATUS_NORMAL)
-        g_warning ("Error writing to server");
+    GError *error = NULL;
+    if (g_io_channel_write_chars (greeter->priv->to_server_channel, (gchar *) message, message_length, NULL, NULL) != G_IO_STATUS_NORMAL)
+        g_warning ("Error writing to daemon: %s", error->message);
+    g_clear_error (&error);
+    g_io_channel_flush (greeter->priv->to_server_channel, NULL);
 }
 
 static void
-write_string (LdmGreeter *greeter, const gchar *value)
+write_int (guint8 *buffer, gint buffer_length, guint32 value, gsize *offset)
 {
-    write_int (greeter, strlen (value));
-    g_io_channel_write_chars (greeter->priv->to_server_channel, value, -1, NULL, NULL);
+    if (*offset + 4 >= buffer_length)
+        return;
+    buffer[*offset] = value >> 24;
+    buffer[*offset+1] = (value >> 16) & 0xFF;
+    buffer[*offset+2] = (value >> 8) & 0xFF;
+    buffer[*offset+3] = value & 0xFF;
+    *offset += 4;
+}
+
+static void
+write_string (guint8 *buffer, gint buffer_length, const gchar *value, gsize *offset)
+{
+    gint length = strlen (value);
+    write_int (buffer, buffer_length, length, offset);
+    if (*offset + length >= buffer_length)
+        return;
+    memcpy (buffer + *offset, value, length);
+    *offset += length;
 }
 
 static guint32
 read_int (LdmGreeter *greeter, gsize *offset)
 {
     guint32 value;
-    gchar *buffer;
+    guint8 *buffer;
     if (greeter->priv->n_read - *offset < int_length ())
     {
         g_warning ("Not enough space for int, need %i, got %zi", int_length (), greeter->priv->n_read - *offset);
@@ -210,22 +226,16 @@ string_length (const gchar *value)
 }
 
 static void
-write_header (LdmGreeter *greeter, guint32 id, guint32 length)
+write_header (guint8 *buffer, gint buffer_length, guint32 id, guint32 length, gsize *offset)
 {
-    write_int (greeter, id);
-    write_int (greeter, length);
+    write_int (buffer, buffer_length, id, offset);
+    write_int (buffer, buffer_length, length, offset);
 }
 
 static guint32 get_packet_length (LdmGreeter *greeter)
 {
     gsize offset = 4;
     return read_int (greeter, &offset);
-}
-
-static void
-flush (LdmGreeter *greeter)
-{
-    g_io_channel_flush (greeter->priv->to_server_channel, NULL);
 }
 
 static void
@@ -278,7 +288,7 @@ read_packet (LdmGreeter *greeter, gboolean block)
     {
         GIOStatus status;
         status = g_io_channel_read_chars (greeter->priv->from_server_channel,
-                                          greeter->priv->read_buffer + greeter->priv->n_read,
+                                          (gchar *) greeter->priv->read_buffer + greeter->priv->n_read,
                                           n_to_read - greeter->priv->n_read,
                                           &n_read,
                                           &error);
@@ -326,15 +336,18 @@ from_server_cb (GIOChannel *source, GIOCondition condition, gpointer data)
     {
     case GREETER_MESSAGE_CONNECTED:
         greeter->priv->theme = read_string (greeter, &offset);
-        greeter->priv->default_layout = read_string (greeter, &offset);
         greeter->priv->default_session = read_string (greeter, &offset);
         greeter->priv->timed_user = read_string (greeter, &offset);
         greeter->priv->login_delay = read_int (greeter, &offset);
+        greeter->priv->guest_account_supported = read_int (greeter, &offset) != 0;
+        greeter->priv->greeter_count = read_int (greeter, &offset);
 
-        g_debug ("Connected theme=%s default-layout=%s default-session=%s timed-user=%s login-delay=%d",
+        g_debug ("Connected theme=%s default-session=%s timed-user=%s login-delay=%d guest-account-supported=%s greeter-count=%d",
                  greeter->priv->theme,
-                 greeter->priv->default_layout, greeter->priv->default_session,
-                 greeter->priv->timed_user, greeter->priv->login_delay);
+                 greeter->priv->default_session,
+                 greeter->priv->timed_user, greeter->priv->login_delay,
+                 greeter->priv->guest_account_supported ? "true" : "false",
+                 greeter->priv->greeter_count);
 
         /* Set timeout for default login */
         if (greeter->priv->timed_user[0] != '\0' && greeter->priv->login_delay > 0)
@@ -386,6 +399,8 @@ ldm_greeter_connect_to_server (LdmGreeter *greeter)
 {
     GError *error = NULL;
     const gchar *bus_address, *fd;
+    guint8 message[MAX_MESSAGE_LENGTH];
+    gsize offset = 0;
     GBusType bus_type = G_BUS_TYPE_SYSTEM;
 
     g_return_val_if_fail (LDM_IS_GREETER (greeter), FALSE);
@@ -394,8 +409,6 @@ ldm_greeter_connect_to_server (LdmGreeter *greeter)
     if (!greeter->priv->system_bus)
         g_warning ("Failed to connect to system bus: %s", error->message);
     g_clear_error (&error);
-    if (!greeter->priv->system_bus)
-        return FALSE;
 
     bus_address = getenv ("LDM_BUS");
     if (bus_address && strcmp (bus_address, "SESSION") == 0)
@@ -430,14 +443,14 @@ ldm_greeter_connect_to_server (LdmGreeter *greeter)
     greeter->priv->lightdm_proxy = g_dbus_proxy_new_sync (greeter->priv->lightdm_bus,
                                                           G_DBUS_PROXY_FLAGS_NONE,
                                                           NULL,
-                                                          "org.lightdm.LightDisplayManager",
-                                                          "/org/lightdm/LightDisplayManager",
-                                                          "org.lightdm.LightDisplayManager",
+                                                          "org.freedesktop.DisplayManager",
+                                                          "/org/freedesktop/DisplayManager",
+                                                          "org.freedesktop.DisplayManager",
                                                           NULL, NULL);
 
     g_debug ("Connecting to display manager...");
-    write_header (greeter, GREETER_MESSAGE_CONNECT, 0);
-    flush (greeter);
+    write_header (message, MAX_MESSAGE_LENGTH, GREETER_MESSAGE_CONNECT, 0, &offset);
+    write_message (greeter, message, offset);
 
     return TRUE;
 }
@@ -961,13 +974,6 @@ ldm_greeter_get_languages (LdmGreeter *greeter)
     return greeter->priv->languages;
 }
 
-const gchar *
-ldm_greeter_get_default_layout (LdmGreeter *greeter)
-{
-    g_return_val_if_fail (LDM_IS_GREETER (greeter), NULL);
-    return greeter->priv->default_layout;
-}
-
 static void
 layout_cb (XklConfigRegistry *config,
            const XklConfigItem *item,
@@ -1182,6 +1188,36 @@ ldm_greeter_get_default_session (LdmGreeter *greeter)
 }
 
 /**
+ * ldm_greeter_get_has_guest_session:
+ * @greeter: A #LdmGreeter
+ *
+ * Check if guest sessions are supported.
+ *
+ * Return value: TRUE if guest sessions are supported.
+ */
+gboolean
+ldm_greeter_get_has_guest_session (LdmGreeter *greeter)
+{
+    g_return_val_if_fail (LDM_IS_GREETER (greeter), FALSE);
+    return greeter->priv->guest_account_supported;
+}
+
+/**
+ * ldm_greeter_get_is_first:
+ * @greeter: A #LdmGreeter
+ *
+ * Check if this is the first time a greeter has been shown on this display.
+ *
+ * Return value: TRUE if this is the first greeter on this display.
+ */
+gboolean
+ldm_greeter_get_is_first (LdmGreeter *greeter)
+{
+    g_return_val_if_fail (LDM_IS_GREETER (greeter), 0);
+    return greeter->priv->greeter_count == 0;
+}
+
+/**
  * ldm_greeter_get_timed_login_user:
  * @greeter: A #LdmGreeter
  *
@@ -1228,15 +1264,18 @@ ldm_greeter_cancel_timed_login (LdmGreeter *greeter)
 }
 
 /**
- * ldm_greeter_start_authentication:
+ * ldm_greeter_login:
  * @greeter: A #LdmGreeter
  * @username: A username
  *
  * Starts the authentication procedure for a user.
  **/
 void
-ldm_greeter_start_authentication (LdmGreeter *greeter, const char *username)
+ldm_greeter_login (LdmGreeter *greeter, const char *username)
 {
+    guint8 message[MAX_MESSAGE_LENGTH];
+    gsize offset = 0;
+
     g_return_if_fail (LDM_IS_GREETER (greeter));
     g_return_if_fail (username != NULL);
 
@@ -1245,9 +1284,32 @@ ldm_greeter_start_authentication (LdmGreeter *greeter, const char *username)
     g_free (greeter->priv->authentication_user);
     greeter->priv->authentication_user = g_strdup (username);
     g_debug ("Starting authentication for user %s...", username);
-    write_header (greeter, GREETER_MESSAGE_START_AUTHENTICATION, string_length (username));
-    write_string (greeter, username);
-    flush (greeter);
+    write_header (message, MAX_MESSAGE_LENGTH, GREETER_MESSAGE_LOGIN, string_length (username), &offset);
+    write_string (message, MAX_MESSAGE_LENGTH, username, &offset);
+    write_message (greeter, message, offset);
+}
+
+/**
+ * ldm_greeter_login_as_guest:
+ * @greeter: A #LdmGreeter
+ *
+ * Starts the authentication procedure for the guest user.
+ **/
+void
+ldm_greeter_login_as_guest (LdmGreeter *greeter)
+{
+    guint8 message[MAX_MESSAGE_LENGTH];
+    gsize offset = 0;
+
+    g_return_if_fail (LDM_IS_GREETER (greeter));
+
+    greeter->priv->in_authentication = TRUE;
+    greeter->priv->is_authenticated = FALSE;
+    g_free (greeter->priv->authentication_user);
+    greeter->priv->authentication_user = NULL;
+    g_debug ("Starting authentication for guest account...");
+    write_header (message, MAX_MESSAGE_LENGTH, GREETER_MESSAGE_LOGIN_AS_GUEST, 0, &offset);
+    write_message (greeter, message, offset);
 }
 
 /**
@@ -1260,15 +1322,18 @@ ldm_greeter_start_authentication (LdmGreeter *greeter, const char *username)
 void
 ldm_greeter_provide_secret (LdmGreeter *greeter, const gchar *secret)
 {
+    guint8 message[MAX_MESSAGE_LENGTH];
+    gsize offset = 0;
+
     g_return_if_fail (LDM_IS_GREETER (greeter));
     g_return_if_fail (secret != NULL);
 
     g_debug ("Providing secret to display manager");
-    write_header (greeter, GREETER_MESSAGE_CONTINUE_AUTHENTICATION, int_length () + string_length (secret));
+    write_header (message, MAX_MESSAGE_LENGTH, GREETER_MESSAGE_CONTINUE_AUTHENTICATION, int_length () + string_length (secret), &offset);
     // FIXME: Could be multiple secrets required
-    write_int (greeter, 1);
-    write_string (greeter, secret);
-    flush (greeter);
+    write_int (message, MAX_MESSAGE_LENGTH, 1, &offset);
+    write_string (message, MAX_MESSAGE_LENGTH, secret, &offset);
+    write_message (greeter, message, offset);
 }
 
 /**
@@ -1280,9 +1345,13 @@ ldm_greeter_provide_secret (LdmGreeter *greeter, const gchar *secret)
 void
 ldm_greeter_cancel_authentication (LdmGreeter *greeter)
 {
+    guint8 message[MAX_MESSAGE_LENGTH];
+    gsize offset = 0;
+
     g_return_if_fail (LDM_IS_GREETER (greeter));
-    write_header (greeter, GREETER_MESSAGE_CANCEL_AUTHENTICATION, 0);
-    flush (greeter);
+
+    write_header (message, MAX_MESSAGE_LENGTH, GREETER_MESSAGE_CANCEL_AUTHENTICATION, 0, &offset);
+    write_message (greeter, message, offset);
 }
 
 /**
@@ -1331,46 +1400,43 @@ ldm_greeter_get_authentication_user (LdmGreeter *greeter)
 }
 
 /**
- * ldm_greeter_login:
+ * ldm_greeter_start_session:
  * @greeter: A #LdmGreeter
- * @username: The user to log in as
  * @session: (allow-none): The session to log into or NULL to use the default
  * @language: (allow-none): The language to use or NULL to use the default
  *
- * Login a user to a session.
+ * Start a session for the logged in user.
  **/
 void
-ldm_greeter_login (LdmGreeter *greeter, const gchar *username, const gchar *session, const gchar *language)
+ldm_greeter_start_session (LdmGreeter *greeter, const gchar *session, const gchar *language)
 {
+    guint8 message[MAX_MESSAGE_LENGTH];
+    gsize offset = 0;
+
     g_return_if_fail (LDM_IS_GREETER (greeter));
-    g_return_if_fail (username != NULL);
   
     if (!session)
         session = "";
     if (!language)
         language = "";
 
-    g_debug ("Logging in");
-    write_header (greeter, GREETER_MESSAGE_LOGIN, string_length (username) + string_length (session) + string_length (language));
-    write_string (greeter, username);
-    write_string (greeter, session);
-    write_string (greeter, language);
-    flush (greeter);
+    g_debug ("Starting session %s with language %s", session, language);
+    write_header (message, MAX_MESSAGE_LENGTH, GREETER_MESSAGE_START_SESSION, string_length (session) + string_length (language), &offset);
+    write_string (message, MAX_MESSAGE_LENGTH, session, &offset);
+    write_string (message, MAX_MESSAGE_LENGTH, language, &offset);
+    write_message (greeter, message, offset);
 }
 
 /**
- * ldm_greeter_login_with_defaults:
+ * ldm_greeter_start_session_with_defaults:
  * @greeter: A #LdmGreeter
- * @username: The user to log in as
  *
  * Login a user to a session using default settings for that user.
  **/
 void
-ldm_greeter_login_with_defaults (LdmGreeter *greeter, const gchar *username)
+ldm_greeter_start_session_with_defaults (LdmGreeter *greeter)
 {
-    g_return_if_fail (LDM_IS_GREETER (greeter));
-    g_return_if_fail (username != NULL);
-    ldm_greeter_login (greeter, username, NULL, NULL);
+    ldm_greeter_start_session (greeter, NULL, NULL);
 }
 
 static gboolean
@@ -1380,6 +1446,9 @@ upower_call_function (LdmGreeter *greeter, const gchar *function, gboolean has_r
     GVariant *result;
     GError *error = NULL;
     gboolean function_result = FALSE;
+  
+    if (!greeter->priv->system_bus)
+        return FALSE;
 
     proxy = g_dbus_proxy_new_sync (greeter->priv->system_bus,
                                    G_DBUS_PROXY_FLAGS_NONE,
@@ -1473,6 +1542,9 @@ ck_call_function (LdmGreeter *greeter, const gchar *function, gboolean has_resul
     GVariant *result;
     GError *error = NULL;
     gboolean function_result = FALSE;
+
+    if (!greeter->priv->system_bus)
+        return FALSE;
 
     proxy = g_dbus_proxy_new_sync (greeter->priv->system_bus,
                                    G_DBUS_PROXY_FLAGS_NONE,
@@ -1577,13 +1649,15 @@ ldm_greeter_get_user_defaults (LdmGreeter *greeter, const gchar *username, gchar
 {
     gsize offset = 0;
     guint32 id;
+    guint8 message[MAX_MESSAGE_LENGTH];
 
     g_return_val_if_fail (LDM_IS_GREETER (greeter), FALSE);
     g_return_val_if_fail (username != NULL, FALSE);
 
-    write_header (greeter, GREETER_MESSAGE_GET_USER_DEFAULTS, string_length (username));
-    write_string (greeter, username);
-    flush (greeter);
+    offset = 0;
+    write_header (message, MAX_MESSAGE_LENGTH, GREETER_MESSAGE_GET_USER_DEFAULTS, string_length (username), &offset);
+    write_string (message, MAX_MESSAGE_LENGTH, username, &offset);
+    write_message (greeter, message, offset);
 
     if (!read_packet (greeter, TRUE))
     {
@@ -1591,6 +1665,7 @@ ldm_greeter_get_user_defaults (LdmGreeter *greeter, const gchar *username, gchar
         return FALSE;
     }
 
+    offset = 0;
     id = read_int (greeter, &offset);
     g_assert (id == GREETER_MESSAGE_USER_DEFAULTS);
     read_int (greeter, &offset);

@@ -1,3 +1,14 @@
+/*
+ * Copyright (C) 2010-2011 David Edmundson.
+ * Author: David Edmundson <kde@davidedmundson.co.uk>
+ * 
+ * This program is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation, either version 3 of the License, or (at your option) any later
+ * version. See http://www.gnu.org/copyleft/gpl.html the full text of the
+ * license.
+ */
+
 #include "panel.h"
 #include "ui_panel.h"
 
@@ -46,6 +57,15 @@ Panel::Panel(QLightDM::Greeter *greeter, QWidget *parent):
     QLightDM::SessionsModel* sessionsModel = new QLightDM::SessionsModel(this);
     ui->sessionCombo->setModel(sessionsModel);
 }
+
+QString Panel::session() const{
+    int index = ui->sessionCombo->currentIndex();
+    if (index > -1) {
+        return ui->sessionCombo->itemData(index, QLightDM::SessionsModel::IdRole).toString();
+    }
+    return QString();
+}
+
 
 Panel::~Panel()
 {

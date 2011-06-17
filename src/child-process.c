@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010 Robert Ancell.
+ * Copyright (C) 2010-2011 Robert Ancell.
  * Author: Robert Ancell <robert.ancell@canonical.com>
  * 
  * This program is free software: you can redistribute it and/or modify it under
@@ -16,7 +16,6 @@
 #include <sys/wait.h>
 #include <fcntl.h>
 #include <signal.h>
-#include <pwd.h>
 #include <grp.h>
 #include <glib/gstdio.h>
 
@@ -37,10 +36,7 @@ struct ChildProcessPrivate
     GHashTable *env;
 
     /* User to run as */
-    gchar *username;
-    uid_t uid;
-    gid_t gid;
-    gchar *home_dir;
+    User *user;
 
     /* Path of file to log to */
     gchar *log_file;
@@ -58,6 +54,7 @@ G_DEFINE_TYPE (ChildProcess, child_process, G_TYPE_OBJECT);
 static ChildProcess *parent_process = NULL;
 static GHashTable *processes = NULL;
 static int signal_pipe[2];
+static gboolean stopping = FALSE;
 
 ChildProcess *
 child_process_get_parent (void)
@@ -80,6 +77,8 @@ child_process_new (void)
 void
 child_process_set_log_file (ChildProcess *process, const gchar *log_file)
 {
+    g_return_if_fail (process != NULL);
+
     g_free (process->priv->log_file);
     process->priv->log_file = g_strdup (log_file);
 }
@@ -87,13 +86,18 @@ child_process_set_log_file (ChildProcess *process, const gchar *log_file)
 const gchar *
 child_process_get_log_file (ChildProcess *process)
 {
+    g_return_val_if_fail (process != NULL, NULL);
     return process->priv->log_file;
 }
   
 void
 child_process_set_env (ChildProcess *process, const gchar *name, const gchar *value)
 {
-    g_hash_table_insert (process->priv->env, g_strdup (name), g_strdup (value));
+    g_return_if_fail (process != NULL);
+    if (value)
+        g_hash_table_insert (process->priv->env, g_strdup (name), g_strdup (value));
+    else
+        g_hash_table_remove (process->priv->env, name);
 }
 
 static void
@@ -113,7 +117,11 @@ child_process_watch_cb (GPid pid, gint status, gpointer data)
     }
 
     process->priv->pid = 0;
-    g_hash_table_remove (processes, GINT_TO_POINTER (process->priv->pid));
+    g_hash_table_remove (processes, GINT_TO_POINTER (pid));
+
+    /* Stop when all processes quit */
+    if (stopping && g_hash_table_size (processes) == 0)
+        exit (EXIT_SUCCESS);
 }
 
 static void
@@ -142,30 +150,37 @@ run_child_process (ChildProcess *process, char *const argv[])
     signal (SIGUSR1, SIG_IGN);
     signal (SIGUSR2, SIG_IGN);
 
-    if (process->priv->username)
+    /* Make this process its own session so */
+    if (setsid () < 0)
+        g_warning ("Failed to make process a new session: %s", strerror (errno));
+
+    if (process->priv->user)
     {
-        if (initgroups (process->priv->username, process->priv->gid) < 0)
+        if (getuid () == 0)
         {
-            g_warning ("Failed to initialize supplementary groups for %s: %s", process->priv->username, strerror (errno));
-            //_exit(1);
+            if (initgroups (user_get_name (process->priv->user), user_get_gid (process->priv->user)) < 0)
+            {
+                g_warning ("Failed to initialize supplementary groups for %s: %s", user_get_name (process->priv->user), strerror (errno));
+                _exit (EXIT_FAILURE);
+            }
+
+            if (setgid (user_get_gid (process->priv->user)) != 0)
+            {
+                g_warning ("Failed to set group ID to %d: %s", user_get_gid (process->priv->user), strerror (errno));
+                _exit (EXIT_FAILURE);
+            }
+
+            if (setuid (user_get_uid (process->priv->user)) != 0)
+            {
+                g_warning ("Failed to set user ID to %d: %s", user_get_uid (process->priv->user), strerror (errno));
+                _exit (EXIT_FAILURE);
+            }
         }
 
-        if (setgid (process->priv->gid) != 0)
+        if (chdir (user_get_home_directory (process->priv->user)) != 0)
         {
-            g_warning ("Failed to set group ID: %s", strerror (errno));
-            _exit(1);
-        }
-
-        if (setuid (process->priv->uid) != 0)
-        {
-            g_warning ("Failed to set user ID: %s", strerror (errno));
-            _exit(1);
-        }
-
-        if (chdir (process->priv->home_dir) != 0)
-        {
-            g_warning ("Failed to change to home directory: %s", strerror (errno));
-            _exit(1);
+            g_warning ("Failed to change to home directory %s: %s", user_get_home_directory (process->priv->user), strerror (errno));
+            _exit (EXIT_FAILURE);
         }
     }
   
@@ -184,8 +199,11 @@ run_child_process (ChildProcess *process, char *const argv[])
              close (fd);
          }
     }
-  
+
     execvp (argv[0], argv);
+
+    g_warning ("Error executing child process %s: %s", argv[0], g_strerror (errno));
+    _exit (EXIT_FAILURE);
 }
 
 static gboolean
@@ -205,7 +223,7 @@ from_child_cb (GIOChannel *source, GIOCondition condition, gpointer data)
 
 gboolean
 child_process_start (ChildProcess *process,
-                     const gchar *username,
+                     User *user,
                      const gchar *working_dir,
                      const gchar *command,
                      gboolean create_pipe,
@@ -220,34 +238,17 @@ child_process_start (ChildProcess *process,
     pid_t pid;
     int from_server_fd = -1, to_server_fd = -1;
 
+    g_return_val_if_fail (process != NULL, FALSE);
     g_return_val_if_fail (process->priv->pid == 0, FALSE);
 
-    if (username)
-    {
-        struct passwd *user_info;
-
-        user_info = getpwnam (username);
-        if (!user_info)
-        {
-            if (errno == 0)
-                g_warning ("Unable to get information on user %s: User does not exist", username);
-            else
-                g_warning ("Unable to get information on user %s: %s", username, strerror (errno));
-            return FALSE;
-        }
-
-        process->priv->username = g_strdup (username);
-        process->priv->uid = user_info->pw_uid;
-        process->priv->gid = user_info->pw_gid;
-        process->priv->home_dir = g_strdup (user_info->pw_dir);
-    }
+    process->priv->user = g_object_ref (user);
 
     /* Create the log file owned by the target user */
-    if (username && process->priv->log_file)
+    if (process->priv->log_file)
     {
         gint fd = g_open (process->priv->log_file, O_WRONLY | O_CREAT | O_TRUNC, 0600);
         close (fd);
-        if (chown (process->priv->log_file, process->priv->uid, process->priv->gid) != 0)
+        if (getuid () == 0 && chown (process->priv->log_file, user_get_uid (process->priv->user), user_get_gid (process->priv->user)) != 0)
             g_warning ("Failed to set process log file ownership: %s", strerror (errno));
     }
 
@@ -306,10 +307,10 @@ child_process_start (ChildProcess *process,
             close (g_io_channel_unix_get_fd (process->priv->from_child_channel));
 
         run_child_process (process, argv);
-        _exit (EXIT_FAILURE);
     }
     close (from_server_fd);
     close (to_server_fd);
+    g_strfreev (argv);
 
     string = g_string_new ("");
     g_hash_table_iter_init (&iter, process->priv->env);
@@ -321,8 +322,6 @@ child_process_start (ChildProcess *process,
 
     process->priv->pid = pid;
 
-    g_strfreev (argv);
-
     g_hash_table_insert (processes, GINT_TO_POINTER (process->priv->pid), g_object_ref (process));
     g_child_watch_add (process->priv->pid, child_process_watch_cb, process);
 
@@ -332,27 +331,56 @@ child_process_start (ChildProcess *process,
 GPid
 child_process_get_pid (ChildProcess *process)
 {
+    g_return_val_if_fail (process != NULL, 9);
     return process->priv->pid;
-  
 }
 
 void
 child_process_signal (ChildProcess *process, int signum)
 {
-    if (process->priv->pid)
-        kill (process->priv->pid, signum);
+    g_return_if_fail (process != NULL);
+
+    if (process->priv->pid == 0)
+        return;
+
+    g_debug ("Sending signal %d to process %d", signum, process->priv->pid);
+
+    if (kill (process->priv->pid, signum) < 0)
+        g_warning ("Error sending signal %d to process %d: %s", signum, process->priv->pid, strerror (errno));
 }
 
 GIOChannel *
 child_process_get_to_child_channel (ChildProcess *process)
 {
+    g_return_val_if_fail (process != NULL, NULL);
     return process->priv->to_child_channel;
 }
 
 GIOChannel *
 child_process_get_from_child_channel (ChildProcess *process)
 {
+    g_return_val_if_fail (process != NULL, NULL);
     return process->priv->from_child_channel;
+}
+
+void
+child_process_stop_all (void)
+{
+    GHashTableIter iter;
+    gpointer key, value;
+
+    stopping = TRUE;
+
+    /* If no processes, then just quit */
+    if (g_hash_table_size (processes) == 0)
+        exit (EXIT_SUCCESS);
+
+    g_hash_table_iter_init (&iter, processes);
+    while (g_hash_table_iter_next (&iter, &key, &value))
+    {
+        ChildProcess *process = (ChildProcess *)value;
+        child_process_signal (process, SIGTERM);
+    }
 }
 
 static void
@@ -369,7 +397,8 @@ child_process_finalize (GObject *object)
 
     self = CHILD_PROCESS (object);
   
-    g_free (self->priv->username);
+    if (self->priv->user)
+        g_object_unref (self->priv->user);
 
     if (self->priv->pid > 0)
         g_hash_table_remove (processes, GINT_TO_POINTER (self->priv->pid));
@@ -385,9 +414,10 @@ child_process_finalize (GObject *object)
 static void
 signal_cb (int signum, siginfo_t *info, void *data)
 {
+    /* NOTE: Using g_printerr as can't call g_warning from a signal callback */
     if (write (signal_pipe[1], &info->si_signo, sizeof (int)) < 0 ||
         write (signal_pipe[1], &info->si_pid, sizeof (pid_t)) < 0)
-        g_warning ("Failed to write to signal pipe");
+        g_printerr ("Failed to write to signal pipe: %s", strerror (errno));
 }
 
 static gboolean
@@ -399,12 +429,18 @@ handle_signal (GIOChannel *source, GIOCondition condition, gpointer data)
 
     if (read (signal_pipe[0], &signo, sizeof (int)) < 0 || 
         read (signal_pipe[0], &pid, sizeof (pid_t)) < 0)
+    {
+        g_warning ("Error reading from signal pipe: %s", strerror (errno));
         return TRUE;
+    }
+
+    g_debug ("Got signal %d from process %d", signo, pid);
 
     process = g_hash_table_lookup (processes, GINT_TO_POINTER (pid));
-    if (!process)
+    if (process == NULL)
         process = child_process_get_parent ();
-    g_signal_emit (process, signals[GOT_SIGNAL], 0, signo);
+    if (process)
+        g_signal_emit (process, signals[GOT_SIGNAL], 0, signo);
 
     return TRUE;
 }

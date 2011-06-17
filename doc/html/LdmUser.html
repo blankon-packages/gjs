@@ -47,6 +47,7 @@ struct              <a class="link" href="LdmUser.html#LdmUser-struct" title="st
 const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       <a class="link" href="LdmUser.html#ldm-user-get-name" title="ldm_user_get_name ()">ldm_user_get_name</a>                   (<em class="parameter"><code><a class="link" href="LdmUser.html" title="LdmUser"><span class="type">LdmUser</span></a> *user</code></em>);
 const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       <a class="link" href="LdmUser.html#ldm-user-get-real-name" title="ldm_user_get_real_name ()">ldm_user_get_real_name</a>              (<em class="parameter"><code><a class="link" href="LdmUser.html" title="LdmUser"><span class="type">LdmUser</span></a> *user</code></em>);
 const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       <a class="link" href="LdmUser.html#ldm-user-get-display-name" title="ldm_user_get_display_name ()">ldm_user_get_display_name</a>           (<em class="parameter"><code><a class="link" href="LdmUser.html" title="LdmUser"><span class="type">LdmUser</span></a> *user</code></em>);
+const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       <a class="link" href="LdmUser.html#ldm-user-get-home-directory" title="ldm_user_get_home_directory ()">ldm_user_get_home_directory</a>         (<em class="parameter"><code><a class="link" href="LdmUser.html" title="LdmUser"><span class="type">LdmUser</span></a> *user</code></em>);
 const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       <a class="link" href="LdmUser.html#ldm-user-get-image" title="ldm_user_get_image ()">ldm_user_get_image</a>                  (<em class="parameter"><code><a class="link" href="LdmUser.html" title="LdmUser"><span class="type">LdmUser</span></a> *user</code></em>);
 const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       <a class="link" href="LdmUser.html#ldm-user-get-language" title="ldm_user_get_language ()">ldm_user_get_language</a>               (<em class="parameter"><code><a class="link" href="LdmUser.html" title="LdmUser"><span class="type">LdmUser</span></a> *user</code></em>);
 const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       <a class="link" href="LdmUser.html#ldm-user-get-layout" title="ldm_user_get_layout ()">ldm_user_get_layout</a>                 (<em class="parameter"><code><a class="link" href="LdmUser.html" title="LdmUser"><span class="type">LdmUser</span></a> *user</code></em>);
@@ -163,6 +164,28 @@ Get the display name of a user.
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td>The display name of the given user</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="ldm-user-get-home-directory"></a><h3>ldm_user_get_home_directory ()</h3>
+<pre class="programlisting">const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       ldm_user_get_home_directory         (<em class="parameter"><code><a class="link" href="LdmUser.html" title="LdmUser"><span class="type">LdmUser</span></a> *user</code></em>);</pre>
+<p>
+Get the home directory for a user.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>user</code></em> :</span></p></td>
+<td>A <a class="link" href="LdmUser.html" title="LdmUser"><span class="type">LdmUser</span></a>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>The users home directory</td>
 </tr>
 </tbody>
 </table></div>

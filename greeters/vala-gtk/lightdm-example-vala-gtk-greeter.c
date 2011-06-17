@@ -156,7 +156,7 @@ static void greeter_username_activate_cb (Greeter* self, GtkEntry* entry) {
 	g_return_if_fail (entry != NULL);
 	gtk_widget_set_sensitive ((GtkWidget*) self->priv->username_entry, FALSE);
 	_tmp0_ = gtk_entry_get_text (self->priv->username_entry);
-	ldm_greeter_start_authentication (self->priv->greeter, _tmp0_);
+	ldm_greeter_login (self->priv->greeter, _tmp0_);
 }
 
 
@@ -302,9 +302,7 @@ static void greeter_authentication_complete_cb (Greeter* self, LdmGreeter* greet
 	gtk_widget_grab_focus ((GtkWidget*) self->priv->username_entry);
 	_tmp0_ = ldm_greeter_get_is_authenticated (greeter);
 	if (_tmp0_) {
-		const gchar* _tmp1_ = NULL;
-		_tmp1_ = ldm_greeter_get_authentication_user (greeter);
-		ldm_greeter_login (greeter, _tmp1_, NULL, NULL);
+		ldm_greeter_start_session_with_defaults (greeter);
 	} else {
 		gtk_label_set_label (self->priv->message_label, "Failed to authenticate");
 		gtk_widget_show ((GtkWidget*) self->priv->message_label);
@@ -318,7 +316,7 @@ static void greeter_timed_login_cb (Greeter* self, LdmGreeter* greeter, const gc
 	g_return_if_fail (greeter != NULL);
 	g_return_if_fail (username != NULL);
 	_tmp0_ = ldm_greeter_get_timed_login_user (greeter);
-	ldm_greeter_login (greeter, _tmp0_, NULL, NULL);
+	ldm_greeter_login (greeter, _tmp0_);
 }
 
 

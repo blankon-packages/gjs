@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010 Robert Ancell.
+ * Copyright (C) 2010-2011 Robert Ancell.
  * Author: Robert Ancell <robert.ancell@canonical.com>
  * 
  * This program is free software: you can redistribute it and/or modify it under
@@ -12,9 +12,6 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <sys/wait.h>
-#include <pwd.h>
-#include <errno.h>
-#include <string.h>
 #include <fcntl.h>
 #include <glib/gstdio.h>
 #include <grp.h>
@@ -24,7 +21,7 @@
 struct SessionPrivate
 {
     /* User running this session */
-    gchar *username;
+    User *user;
   
     /* Path of file to log to */
     gchar *log_file;
@@ -50,38 +47,54 @@ session_new ()
 }
 
 void
-session_set_username (Session *session, const gchar *username)
+session_set_user (Session *session, User *user)
 {
-    session->priv->username = g_strdup (username);
+    g_return_if_fail (session != NULL);
+
+    if (session->priv->user)
+        g_object_unref (session->priv->user);
+    session->priv->user = g_object_ref (user);
 }
 
-const gchar *
-session_get_username (Session *session)
+User *
+session_get_user (Session *session)
 {
-    return session->priv->username;
+    g_return_val_if_fail (session != NULL, NULL);
+    return session->priv->user;
 }
 
 void
 session_set_command (Session *session, const gchar *command)
 {
+    g_return_if_fail (session != NULL);
+
+    g_free (session->priv->command);
     session->priv->command = g_strdup (command);
 }
 
 const gchar *
 session_get_command (Session *session)
 {
+    g_return_val_if_fail (session != NULL, NULL);  
     return session->priv->command;
 }
 
 void
 session_set_authorization (Session *session, XAuthorization *authorization, const gchar *path)
 {
+    g_return_if_fail (session != NULL);
+
+    if (session->priv->authorization)
+        g_object_unref (session->priv->authorization);
     session->priv->authorization = g_object_ref (authorization);
+    g_free (session->priv->authorization_path);
     session->priv->authorization_path = g_strdup (path);
 }
 
-XAuthorization *session_get_authorization (Session *session)
+XAuthorization *
+session_get_authorization (Session *session)
 {
+    g_return_val_if_fail (session != NULL, NULL);
     return session->priv->authorization;
 }
 
@@ -90,62 +103,36 @@ session_start (Session *session, gboolean create_pipe)
 {
     //gint session_stdin, session_stdout, session_stderr;
     gboolean result;
-    struct passwd *user_info;
-    gchar *username, *working_dir;
     GError *error = NULL;
 
+    g_return_val_if_fail (session != NULL, FALSE);
+    g_return_val_if_fail (session->priv->user != NULL, FALSE);
     g_return_val_if_fail (session->priv->command != NULL, FALSE);
 
-    errno = 0;
-    if (session->priv->username)
-    {
-        user_info = getpwnam (session->priv->username);
-        if (!user_info)
-        {
-            if (errno == 0)
-                g_warning ("Unable to get information on user %s: User does not exist", session->priv->username);
-            else
-                g_warning ("Unable to get information on user %s: %s", session->priv->username, strerror (errno));
-            return FALSE;
-        }
-    }
-    else
-    {
-        user_info = getpwuid (getuid ());
-        if (!user_info)
-        {
-            g_warning ("Unable to determine current username: %s", strerror (errno));
-            return FALSE;
-        }
-    }
-
-    username = g_strdup (user_info->pw_name);
-    working_dir = g_strdup (user_info->pw_dir);
-    child_process_set_env (CHILD_PROCESS (session), "USER", user_info->pw_name);
-    child_process_set_env (CHILD_PROCESS (session), "USERNAME", user_info->pw_name); // FIXME: Is this required?      
-    child_process_set_env (CHILD_PROCESS (session), "HOME", user_info->pw_dir);
-    child_process_set_env (CHILD_PROCESS (session), "SHELL", user_info->pw_shell);
+    child_process_set_env (CHILD_PROCESS (session), "USER", user_get_name (session->priv->user));
+    child_process_set_env (CHILD_PROCESS (session), "USERNAME", user_get_name (session->priv->user)); // FIXME: Is this required?      
+    child_process_set_env (CHILD_PROCESS (session), "HOME", user_get_home_directory (session->priv->user));
+    child_process_set_env (CHILD_PROCESS (session), "SHELL", user_get_shell (session->priv->user));
 
     if (session->priv->authorization)
     {
-        session->priv->authorization_file = xauth_write (session->priv->authorization, username, session->priv->authorization_path, &error);
+        g_debug ("Writing session authority to %s", session->priv->authorization_path);
+        session->priv->authorization_file = xauth_write (session->priv->authorization, session->priv->user, session->priv->authorization_path, &error);
         if (session->priv->authorization_file)
             child_process_set_env (CHILD_PROCESS (session), "XAUTHORITY", session->priv->authorization_path);
         else
             g_warning ("Failed to write authorization: %s", error->message);
         g_clear_error (&error);
     }
-    g_free (username);
 
     g_debug ("Launching session");
 
     result = child_process_start (CHILD_PROCESS (session),
-                                  session->priv->username,
-                                  working_dir,
+                                  session->priv->user,
+                                  user_get_home_directory (session->priv->user),
                                   session->priv->command,
                                   create_pipe,
                                   &error);
-    g_free (working_dir);
 
     if (!result)
         g_warning ("Failed to spawn session: %s", error->message);
@@ -157,6 +144,7 @@ session_start (Session *session, gboolean create_pipe)
 void
 session_stop (Session *session)
 {
+    g_return_if_fail (session != NULL);
     child_process_signal (CHILD_PROCESS (session), SIGTERM);
 }
 
@@ -173,7 +161,8 @@ session_finalize (GObject *object)
     Session *self;
 
     self = SESSION (object);
-    g_free (self->priv->username);
+    if (self->priv->user)
+        g_object_unref (self->priv->user);
     g_hash_table_unref (self->priv->env);
     g_free (self->priv->command);
     if (self->priv->authorization)

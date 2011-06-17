@@ -24,23 +24,24 @@
     <function name="ldm_greeter_get_user_by_name ()" link="LdmGreeter.html#ldm-greeter-get-user-by-name"/>
     <function name="ldm_greeter_get_default_language ()" link="LdmGreeter.html#ldm-greeter-get-default-language"/>
     <function name="ldm_greeter_get_languages ()" link="LdmGreeter.html#ldm-greeter-get-languages"/>
-    <function name="ldm_greeter_get_default_layout ()" link="LdmGreeter.html#ldm-greeter-get-default-layout"/>
     <function name="ldm_greeter_get_layouts ()" link="LdmGreeter.html#ldm-greeter-get-layouts"/>
     <function name="ldm_greeter_get_layout ()" link="LdmGreeter.html#ldm-greeter-get-layout"/>
     <function name="ldm_greeter_set_layout ()" link="LdmGreeter.html#ldm-greeter-set-layout"/>
     <function name="ldm_greeter_get_sessions ()" link="LdmGreeter.html#ldm-greeter-get-sessions"/>
     <function name="ldm_greeter_get_default_session ()" link="LdmGreeter.html#ldm-greeter-get-default-session"/>
+    <function name="ldm_greeter_get_has_guest_session ()" link="LdmGreeter.html#ldm-greeter-get-has-guest-session"/>
     <function name="ldm_greeter_get_timed_login_user ()" link="LdmGreeter.html#ldm-greeter-get-timed-login-user"/>
     <function name="ldm_greeter_get_timed_login_delay ()" link="LdmGreeter.html#ldm-greeter-get-timed-login-delay"/>
     <function name="ldm_greeter_cancel_timed_login ()" link="LdmGreeter.html#ldm-greeter-cancel-timed-login"/>
-    <function name="ldm_greeter_start_authentication ()" link="LdmGreeter.html#ldm-greeter-start-authentication"/>
+    <function name="ldm_greeter_login ()" link="LdmGreeter.html#ldm-greeter-login"/>
+    <function name="ldm_greeter_login_as_guest ()" link="LdmGreeter.html#ldm-greeter-login-as-guest"/>
     <function name="ldm_greeter_provide_secret ()" link="LdmGreeter.html#ldm-greeter-provide-secret"/>
     <function name="ldm_greeter_cancel_authentication ()" link="LdmGreeter.html#ldm-greeter-cancel-authentication"/>
     <function name="ldm_greeter_get_in_authentication ()" link="LdmGreeter.html#ldm-greeter-get-in-authentication"/>
     <function name="ldm_greeter_get_is_authenticated ()" link="LdmGreeter.html#ldm-greeter-get-is-authenticated"/>
     <function name="ldm_greeter_get_authentication_user ()" link="LdmGreeter.html#ldm-greeter-get-authentication-user"/>
-    <function name="ldm_greeter_login ()" link="LdmGreeter.html#ldm-greeter-login"/>
-    <function name="ldm_greeter_login_with_defaults ()" link="LdmGreeter.html#ldm-greeter-login-with-defaults"/>
+    <function name="ldm_greeter_start_session ()" link="LdmGreeter.html#ldm-greeter-start-session"/>
+    <function name="ldm_greeter_start_session_with_defaults ()" link="LdmGreeter.html#ldm-greeter-start-session-with-defaults"/>
     <function name="ldm_greeter_get_can_suspend ()" link="LdmGreeter.html#ldm-greeter-get-can-suspend"/>
     <function name="ldm_greeter_suspend ()" link="LdmGreeter.html#ldm-greeter-suspend"/>
     <function name="ldm_greeter_get_can_hibernate ()" link="LdmGreeter.html#ldm-greeter-get-can-hibernate"/>
@@ -99,6 +100,7 @@
     <function name="ldm_user_get_name ()" link="LdmUser.html#ldm-user-get-name"/>
     <function name="ldm_user_get_real_name ()" link="LdmUser.html#ldm-user-get-real-name"/>
     <function name="ldm_user_get_display_name ()" link="LdmUser.html#ldm-user-get-display-name"/>
+    <function name="ldm_user_get_home_directory ()" link="LdmUser.html#ldm-user-get-home-directory"/>
     <function name="ldm_user_get_image ()" link="LdmUser.html#ldm-user-get-image"/>
     <function name="ldm_user_get_language ()" link="LdmUser.html#ldm-user-get-language"/>
     <function name="ldm_user_get_layout ()" link="LdmUser.html#ldm-user-get-layout"/>

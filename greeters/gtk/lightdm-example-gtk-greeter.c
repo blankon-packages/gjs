@@ -89,7 +89,7 @@ start_authentication (const gchar *username)
         g_free (session);
     }
 
-    ldm_greeter_start_authentication (greeter, username);
+    ldm_greeter_login (greeter, username);
 }
 
 void user_treeview_row_activated_cb (GtkWidget *widget, GtkTreePath *path, GtkTreeViewColumn *column);
@@ -186,7 +186,7 @@ authentication_complete_cb (LdmGreeter *greeter)
     if (ldm_greeter_get_is_authenticated (greeter))
     {
         gchar *session = get_session ();
-        ldm_greeter_login (greeter, ldm_greeter_get_authentication_user (greeter), session, NULL);
+        ldm_greeter_start_session (greeter, session, NULL);
         g_free (session);
     }
     else
@@ -199,7 +199,8 @@ authentication_complete_cb (LdmGreeter *greeter)
 static void
 timed_login_cb (LdmGreeter *greeter, const gchar *username)
 {
-    ldm_greeter_login (greeter, ldm_greeter_get_timed_login_user (greeter), NULL, NULL);
+    set_session (ldm_greeter_get_default_session (greeter));
+    ldm_greeter_login (greeter, ldm_greeter_get_timed_login_user (greeter));
 }
 
 void suspend_cb (GtkWidget *widget, LdmGreeter *greeter);
@@ -467,6 +468,8 @@ connect_cb (LdmGreeter *greeter)
     message_label = GTK_WIDGET (gtk_builder_get_object (builder, "message_label"));
     session_combo = GTK_WIDGET (gtk_builder_get_object (builder, "session_combobox"));
   
+    gtk_window_set_has_resize_grip (GTK_WINDOW (window), FALSE);
+
     gtk_label_set_text (GTK_LABEL (gtk_builder_get_object (builder, "hostname_label")), ldm_greeter_get_hostname (greeter));
 
     background_image = ldm_greeter_get_string_property (greeter, "background-image");

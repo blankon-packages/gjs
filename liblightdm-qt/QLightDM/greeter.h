@@ -1,8 +1,19 @@
+/*
+ * Copyright (C) 2010-2011 David Edmundson.
+ * Copyright (C) 2010-2011 Robert Ancell
+ * Author: David Edmundson <kde@davidedmundson.co.uk>
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 3 of the License, or (at your option) any
+ * later version. See http://www.gnu.org/copyleft/lgpl.html the full text of the
+ * license.
+ */
+
 #ifndef QLIGTHDM_GREETER_H
 #define QLIGTHDM_GREETER_H
 
 #include <QObject>
-class GreeterPrivate;
 
 #include "user.h"
 #include "language.h"
@@ -21,8 +32,8 @@ namespace QLightDM
         explicit Greeter(QObject* parent=0);
         virtual ~Greeter();
 
-        Q_PROPERTY(bool canSuspend READ canSuspend);
-        Q_PROPERTY(bool canHibernate READ canHibernate);
+    Q_PROPERTY(bool canSuspend READ canSuspend);
+    Q_PROPERTY(bool canHibernate READ canHibernate);
 	Q_PROPERTY(bool canShutdown READ canShutdown);
 	Q_PROPERTY(bool canRestart READ canRestart);
 
@@ -41,12 +52,13 @@ namespace QLightDM
 	QString defaultLanguage() const;
 
 	//QList<LdmLayout> layouts() const;
-	QString defaultLayout() const;
 	QString layout() const;
 
-        QLightDM::Config *config() const;
+    QLightDM::Config *config() const;
 
 	QString defaultSession() const;
+    bool guestAccountSupported() const;
+    bool isFirst() const;
 
 	bool inAuthentication() const;
 	bool isAuthenticated() const;
@@ -54,11 +66,11 @@ namespace QLightDM
 
 	void connectToServer();
 	void cancelTimedLogin();  
-	void startAuthentication(const QString &username);
+	void login(const QString &username);
+	void loginAsGuest();
 	void provideSecret(const QString &secret);
 	void cancelAuthentication();
-	void login(const QString &username, const QString &session, const QString &language);
-	void loginWithDefaults(const QString &username);
+	void startSession(const QString &session=QString(), const QString &language=QString());
 
 	bool canSuspend() const;
 	bool canHibernate() const;

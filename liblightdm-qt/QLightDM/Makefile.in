@@ -40,7 +40,11 @@ subdir = liblightdm-qt/QLightDM
 DIST_COMMON = $(liblightdm_qt_0include_HEADERS) $(srcdir)/Makefile.am \
 	$(srcdir)/Makefile.in $(srcdir)/liblightdm-qt-0.pc.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
-am__aclocal_m4_deps = $(top_srcdir)/configure.ac
+am__aclocal_m4_deps = $(top_srcdir)/m4/gtk-doc.m4 \
+	$(top_srcdir)/m4/intltool.m4 $(top_srcdir)/m4/introspection.m4 \
+	$(top_srcdir)/m4/libtool.m4 $(top_srcdir)/m4/ltoptions.m4 \
+	$(top_srcdir)/m4/ltsugar.m4 $(top_srcdir)/m4/ltversion.m4 \
+	$(top_srcdir)/m4/lt~obsolete.m4 $(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 mkinstalldirs = $(install_sh) -d
@@ -136,7 +140,6 @@ CACHE_DIR = @CACHE_DIR@
 CC = @CC@
 CCDEPMODE = @CCDEPMODE@
 CFLAGS = @CFLAGS@
-CONFIG_FILE = @CONFIG_FILE@
 CPP = @CPP@
 CPPFLAGS = @CPPFLAGS@
 CXX = @CXX@
@@ -147,8 +150,11 @@ CYGPATH_W = @CYGPATH_W@
 DATADIRNAME = @DATADIRNAME@
 DBUSBINDINGTOOL = @DBUSBINDINGTOOL@
 DBUS_SYS_DIR = @DBUS_SYS_DIR@
+DEFAULT_CONFIG_FILE = @DEFAULT_CONFIG_FILE@
+DEFAULT_GREETER_THEME = @DEFAULT_GREETER_THEME@
+DEFAULT_PAM_AUTOLOGIN_SERVICE = @DEFAULT_PAM_AUTOLOGIN_SERVICE@
 DEFAULT_PAM_SERVICE = @DEFAULT_PAM_SERVICE@
-DEFAULT_SESSION = @DEFAULT_SESSION@
+DEFAULT_XSESSION = @DEFAULT_XSESSION@
 DEFS = @DEFS@
 DEPDIR = @DEPDIR@
 DSYMUTIL = @DSYMUTIL@
@@ -159,9 +165,11 @@ ECHO_T = @ECHO_T@
 EGREP = @EGREP@
 EXEEXT = @EXEEXT@
 FGREP = @FGREP@
+GLIB_CFLAGS = @GLIB_CFLAGS@
 GLIB_GENMARSHAL = @GLIB_GENMARSHAL@
+GLIB_LIBS = @GLIB_LIBS@
 GMSGFMT = @GMSGFMT@
-GREETER_THEME = @GREETER_THEME@
+GREETER_THEME_DIR = @GREETER_THEME_DIR@
 GREETER_USER = @GREETER_USER@
 GREP = @GREP@
 GTKDOC_CHECK = @GTKDOC_CHECK@
@@ -231,13 +239,14 @@ SED = @SED@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
 STRIP = @STRIP@
-THEME_DIR = @THEME_DIR@
 USE_NLS = @USE_NLS@
 VALAC = @VALAC@
 VALA_API_GEN = @VALA_API_GEN@
 VERSION = @VERSION@
 WARN_CFLAGS = @WARN_CFLAGS@
 XAUTH_DIR = @XAUTH_DIR@
+XCB_CFLAGS = @XCB_CFLAGS@
+XCB_LIBS = @XCB_LIBS@
 XGETTEXT = @XGETTEXT@
 XSERVER_BINARY = @XSERVER_BINARY@
 XSESSIONS_DIR = @XSESSIONS_DIR@
@@ -317,7 +326,7 @@ liblightdm_qt_0include_HEADERS = \
 	User \
 	Config
 
-liblightdm_qt_0includedir = $(includedir)/lightdm-qt-0/lightdm
+liblightdm_qt_0includedir = $(includedir)/lightdm-qt-0/QLightDM
 liblightdm_qt_0_la_LIBADD = $(LIBLIGHTDM_QT_LIBS)
 liblightdm_qt_0_la_CXXFLAGS = $(LIBLIGHTDM_QT_CFLAGS) \
 	-DXSESSIONS_DIR=\"$(XSESSIONS_DIR)\"

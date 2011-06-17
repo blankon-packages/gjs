@@ -10,10 +10,8 @@ Build-Depends: debhelper (>= 7.0.50~),
                valac,
                libglib2.0-dev,
                libpam0g-dev,
-               libdbus-glib-1-dev,
                libxdmcp-dev,
                libxcb1-dev,
-               libck-connector-dev,
                libxklavier-dev,
                libgtk2.0-dev,
                gobject-introspection,
@@ -21,12 +19,14 @@ Build-Depends: debhelper (>= 7.0.50~),
                libgirepository1.0-dev,
                libqt4-dev,
                dh-autoreconf,
-               gtk-doc-tools
+               gtk-doc-tools,
+               dbus
 Homepage: https://launchpad.net/lightdm
 Vcs-Bzr: https://code.launchpad.net/~ubuntu-desktop/lightdm/ubuntu
 
 Package: lightdm
 Architecture: any
+Pre-Depends: dpkg (>= 1.15.7.2)
 Depends: ${misc:Depends},
          ${shlibs:Depends},
          libpam-runtime (>= 0.76-14),
