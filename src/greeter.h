@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010 Robert Ancell.
+ * Copyright (C) 2010-2011 Robert Ancell.
  * Author: Robert Ancell <robert.ancell@canonical.com>
  * 
  * This program is free software: you can redistribute it and/or modify it under
@@ -31,25 +31,21 @@ typedef struct
 typedef struct
 {
     SessionClass parent_class;
-    void (*login)(Greeter *greeter, const gchar *username, const gchar *session, const gchar *language);
+    void (*start_session)(Greeter *greeter, const gchar *session, const gchar *language);
     void (*quit)(Greeter *greeter);
 } GreeterClass;
 
 GType greeter_get_type (void);
 
-Greeter *greeter_new (void);
+Greeter *greeter_new (const gchar *theme, guint count);
 
 void greeter_set_default_user (Greeter *greeter, const gchar *username, gint timeout);
 
-void greeter_set_theme (Greeter *greeter, const gchar *theme);
+const gchar *greeter_get_theme (Greeter *greeter);
 
-void greeter_set_layout (Greeter *greeter, const gchar *layout);
+void greeter_set_default_session (Greeter *greeter, const gchar *session);
 
-const gchar *greeter_get_layout (Greeter *greeter);
-
-void greeter_set_session (Greeter *greeter, const gchar *session);
-
-const gchar *greeter_get_session (Greeter *greeter);
+const gchar *greeter_get_default_session (Greeter *greeter);
 
 PAMSession *greeter_get_pam_session (Greeter *greeter);
 

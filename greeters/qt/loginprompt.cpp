@@ -1,3 +1,14 @@
+/*
+ * Copyright (C) 2010-2011 David Edmundson.
+ * Author: David Edmundson <kde@davidedmundson.co.uk>
+ * 
+ * This program is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation, either version 3 of the License, or (at your option) any later
+ * version. See http://www.gnu.org/copyleft/gpl.html the full text of the
+ * license.
+ */
+
 #include "loginprompt.h"
 #include "ui_loginprompt.h"
 
@@ -38,22 +49,20 @@ void LoginPrompt::onLoginButtonClicked()
     ui->feedbackLabel->setText(QString());
     QModelIndex currentIndex = ui->userListView->currentIndex();
     if (currentIndex.isValid()) {
-        m_greeter->startAuthentication(currentIndex.data(QLightDM::UsersModel::NameRole).toString());
+        m_greeter->login(currentIndex.data(QLightDM::UsersModel::NameRole).toString());
     }
 }
 
 void LoginPrompt::onAuthenticationComplete(bool success)
 {
     if (success) {
-        ui->feedbackLabel->setText("YAY - log in");
-        //        m_greeter->login(ui->userList->currentItem()->text(), "kde", "en-UK");
+        emit startSession();
     } else {
         ui->feedbackLabel->setText("Sorry, you suck. Try again.");
     }
 }
 
-void LoginPrompt::prompt(const QString &message)
-{
+void LoginPrompt::prompt(const QString &message) {
     qDebug() << message;
     m_greeter->provideSecret(ui->password->text());
 }

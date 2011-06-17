@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010 Robert Ancell.
+ * Copyright (C) 2010-2011 Robert Ancell.
  * Author: Robert Ancell <robert.ancell@canonical.com>
  * 
  * This program is free software: you can redistribute it and/or modify it under
@@ -9,8 +9,11 @@
  * license.
  */
 
+#include <string.h>
+
 #include "ldm-marshal.h"
 #include "pam-session.h"
+#include "user.h"
 
 enum {
     AUTHENTICATION_STARTED,
@@ -56,6 +59,14 @@ struct PAMSessionPrivate
 
 G_DEFINE_TYPE (PAMSession, pam_session, G_TYPE_OBJECT);
 
+static gboolean use_fake_users = FALSE;
+
+void
+pam_session_set_use_fake_users (gboolean use_fake_users_)
+{
+    use_fake_users = use_fake_users_;
+}
+
 PAMSession *
 pam_session_new (const gchar *service, const gchar *username)
 {
@@ -70,19 +81,25 @@ pam_session_new (const gchar *service, const gchar *username)
 gboolean
 pam_session_get_in_session (PAMSession *session)
 {
+    g_return_val_if_fail (session != NULL, FALSE);
     return session->priv->in_session;
 }
 
 void
 pam_session_authorize (PAMSession *session)
 {
+    g_return_if_fail (session != NULL);
+
     session->priv->in_session = TRUE;
 
-    // FIXME:
-    //pam_set_item (session->priv->pam_handle, PAM_TTY, &tty);
-    //pam_set_item (session->priv->pam_handle, PAM_XDISPLAY, &display);
+    if (!use_fake_users)
+    {      
+        // FIXME:-
+        //pam_set_item (session->priv->pam_handle, PAM_TTY, &tty);
+        //pam_set_item (session->priv->pam_handle, PAM_XDISPLAY, &display);
+        pam_open_session (session->priv->pam_handle, 0);
+    }
 
-    pam_open_session (session->priv->pam_handle, 0);
     g_signal_emit (G_OBJECT (session), signals[STARTED], 0);
 }
 
@@ -171,18 +188,40 @@ authenticate_cb (gpointer data)
 gboolean
 pam_session_start (PAMSession *session, GError **error)
 {
+    g_return_val_if_fail (session != NULL, FALSE);
     g_return_val_if_fail (session->priv->authentication_thread == NULL, FALSE);
 
     g_signal_emit (G_OBJECT (session), signals[AUTHENTICATION_STARTED], 0);
-  
-    /* Hold a reference to this object while the thread may access it */
-    g_object_ref (session);
 
-    /* Start thread */
-    session->priv->authentication_response_queue = g_async_queue_new ();
-    session->priv->authentication_thread = g_thread_create (authenticate_cb, session, TRUE, error);
-    if (!session->priv->authentication_thread)
-        return FALSE;
+    if (use_fake_users)
+    {
+        /* Always succeed with autologin, otherwise prompt for a password */
+        if (strcmp (session->priv->service, "lightdm-autologin") == 0)
+            g_signal_emit (G_OBJECT (session), signals[AUTHENTICATION_RESULT], 0, PAM_SUCCESS);
+        else
+        {
+            struct pam_message **messages;
+            messages = calloc (1, sizeof (struct pam_message *));
+            messages[0] = g_malloc0 (sizeof (struct pam_message));
+            messages[0]->msg_style = PAM_PROMPT_ECHO_OFF;
+            messages[0]->msg = g_strdup ("Password:");
+            session->priv->messages = (const struct pam_message **) messages;
+            session->priv->num_messages = 1;
+
+            g_signal_emit (G_OBJECT (session), signals[GOT_MESSAGES], 0, session->priv->num_messages, session->priv->messages);
+        }
+    }
+    else
+    {
+        /* Hold a reference to this object while the thread may access it */
+        g_object_ref (session);
+
+        /* Start thread */
+        session->priv->authentication_response_queue = g_async_queue_new ();
+        session->priv->authentication_thread = g_thread_create (authenticate_cb, session, TRUE, error);
+        if (!session->priv->authentication_thread)
+            return FALSE;
+    }
 
     return TRUE;
 }
@@ -190,57 +229,118 @@ pam_session_start (PAMSession *session, GError **error)
 const gchar *
 pam_session_strerror (PAMSession *session, int error)
 {
+    g_return_val_if_fail (session != NULL, NULL);
     return pam_strerror (session->priv->pam_handle, error);
 }
 
 const gchar *
 pam_session_get_username (PAMSession *session)
 {
+    g_return_val_if_fail (session != NULL, NULL);
     return session->priv->username;
 }
 
 const struct pam_message **
 pam_session_get_messages (PAMSession *session)
 {
+    g_return_val_if_fail (session != NULL, NULL);
     return session->priv->messages;  
 }
 
 gint
 pam_session_get_num_messages (PAMSession *session)
 {
+    g_return_val_if_fail (session != NULL, 0);
     return session->priv->num_messages;
 }
 
 void
 pam_session_respond (PAMSession *session, struct pam_response *response)
 {
-    g_return_if_fail (session->priv->authentication_thread != NULL);  
-    g_async_queue_push (session->priv->authentication_response_queue, response);
+    g_return_if_fail (session != NULL);
+
+    if (use_fake_users)
+    {
+        User *user;
+
+        if (session->priv->messages)
+        {
+            int i;
+            struct pam_message **messages = (struct pam_message **) session->priv->messages;
+
+            for (i = 0; i < session->priv->num_messages; i++)
+            {
+                g_free ((gchar *) messages[i]->msg);
+                g_free (messages[i]);
+            }
+            g_free (messages);
+            session->priv->messages = NULL;
+            session->priv->num_messages = 0;
+        }
+
+        user = user_get_by_name (session->priv->username);
+        if (user && strcmp (response->resp, "password") == 0)
+            g_signal_emit (G_OBJECT (session), signals[AUTHENTICATION_RESULT], 0, PAM_SUCCESS);
+        else
+            g_signal_emit (G_OBJECT (session), signals[AUTHENTICATION_RESULT], 0, PAM_AUTH_ERR);
+        g_free (response->resp);
+        g_free (response);
+        if (user)
+            g_object_unref (user);
+    }
+    else
+    {
+        g_return_if_fail (session->priv->authentication_thread != NULL);
+        g_async_queue_push (session->priv->authentication_response_queue, response);
+    }
 }
 
 void
 pam_session_cancel (PAMSession *session)
 {
-    g_return_if_fail (session->priv->authentication_thread != NULL);
-    session->priv->cancel = TRUE;
-    g_async_queue_push (session->priv->authentication_response_queue, GINT_TO_POINTER (-1));
+    g_return_if_fail (session != NULL);
+
+    if (!use_fake_users)
+    {
+        g_signal_emit (G_OBJECT (session), signals[AUTHENTICATION_RESULT], 0, PAM_CONV_ERR);
+    }
+    else
+    {
+        g_return_if_fail (session->priv->authentication_thread != NULL);
+        session->priv->cancel = TRUE;
+        g_async_queue_push (session->priv->authentication_response_queue, GINT_TO_POINTER (-1));
+    }
 }
 
 const gchar *
 pam_session_getenv (PAMSession *session, const gchar *name)
 {
-    return pam_getenv (session->priv->pam_handle, name);
+    g_return_val_if_fail (session != NULL, NULL);
+    if (use_fake_users)
+        return NULL;
+    else
+        return pam_getenv (session->priv->pam_handle, name);
 }
 
 gchar **
 pam_session_get_envlist (PAMSession *session)
 {
-    return pam_getenvlist (session->priv->pam_handle);
+    g_return_val_if_fail (session != NULL, NULL);
+    if (use_fake_users)
+    {
+        char **env_list = calloc (1, sizeof (gchar *));
+        env_list[0] = NULL;
+        return env_list;
+    }
+    else
+        return pam_getenvlist (session->priv->pam_handle);
 }
 
 void
 pam_session_end (PAMSession *session)
-{ 
+{
+    g_return_if_fail (session != NULL);
+
     /* If authenticating cancel first */
     if (session->priv->authentication_thread)
     {

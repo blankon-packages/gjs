@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010 Robert Ancell.
+ * Copyright (C) 2010-2011 Robert Ancell.
  * Author: Robert Ancell <robert.ancell@canonical.com>
  * 
  * This program is free software: you can redistribute it and/or modify it under
@@ -37,11 +37,13 @@ typedef struct
 
 GType display_manager_get_type (void);
 
-DisplayManager *display_manager_new (GKeyFile *config);
+DisplayManager *display_manager_new (void);
 
 Display *display_manager_add_display (DisplayManager *manager);
 
 void display_manager_switch_to_user (DisplayManager *manager, char *username);
+
+void display_manager_switch_to_guest (DisplayManager *manager);
 
 void display_manager_start (DisplayManager *manager);
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010 Robert Ancell.
+ * Copyright (C) 2010-2011 Robert Ancell.
  * Author: Robert Ancell <robert.ancell@canonical.com>
  * 
  * This program is free software: you can redistribute it and/or modify it under
@@ -18,7 +18,7 @@
 G_BEGIN_DECLS
 
 #define XSERVER_TYPE (xserver_get_type())
-#define XSERVER(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), XSERVER_TYPE, XServer));
+#define XSERVER(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), XSERVER_TYPE, XServer))
 
 typedef struct XServerPrivate XServerPrivate;
 
@@ -59,6 +59,14 @@ void xserver_set_command (XServer *server, const gchar *command);
 
 const gchar *xserver_get_command (XServer *server);
 
+void xserver_set_config_file (XServer *server, const gchar *config_file);
+
+const gchar *xserver_get_config_file (XServer *server);
+
+void xserver_set_layout (XServer *server, const gchar *layout);
+
+const gchar *xserver_get_layout (XServer *server);
+
 void xserver_set_log_file (XServer *server, const gchar *log_file);
 
 const gchar *xserver_get_log_file (XServer *server);
@@ -85,11 +93,13 @@ void xserver_set_authorization (XServer *server, XAuthorization *authorization, 
 
 XAuthorization *xserver_get_authorization (XServer *server);
 
-void xserver_set_vt (XServer *xserver, gint vt);
+const gchar *xserver_get_authorization_path (XServer *server);
 
-gint xserver_get_vt (XServer *xserver);
+void xserver_set_vt (XServer *server, gint vt);
 
-void xserver_set_no_root (XServer *xserver, gboolean no_root);
+gint xserver_get_vt (XServer *server);
+
+void xserver_set_no_root (XServer *server, gboolean no_root);
 
 gboolean xserver_start (XServer *server);
 

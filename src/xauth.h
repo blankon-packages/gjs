@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010 Robert Ancell.
+ * Copyright (C) 2010-2011 Robert Ancell.
  * Author: Robert Ancell <robert.ancell@canonical.com>
  * 
  * This program is free software: you can redistribute it and/or modify it under
@@ -14,6 +14,8 @@
 
 #include <glib-object.h>
 #include <gio/gio.h>
+
+#include "user.h"
 
 G_BEGIN_DECLS
 
@@ -47,7 +49,7 @@ guchar *xauth_copy_authorization_data (XAuthorization *auth);
 
 gsize xauth_get_authorization_data_length (XAuthorization *auth);
 
-GFile *xauth_write (XAuthorization *auth, const gchar *username, const gchar *path, GError **error);
+GFile *xauth_write (XAuthorization *auth, User *user, const gchar *path, GError **error);
 
 G_END_DECLS
 

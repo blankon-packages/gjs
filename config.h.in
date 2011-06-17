@@ -1,16 +1,19 @@
 /* config.h.in.  Generated from configure.ac by autoheader.  */
 
+/* Default greeter theme */
+#undef DEFAULT_GREETER_THEME
+
+/* Default PAM service to use for automatic logins */
+#undef DEFAULT_PAM_AUTOLOGIN_SERVICE
+
 /* Default PAM service to use */
 #undef DEFAULT_PAM_SERVICE
 
-/* Default session */
-#undef DEFAULT_SESSION
+/* Default X session */
+#undef DEFAULT_XSESSION
 
 /* Gettext package */
 #undef GETTEXT_PACKAGE
-
-/* Default theme */
-#undef GREETER_THEME
 
 /* User to run greeter as */
 #undef GREETER_USER

@@ -9,13 +9,19 @@ ldm-marshal.h: ldm-marshal.list
 lightdm_SOURCES = \
 	child-process.c \
 	child-process.h \
+	configuration.c \
+	configuration.h \
 	display.c \
 	display.h \
 	display-manager.c \
 	display-manager.h \
+	dmrc.c \
+	dmrc.h \
 	greeter.c \
 	greeter.h \
 	greeter-protocol.h \
+	guest-manager.c \
+	guest-manager.h \
 	lightdm.c \
 	ldm-marshal.c \
 	ldm-marshal.h \
@@ -25,6 +31,8 @@ lightdm_SOURCES = \
 	session.h \
 	theme.c \
 	theme.h \
+	user.c \
+	user.h \
 	xauth.c \
 	xauth.h \
 	xdmcp-protocol.c \
@@ -44,12 +52,12 @@ BUILT_SOURCES = \
 lightdm_CFLAGS = \
 	$(LIGHTDM_CFLAGS) \
 	$(WARN_CFLAGS) \
-	-DCONFIG_FILE=\"$(CONFIG_FILE)\" \
+	-DDEFAULT_CONFIG_FILE=\"$(DEFAULT_CONFIG_FILE)\" \
 	-DLOG_DIR=\"$(LOG_DIR)\" \
-	-DTHEME_ENGINE_DIR=\"$(libexecdir)\" \
+	-DGREETER_THEME_ENGINE_DIR=\"$(libexecdir)\" \
 	-DXAUTH_DIR=\"$(XAUTH_DIR)\" \
 	-DCACHE_DIR=\"$(CACHE_DIR)\" \
-	-DTHEME_DIR=\"$(THEME_DIR)\" \
+	-DGREETER_THEME_DIR=\"$(GREETER_THEME_DIR)\" \
 	-DLIGHTDM_BINARY=\"lightdm\"
 
 lightdm_LDADD = \
@@ -57,8 +65,7 @@ lightdm_LDADD = \
 	-lpam
 
 EXTRA_DIST = ldm-marshal.list \
-	display-manager.xml \
-	user-manager.xml
+	display-manager.xml
 
 CLEANFILES = \
 	$(BUILT_SOURCES)
