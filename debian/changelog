@@ -1,3 +1,10 @@
+lightdm (0.4.0-0ubuntu6) oneiric; urgency=low
+
+  * debian/Xsession:
+    - Set required variables to make Xsession.d scripts work (LP: #800192)
+
+ -- Robert Ancell <robert.ancell@canonical.com>  Mon, 27 Jun 2011 00:03:12 +1000
+
 lightdm (0.4.0-0ubuntu5) oneiric; urgency=low
 
   * debian/lightdm.lightdm-autologin.pam, debian/rules:
