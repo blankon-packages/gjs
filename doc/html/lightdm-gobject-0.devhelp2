@@ -41,7 +41,6 @@
     <keyword type="function" name="ldm_greeter_get_is_authenticated ()" link="LdmGreeter.html#ldm-greeter-get-is-authenticated"/>
     <keyword type="function" name="ldm_greeter_get_authentication_user ()" link="LdmGreeter.html#ldm-greeter-get-authentication-user"/>
     <keyword type="function" name="ldm_greeter_start_session ()" link="LdmGreeter.html#ldm-greeter-start-session"/>
-    <keyword type="function" name="ldm_greeter_start_session_with_defaults ()" link="LdmGreeter.html#ldm-greeter-start-session-with-defaults"/>
     <keyword type="function" name="ldm_greeter_get_can_suspend ()" link="LdmGreeter.html#ldm-greeter-get-can-suspend"/>
     <keyword type="function" name="ldm_greeter_suspend ()" link="LdmGreeter.html#ldm-greeter-suspend"/>
     <keyword type="function" name="ldm_greeter_get_can_hibernate ()" link="LdmGreeter.html#ldm-greeter-get-can-hibernate"/>

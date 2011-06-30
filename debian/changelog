@@ -1,3 +1,14 @@
+lightdm (0.4.1-0ubuntu1) oneiric; urgency=low
+
+  * New upstream release
+    - Fixes (LP: #793366)
+  * debian/lightdm.conf:
+  * debian/guest-session-cleanup.sh:
+  * debian/guest-session-setup.sh:
+    - Enable guest session
+
+ -- Robert Ancell <robert.ancell@canonical.com>  Thu, 30 Jun 2011 17:04:25 +0100
+
 lightdm (0.4.0-0ubuntu7) oneiric; urgency=low
 
   * debian/Xsession:

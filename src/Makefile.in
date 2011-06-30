@@ -38,11 +38,7 @@ bin_PROGRAMS = lightdm$(EXEEXT)
 subdir = src
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
-am__aclocal_m4_deps = $(top_srcdir)/m4/gtk-doc.m4 \
-	$(top_srcdir)/m4/intltool.m4 $(top_srcdir)/m4/introspection.m4 \
-	$(top_srcdir)/m4/libtool.m4 $(top_srcdir)/m4/ltoptions.m4 \
-	$(top_srcdir)/m4/ltsugar.m4 $(top_srcdir)/m4/ltversion.m4 \
-	$(top_srcdir)/m4/lt~obsolete.m4 $(top_srcdir)/configure.ac
+am__aclocal_m4_deps = $(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 mkinstalldirs = $(install_sh) -d
@@ -54,7 +50,7 @@ PROGRAMS = $(bin_PROGRAMS)
 am_lightdm_OBJECTS = lightdm-child-process.$(OBJEXT) \
 	lightdm-configuration.$(OBJEXT) lightdm-display.$(OBJEXT) \
 	lightdm-display-manager.$(OBJEXT) lightdm-dmrc.$(OBJEXT) \
-	lightdm-greeter.$(OBJEXT) lightdm-guest-manager.$(OBJEXT) \
+	lightdm-greeter.$(OBJEXT) lightdm-guest-account.$(OBJEXT) \
 	lightdm-lightdm.$(OBJEXT) lightdm-ldm-marshal.$(OBJEXT) \
 	lightdm-pam-session.$(OBJEXT) lightdm-session.$(OBJEXT) \
 	lightdm-theme.$(OBJEXT) lightdm-user.$(OBJEXT) \
@@ -143,6 +139,8 @@ GLIB_CFLAGS = @GLIB_CFLAGS@
 GLIB_GENMARSHAL = @GLIB_GENMARSHAL@
 GLIB_LIBS = @GLIB_LIBS@
 GMSGFMT = @GMSGFMT@
+GOBJECT_CFLAGS = @GOBJECT_CFLAGS@
+GOBJECT_LIBS = @GOBJECT_LIBS@
 GREETER_THEME_DIR = @GREETER_THEME_DIR@
 GREETER_USER = @GREETER_USER@
 GREP = @GREP@
@@ -291,8 +289,8 @@ lightdm_SOURCES = \
 	greeter.c \
 	greeter.h \
 	greeter-protocol.h \
-	guest-manager.c \
-	guest-manager.h \
+	guest-account.c \
+	guest-account.h \
 	lightdm.c \
 	ldm-marshal.c \
 	ldm-marshal.h \
@@ -438,7 +436,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lightdm-display.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lightdm-dmrc.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lightdm-greeter.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lightdm-guest-manager.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lightdm-guest-account.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lightdm-ldm-marshal.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lightdm-lightdm.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lightdm-pam-session.Po@am__quote@
@@ -571,21 +569,21 @@ lightdm-greeter.obj: greeter.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(lightdm_CFLAGS) $(CFLAGS) -c -o lightdm-greeter.obj `if test -f 'greeter.c'; then $(CYGPATH_W) 'greeter.c'; else $(CYGPATH_W) '$(srcdir)/greeter.c'; fi`
 
-lightdm-guest-manager.o: guest-manager.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(lightdm_CFLAGS) $(CFLAGS) -MT lightdm-guest-manager.o -MD -MP -MF $(DEPDIR)/lightdm-guest-manager.Tpo -c -o lightdm-guest-manager.o `test -f 'guest-manager.c' || echo '$(srcdir)/'`guest-manager.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/lightdm-guest-manager.Tpo $(DEPDIR)/lightdm-guest-manager.Po
+lightdm-guest-account.o: guest-account.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(lightdm_CFLAGS) $(CFLAGS) -MT lightdm-guest-account.o -MD -MP -MF $(DEPDIR)/lightdm-guest-account.Tpo -c -o lightdm-guest-account.o `test -f 'guest-account.c' || echo '$(srcdir)/'`guest-account.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/lightdm-guest-account.Tpo $(DEPDIR)/lightdm-guest-account.Po
 @am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='guest-manager.c' object='lightdm-guest-manager.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='guest-account.c' object='lightdm-guest-account.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(lightdm_CFLAGS) $(CFLAGS) -c -o lightdm-guest-manager.o `test -f 'guest-manager.c' || echo '$(srcdir)/'`guest-manager.c
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(lightdm_CFLAGS) $(CFLAGS) -c -o lightdm-guest-account.o `test -f 'guest-account.c' || echo '$(srcdir)/'`guest-account.c
 
-lightdm-guest-manager.obj: guest-manager.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(lightdm_CFLAGS) $(CFLAGS) -MT lightdm-guest-manager.obj -MD -MP -MF $(DEPDIR)/lightdm-guest-manager.Tpo -c -o lightdm-guest-manager.obj `if test -f 'guest-manager.c'; then $(CYGPATH_W) 'guest-manager.c'; else $(CYGPATH_W) '$(srcdir)/guest-manager.c'; fi`
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/lightdm-guest-manager.Tpo $(DEPDIR)/lightdm-guest-manager.Po
+lightdm-guest-account.obj: guest-account.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(lightdm_CFLAGS) $(CFLAGS) -MT lightdm-guest-account.obj -MD -MP -MF $(DEPDIR)/lightdm-guest-account.Tpo -c -o lightdm-guest-account.obj `if test -f 'guest-account.c'; then $(CYGPATH_W) 'guest-account.c'; else $(CYGPATH_W) '$(srcdir)/guest-account.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/lightdm-guest-account.Tpo $(DEPDIR)/lightdm-guest-account.Po
 @am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='guest-manager.c' object='lightdm-guest-manager.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='guest-account.c' object='lightdm-guest-account.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(lightdm_CFLAGS) $(CFLAGS) -c -o lightdm-guest-manager.obj `if test -f 'guest-manager.c'; then $(CYGPATH_W) 'guest-manager.c'; else $(CYGPATH_W) '$(srcdir)/guest-manager.c'; fi`
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(lightdm_CFLAGS) $(CFLAGS) -c -o lightdm-guest-account.obj `if test -f 'guest-account.c'; then $(CYGPATH_W) 'guest-account.c'; else $(CYGPATH_W) '$(srcdir)/guest-account.c'; fi`
 
 lightdm-lightdm.o: lightdm.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(lightdm_CFLAGS) $(CFLAGS) -MT lightdm-lightdm.o -MD -MP -MF $(DEPDIR)/lightdm-lightdm.Tpo -c -o lightdm-lightdm.o `test -f 'lightdm.c' || echo '$(srcdir)/'`lightdm.c

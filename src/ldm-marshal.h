@@ -30,14 +30,6 @@ extern void ldm_marshal_VOID__OBJECT_BOOLEAN (GClosure     *closure,
                                               gpointer      invocation_hint,
                                               gpointer      marshal_data);
 
-/* VOID:STRING,STRING (./ldm-marshal.list:4) */
-extern void ldm_marshal_VOID__STRING_STRING (GClosure     *closure,
-                                             GValue       *return_value,
-                                             guint         n_param_values,
-                                             const GValue *param_values,
-                                             gpointer      invocation_hint,
-                                             gpointer      marshal_data);
-
 G_END_DECLS
 
 #endif /* __ldm_marshal_MARSHAL_H__ */

@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'sessionsmodel.h'
 **
-** Created: Fri Jun 17 12:31:44 2011
+** Created: Wed Jun 29 17:15:06 2011
 **      by: The Qt Meta Object Compiler version 62 (Qt 4.7.2)
 **
 ** WARNING! All changes made in this file will be lost!

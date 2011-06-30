@@ -105,8 +105,15 @@ static void
 signal_cb (ChildProcess *process, int signum)
 {
     /* Quit when all child processes have ended */
-    g_debug ("Caught %s signal, exiting", g_strsignal (signum));
-    child_process_stop_all ();
+    g_debug ("Caught %s signal, shutting down", g_strsignal (signum));
+    display_manager_stop (display_manager);
+}
+
+static void
+display_manager_stopped_cb (DisplayManager *display_manager)
+{
+    g_debug ("All processes complete, exiting");
+    exit (EXIT_SUCCESS);
 }
 
 static void
@@ -119,7 +126,7 @@ handle_display_manager_call (GDBusConnection       *connection,
                              GDBusMethodInvocation *invocation,
                              gpointer               user_data)
 {
-    if (g_strcmp0 (method_name, "AddDisplay") == 0)
+    if (g_strcmp0 (method_name, "ShowGreeter") == 0)
     {
         if (!g_variant_is_of_type (parameters, G_VARIANT_TYPE ("()")))
             return;
@@ -173,7 +180,7 @@ bus_acquired_cb (GDBusConnection *connection,
         "<node>"
         "  <interface name='org.freedesktop.DisplayManager'>"
         "    <property name='ConfigFile' type='s' access='read'/>"
-        "    <method name='AddDisplay'/>"
+        "    <method name='ShowGreeter'/>"
         "    <method name='SwitchToUser'>"
         "      <arg name='username' direction='in' type='s'/>"
         "    </method>"
@@ -242,6 +249,7 @@ main(int argc, char **argv)
     gchar *theme_dir = g_strdup (GREETER_THEME_DIR), *theme_engine_dir = g_strdup (GREETER_THEME_ENGINE_DIR);
     gchar *default_greeter_theme = g_strdup (DEFAULT_GREETER_THEME);
     gchar *xsessions_dir = g_strdup (XSESSIONS_DIR);
+    gchar *cache_dir = g_strdup (CACHE_DIR);
     gchar *default_xsession = g_strdup (DEFAULT_XSESSION);
     gboolean show_version = FALSE;
     GOptionEntry options[] = 
@@ -270,6 +278,9 @@ main(int argc, char **argv)
         { "default-xserver-command", 0, 0, G_OPTION_ARG_STRING, &default_xserver_command,
           /* Help string for command line --default-xserver-command flag */
           N_("Default command to run X servers"), "COMMAND" },
+        { "cache-dir", 0, 0, G_OPTION_ARG_STRING, &cache_dir,
+          /* Help string for command line --cache-dir flag */
+          N_("Directory to cache information"), "DIRECTORY" },
         { "theme-dir", 0, 0, G_OPTION_ARG_STRING, &theme_dir,
           /* Help string for command line --theme-dir flag */
           N_("Directory to load themes from"), "DIRECTORY" },
@@ -397,7 +408,7 @@ main(int argc, char **argv)
     config_set_string (config_get_instance (), "LightDM", "theme-engine-directory", theme_engine_dir);
     config_set_string (config_get_instance (), "LightDM", "default-greeter-theme", default_greeter_theme);
     config_set_string (config_get_instance (), "LightDM", "authorization-directory", XAUTH_DIR);
-    config_set_string (config_get_instance (), "LightDM", "cache-directory", CACHE_DIR);
+    config_set_string (config_get_instance (), "LightDM", "cache-directory", cache_dir);
     config_set_string (config_get_instance (), "LightDM", "xsessions-directory", xsessions_dir);
     config_set_string (config_get_instance (), "LightDM", "default-xsession", default_xsession);
 
@@ -415,7 +426,7 @@ main(int argc, char **argv)
 
     log_init ();
 
-    g_debug ("Starting Light Display Manager %s, PID=%i", VERSION, getpid ());
+    g_debug ("Starting Light Display Manager %s, UID=%i PID=%i", VERSION, getuid (), getpid ());
 
     if (no_root)
         g_debug ("Running in user mode");
@@ -431,6 +442,7 @@ main(int argc, char **argv)
     g_debug ("Loaded configuration from %s", config_path);
 
     display_manager = display_manager_new ();
+    g_signal_connect (display_manager, "stopped", G_CALLBACK (display_manager_stopped_cb), NULL);
 
     display_manager_start (display_manager);
 

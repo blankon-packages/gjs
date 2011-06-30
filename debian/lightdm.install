@@ -3,3 +3,5 @@ usr/share/man
 etc/dbus-1/
 debian/lightdm.conf etc/lightdm
 debian/Xsession etc/lightdm
+debian/guest-session-cleanup.sh /usr/share/lightdm/guest-session
+debian/guest-session-setup.sh /usr/share/lightdm/guest-session

@@ -15,6 +15,7 @@
 
 @SET_MAKE@
 
+
 VPATH = @srcdir@
 pkgdatadir = $(datadir)/@PACKAGE@
 pkgincludedir = $(includedir)/@PACKAGE@
@@ -37,13 +38,10 @@ host_triplet = @host@
 noinst_PROGRAMS = test-runner$(EXEEXT) test-xserver$(EXEEXT) \
 	test-gobject-greeter$(EXEEXT) test-session$(EXEEXT)
 subdir = tests/src
-DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
+DIST_COMMON = $(dist_noinst_SCRIPTS) $(srcdir)/Makefile.am \
+	$(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
-am__aclocal_m4_deps = $(top_srcdir)/m4/gtk-doc.m4 \
-	$(top_srcdir)/m4/intltool.m4 $(top_srcdir)/m4/introspection.m4 \
-	$(top_srcdir)/m4/libtool.m4 $(top_srcdir)/m4/ltoptions.m4 \
-	$(top_srcdir)/m4/ltsugar.m4 $(top_srcdir)/m4/ltversion.m4 \
-	$(top_srcdir)/m4/lt~obsolete.m4 $(top_srcdir)/configure.ac
+am__aclocal_m4_deps = $(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 mkinstalldirs = $(install_sh) -d
@@ -57,7 +55,7 @@ am_test_gobject_greeter_OBJECTS =  \
 test_gobject_greeter_OBJECTS = $(am_test_gobject_greeter_OBJECTS)
 am__DEPENDENCIES_1 =
 test_gobject_greeter_DEPENDENCIES = $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 AM_V_lt = $(am__v_lt_$(V))
 am__v_lt_ = $(am__v_lt_$(AM_DEFAULT_VERBOSITY))
 am__v_lt_0 = --silent
@@ -82,10 +80,12 @@ test_session_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 am_test_xserver_OBJECTS = test_xserver-test-xserver.$(OBJEXT) \
 	test_xserver-status.$(OBJEXT)
 test_xserver_OBJECTS = $(am_test_xserver_OBJECTS)
-test_xserver_DEPENDENCIES = $(am__DEPENDENCIES_1)
+test_xserver_DEPENDENCIES = $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1)
 test_xserver_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(test_xserver_CFLAGS) \
 	$(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
+SCRIPTS = $(dist_noinst_SCRIPTS)
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
@@ -161,6 +161,8 @@ GLIB_CFLAGS = @GLIB_CFLAGS@
 GLIB_GENMARSHAL = @GLIB_GENMARSHAL@
 GLIB_LIBS = @GLIB_LIBS@
 GMSGFMT = @GMSGFMT@
+GOBJECT_CFLAGS = @GOBJECT_CFLAGS@
+GOBJECT_LIBS = @GOBJECT_LIBS@
 GREETER_THEME_DIR = @GREETER_THEME_DIR@
 GREETER_USER = @GREETER_USER@
 GREP = @GREP@
@@ -295,6 +297,7 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
+dist_noinst_SCRIPTS = test-setup-guest test-cleanup-guest
 test_runner_CFLAGS = \
 	$(WARN_CFLAGS) \
 	$(GLIB_CFLAGS) \
@@ -307,9 +310,11 @@ test_runner_LDADD = \
 test_xserver_SOURCES = test-xserver.c status.c status.h
 test_xserver_CFLAGS = \
 	$(WARN_CFLAGS) \
+	$(GOBJECT_CFLAGS) \
 	$(GLIB_CFLAGS)
 
 test_xserver_LDADD = \
+	$(GOBJECT_LIBS) \
 	$(GLIB_LIBS)
 
 test_gobject_greeter_SOURCES = test-gobject-greeter.c status.c status.h
@@ -317,12 +322,14 @@ test_gobject_greeter_CFLAGS = \
 	-I$(top_srcdir)/liblightdm-gobject \
 	$(WARN_CFLAGS) \
 	$(GLIB_CFLAGS) \
+	$(GOBJECT_CFLAGS) \
 	$(XCB_CFLAGS)
 
 test_gobject_greeter_LDADD = \
 	-L$(top_builddir)/liblightdm-gobject \
 	-llightdm-gobject-0 \
 	$(GLIB_LIBS) \
+	$(GOBJECT_LIBS) \
 	$(XCB_LIBS)
 
 test_session_SOURCES = test-session.c status.c status.h
@@ -631,7 +638,7 @@ distdir: $(DISTFILES)
 	done
 check-am: all-am
 check: check-am
-all-am: Makefile $(PROGRAMS)
+all-am: Makefile $(PROGRAMS) $(SCRIPTS)
 installdirs:
 install: install-am
 install-exec: install-exec-am

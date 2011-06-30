@@ -83,10 +83,7 @@ const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.htm
 <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="LdmGreeter.html#ldm-greeter-get-is-authenticated" title="ldm_greeter_get_is_authenticated ()">ldm_greeter_get_is_authenticated</a>    (<em class="parameter"><code><a class="link" href="LdmGreeter.html" title="LdmGreeter"><span class="type">LdmGreeter</span></a> *greeter</code></em>);
 const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       <a class="link" href="LdmGreeter.html#ldm-greeter-get-authentication-user" title="ldm_greeter_get_authentication_user ()">ldm_greeter_get_authentication_user</a> (<em class="parameter"><code><a class="link" href="LdmGreeter.html" title="LdmGreeter"><span class="type">LdmGreeter</span></a> *greeter</code></em>);
 <span class="returnvalue">void</span>                <a class="link" href="LdmGreeter.html#ldm-greeter-start-session" title="ldm_greeter_start_session ()">ldm_greeter_start_session</a>           (<em class="parameter"><code><a class="link" href="LdmGreeter.html" title="LdmGreeter"><span class="type">LdmGreeter</span></a> *greeter</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *session</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *language</code></em>);
-<span class="returnvalue">void</span>                <a class="link" href="LdmGreeter.html#ldm-greeter-start-session-with-defaults" title="ldm_greeter_start_session_with_defaults ()">ldm_greeter_start_session_with_defaults</a>
-                                                        (<em class="parameter"><code><a class="link" href="LdmGreeter.html" title="LdmGreeter"><span class="type">LdmGreeter</span></a> *greeter</code></em>);
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *session</code></em>);
 <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="LdmGreeter.html#ldm-greeter-get-can-suspend" title="ldm_greeter_get_can_suspend ()">ldm_greeter_get_can_suspend</a>         (<em class="parameter"><code><a class="link" href="LdmGreeter.html" title="LdmGreeter"><span class="type">LdmGreeter</span></a> *greeter</code></em>);
 <span class="returnvalue">void</span>                <a class="link" href="LdmGreeter.html#ldm-greeter-suspend" title="ldm_greeter_suspend ()">ldm_greeter_suspend</a>                 (<em class="parameter"><code><a class="link" href="LdmGreeter.html" title="LdmGreeter"><span class="type">LdmGreeter</span></a> *greeter</code></em>);
 <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="LdmGreeter.html#ldm-greeter-get-can-hibernate" title="ldm_greeter_get_can_hibernate ()">ldm_greeter_get_can_hibernate</a>       (<em class="parameter"><code><a class="link" href="LdmGreeter.html" title="LdmGreeter"><span class="type">LdmGreeter</span></a> *greeter</code></em>);
@@ -151,7 +148,7 @@ const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.htm
 To connect to the display manager instanciate a <a class="link" href="LdmGreeter.html" title="LdmGreeter"><span class="type">LdmGreeter</span></a> object from inside the greeter process:
 </p>
 <div class="example">
-<a name="id558222"></a><p class="title"><b>Example 1. Connecting to the display manager</b></p>
+<a name="id573100"></a><p class="title"><b>Example 1. Connecting to the display manager</b></p>
 <div class="example-contents"><pre class="programlisting">
 LdmGreeter *greeter = ldm_greeter_new ();
 if (!ldm_greeter_connect (LDM_GREETER (greeter))) {
@@ -167,7 +164,7 @@ Information on how to connect to the display manager is passed using environment
 Once connected, start an authentication conversation like this:
 </p>
 <div class="example">
-<a name="id558242"></a><p class="title"><b>Example 2. Example Authorization Conversation</b></p>
+<a name="id573119"></a><p class="title"><b>Example 2. Example Authorization Conversation</b></p>
 <div class="example-contents"><pre class="programlisting">
 static void show_prompt_cb (LdmGreeter *greeter, const char *text)
 {
@@ -815,8 +812,7 @@ Get the user that is being authenticated.
 <div class="refsect2">
 <a name="ldm-greeter-start-session"></a><h3>ldm_greeter_start_session ()</h3>
 <pre class="programlisting"><span class="returnvalue">void</span>                ldm_greeter_start_session           (<em class="parameter"><code><a class="link" href="LdmGreeter.html" title="LdmGreeter"><span class="type">LdmGreeter</span></a> *greeter</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *session</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *language</code></em>);</pre>
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *session</code></em>);</pre>
 <p>
 Start a session for the logged in user.
 </p>
@@ -833,29 +829,7 @@ Start a session for the logged in user.
 <td>The session to log into or NULL to use the default. <span class="annotation">[<a href="http://foldoc.org/allow-none"><span class="acronym">allow-none</span></a>]</span>
 </td>
 </tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>language</code></em> :</span></p></td>
-<td>The language to use or NULL to use the default. <span class="annotation">[<a href="http://foldoc.org/allow-none"><span class="acronym">allow-none</span></a>]</span>
-</td>
-</tr>
 </tbody>
-</table></div>
-</div>
-<hr>
-<div class="refsect2">
-<a name="ldm-greeter-start-session-with-defaults"></a><h3>ldm_greeter_start_session_with_defaults ()</h3>
-<pre class="programlisting"><span class="returnvalue">void</span>                ldm_greeter_start_session_with_defaults
-                                                        (<em class="parameter"><code><a class="link" href="LdmGreeter.html" title="LdmGreeter"><span class="type">LdmGreeter</span></a> *greeter</code></em>);</pre>
-<p>
-Login a user to a session using default settings for that user.
-</p>
-<div class="variablelist"><table border="0">
-<col align="left" valign="top">
-<tbody><tr>
-<td><p><span class="term"><em class="parameter"><code>greeter</code></em> :</span></p></td>
-<td>A <a class="link" href="LdmGreeter.html" title="LdmGreeter"><span class="type">LdmGreeter</span></a>
-</td>
-</tr></tbody>
 </table></div>
 </div>
 <hr>
