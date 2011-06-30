@@ -3,4 +3,3 @@ Greeter crash after connect
 Greeter crash loop
 Autologin, session exit, check not autologin again
 X server crash before greeter connects (fail to start display)
-X server crash after session starts (return to greeter)

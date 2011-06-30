@@ -22,6 +22,7 @@ static GList *script = NULL;
 static GList *script_iter = NULL;
 static guint status_timeout = 0;
 static gboolean failed = FALSE;
+static gchar *temp_dir = NULL;
 
 static void check_status (const gchar *status);
 
@@ -40,6 +41,12 @@ quit (int status)
         unlink (status_socket_name);
     if (dbus_pid)
         kill (dbus_pid, SIGTERM);
+    if (temp_dir)
+    {
+        gchar *command = g_strdup_printf ("rm -r %s", temp_dir);
+        if (system (command))
+            perror ("Failed to delete temp directory");
+    }
 
     exit (status);
 }
@@ -272,7 +279,8 @@ int
 main (int argc, char **argv)
 {
     GMainLoop *loop;
-    gchar *script_name, *config_file, *config_path, *path, *path1, *path2, *ld_library_path;
+    gchar *script_name, *config_file, *config_path, *path, *path1, *path2, *ld_library_path, *home_dir;
+    GString *passwd_data;
     int status_socket;
     gchar *dbus_command, dbus_address[1024];
     GString *command_line;
@@ -310,11 +318,7 @@ main (int argc, char **argv)
     }
 
     /* Use locally built libraries and binaries */
-    path1 = g_build_filename (BUILDDIR, "tests", "src", ".libs", NULL);
-    path2 = g_build_filename (BUILDDIR, "tests", "src", NULL);
-    path = g_strdup_printf ("%s:%s:%s", path1, path2, g_getenv ("PATH"));
-    g_free (path1);
-    g_free (path2);
+    path = g_strdup_printf ("%s/tests/src/.libs:%s/tests/src:%s/tests/src:%s", BUILDDIR, BUILDDIR, SRCDIR, g_getenv ("PATH"));
     g_setenv ("PATH", path, TRUE);
     g_free (path);
     path1 = g_build_filename (BUILDDIR, "liblightdm-gobject", ".libs", NULL);  
@@ -324,6 +328,10 @@ main (int argc, char **argv)
     g_free (path2);
     g_setenv ("LD_LIBRARY_PATH", ld_library_path, TRUE);
     g_free (ld_library_path);
+
+    /* Set config for child processes to read */
+    if (config_path)
+        g_setenv ("TEST_CONFIG", config_path, TRUE);
 
     /* Run local D-Bus daemon */
     if (pipe (dbus_pipe) < 0)
@@ -359,13 +367,51 @@ main (int argc, char **argv)
     status_socket = open_unix_socket (status_socket_name);
     if (status_socket < 0)
     {
-        g_critical ("Error opening status socket: %s", strerror (errno));
+        g_warning ("Error opening status socket: %s", strerror (errno));
         quit (EXIT_FAILURE);
     }
     g_io_add_watch (g_io_channel_unix_new (status_socket), G_IO_IN, status_message_cb, NULL);
 
-    run_commands ();
+    /* Make fake users */
+    temp_dir = g_build_filename (cwd, "lightdm-test-XXXXXX", NULL);
+    if (!mkdtemp (temp_dir))
+    {
+        g_warning ("Error creating temporary directory: %s", strerror (errno));
+        quit (EXIT_FAILURE);
+    }
+    home_dir = g_build_filename (temp_dir, "home", NULL);
+    g_setenv ("LIGHTDM_TEST_HOME_DIR", home_dir, TRUE);
+    passwd_data = g_string_new ("");
 
+    struct
+    {
+        gchar *user_name;
+        gchar *real_name;
+        gint uid;
+    } users[] =
+    {
+        {"alice", "Alice User", 1000},
+        {"bob", "Bob User", 1001},
+        {NULL, NULL, 0}
+    };
+    int i;
+    for (i = 0; users[i].user_name; i++)
+    {
+        path = g_build_filename (home_dir, users[i].user_name, NULL);
+        g_mkdir_with_parents (path, 0755);
+        g_free (path);
+
+        g_string_append_printf (passwd_data, "%s::%d:%d:%s:%s/home/alice:/bin/sh\n", users[i].user_name, users[i].uid, users[i].uid, users[i].real_name, temp_dir);
+    }
+
+    path = g_build_filename (temp_dir, "passwd", NULL);
+    g_setenv ("LIGHTDM_TEST_PASSWD_FILE", path, TRUE);
+    g_file_set_contents (path, passwd_data->str, -1, NULL);
+    g_free (path);
+    g_string_free (passwd_data, TRUE);
+
+    run_commands ();
+  
     status_timeout = g_timeout_add (2000, status_timeout_cb, NULL);
 
     command_line = g_string_new ("../src/lightdm");
@@ -377,7 +423,8 @@ main (int argc, char **argv)
     g_string_append(command_line, " --default-xserver-command=test-xserver");
     g_string_append (command_line, " --default-xsession=test-session");
     g_string_append_printf (command_line, " --default-greeter-theme=test-theme");
-    g_string_append_printf (command_line, " --passwd-file %s/tests/data/passwd", BUILDDIR);
+    g_string_append_printf (command_line, " --passwd-file %s/passwd", temp_dir);
+    g_string_append_printf (command_line, " --cache-dir %s/cache", temp_dir);
     g_string_append_printf (command_line, " --theme-dir=%s/tests/data/themes", SRCDIR);
     g_string_append_printf (command_line, " --theme-engine-dir=%s/tests/src/.libs", BUILDDIR);
     g_string_append_printf (command_line, " --xsessions-dir=%s/tests/data/xsessions", SRCDIR);

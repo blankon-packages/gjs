@@ -1,6 +1,6 @@
 dnl Process this file with autoconf to produce a configure script.
 
-AC_INIT(lightdm, 0.4.0)
+AC_INIT(lightdm, 0.4.1)
 AC_CONFIG_MACRO_DIR(m4)
 AC_CONFIG_HEADER(config.h)
 AM_INIT_AUTOMAKE
@@ -34,6 +34,10 @@ PKG_CHECK_MODULES(LIGHTDM, [
 
 PKG_CHECK_MODULES(GLIB, [
     glib-2.0
+])
+
+PKG_CHECK_MODULES(GOBJECT, [
+    gobject-2.0
 ])
 
 PKG_CHECK_MODULES(XCB, [
@@ -273,7 +277,7 @@ dnl ###########################################################################
 dnl Files to generate
 dnl ###########################################################################
 
-AC_OUTPUT([
+AC_CONFIG_FILES([
 Makefile
 data/Makefile
 data/init/Makefile
@@ -292,14 +296,15 @@ liblightdm-qt/QLightDM/Makefile
 po/Makefile.in
 src/Makefile
 tests/Makefile
-tests/data/passwd
 tests/src/Makefile
 themes/Makefile
 themes/example-gtk-gnome/Makefile
 themes/example-python-gtk-gnome/Makefile
 themes/example-qt-kde/Makefile
 themes/example-vala-gtk-gnome/Makefile
-])
+],
+[chmod +x tests/src/test-setup-guest tests/src/test-cleanup-guest])
+AC_OUTPUT
 
 dnl ###########################################################################
 dnl Summary
