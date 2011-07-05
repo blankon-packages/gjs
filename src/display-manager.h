@@ -41,11 +41,11 @@ GType display_manager_get_type (void);
 
 DisplayManager *display_manager_new (void);
 
-Display *display_manager_add_display (DisplayManager *manager);
+void display_manager_show_greeter (DisplayManager *manager);
 
-void display_manager_switch_to_user (DisplayManager *manager, char *username);
+gboolean display_manager_switch_to_user (DisplayManager *manager, const gchar *username);
 
-void display_manager_switch_to_guest (DisplayManager *manager);
+gboolean display_manager_switch_to_guest (DisplayManager *manager);
 
 void display_manager_start (DisplayManager *manager);
 

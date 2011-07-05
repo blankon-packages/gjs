@@ -13,22 +13,17 @@
 
 #include <stdlib.h>
 #include <string.h>
-#include <errno.h>
-#include <sys/stat.h>
 #include <xcb/xcb.h>
 #include <fcntl.h>
-#include <glib/gstdio.h>
-#include <sys/ioctl.h>
-#ifdef __linux__
-#include <linux/vt.h>
-#endif
 
 #include "display-manager.h"
 #include "configuration.h"
 #include "user.h"
 #include "xdmcp-server.h"
 #include "xserver.h"
+#include "vt.h"
 #include "theme.h"
+#include "guest-account.h"
 
 enum {
     STARTED,
@@ -177,6 +172,31 @@ start_greeter_cb (Display *display, Session *session, DisplayManager *manager)
     start_session (display, session, TRUE, manager);
 }
 
+static gboolean
+activate_user_cb (Display *display, const gchar *username, DisplayManager *manager)
+{
+    GList *link;
+
+    for (link = manager->priv->displays; link; link = link->next)
+    {
+        Display *d = link->data;
+
+        if (d == display)
+            continue;
+
+        if (g_strcmp0 (username, display_get_session_user (d)) == 0)
+        {
+            g_debug ("Switching to user %s session on display %s, stopping greeter display %s",
+                     username, xserver_get_address (display_get_xserver (d)), xserver_get_address (display_get_xserver (display)));
+            display_stop (display);
+            display_show (d);
+            return TRUE;
+        }
+    }
+
+    return FALSE;
+}
+
 static void
 start_session_cb (Display *display, Session *session, DisplayManager *manager)
 {
@@ -258,66 +278,10 @@ string_to_xdm_auth_key (const gchar *key, guchar *data)
     }
 }
 
-static gint
-get_vt (DisplayManager *manager, gchar *config_section)
-{
-    gchar *vt;
-    gboolean use_active = FALSE;
-#ifdef __linux__
-    gint console_fd;
-#endif
-    int number = -1;
-
-    if (getuid () != 0)
-        return -1;
-
-    vt = config_get_string (config_get_instance (), config_section, "vt");
-    if (vt)
-    {
-        if (strcmp (vt, "active") == 0)
-            use_active = TRUE;
-        else
-            number = atoi (vt);
-        g_free (vt);
-
-        if (number >= 0)
-            return number;
-    }
-
-#ifdef __linux__
-    console_fd = g_open ("/dev/console", O_RDONLY | O_NOCTTY);
-    if (console_fd < 0)
-    {
-        g_warning ("Error opening /dev/console: %s", strerror (errno));
-        return -1;
-    }
-
-    if (use_active)
-    {
-        struct vt_stat console_state = { 0 };
-        if (ioctl (console_fd, VT_GETSTATE, &console_state) < 0)
-            g_warning ("Error using VT_GETSTATE on /dev/console: %s", strerror (errno));
-        else
-            number = console_state.v_active;
-    }
-    else
-    {      
-        if (ioctl (console_fd, VT_OPENQRY, &number) < 0)
-            g_warning ("Error using VT_OPENQRY on /dev/console: %s", strerror (errno));
-    }
-
-    close (console_fd);
-#else
-    number = -1;
-#endif    
-
-    return number;  
-}
-
 static XServer *
 make_xserver (DisplayManager *manager, gchar *config_section)
 {
-    gint display_number, vt;
+    gint display_number;
     XServer *xserver;
     XAuthorization *authorization = NULL;
     gchar *xdmcp_manager, *filename, *path, *command, *xserver_section = NULL;
@@ -371,13 +335,6 @@ make_xserver (DisplayManager *manager, gchar *config_section)
     g_free (filename);
     g_free (path);
 
-    vt = get_vt (manager, config_section);
-    if (vt >= 0)
-    {
-        g_debug ("Starting on /dev/tty%d", vt);
-        xserver_set_vt (xserver, vt);
-    }
-
     /* Get the X server configuration */
     if (config_section)
         xserver_section = config_get_string (config_get_instance (), config_section, "xserver");
@@ -420,8 +377,9 @@ add_display (DisplayManager *manager, XServer *xserver)
     Display *display;
     gchar *value;
 
-    display = display_new (g_list_length (manager->priv->displays), xserver);
+    display = display_new (xserver);
     g_signal_connect (display, "start-greeter", G_CALLBACK (start_greeter_cb), manager);
+    g_signal_connect (display, "activate-user", G_CALLBACK (activate_user_cb), manager);
     g_signal_connect (display, "start-session", G_CALLBACK (start_session_cb), manager);
     g_signal_connect (display, "end-session", G_CALLBACK (end_session_cb), manager);
     g_signal_connect (display, "stopped", G_CALLBACK (stopped_cb), manager);
@@ -441,23 +399,8 @@ add_display (DisplayManager *manager, XServer *xserver)
     return display;
 }
 
-Display *
-display_manager_add_display (DisplayManager *manager)
-{
-    Display *display;
-    XServer *xserver;
-
-    g_debug ("Starting new display");
-    xserver = make_xserver (manager, NULL);
-    display = add_display (manager, xserver);
-    g_object_unref (xserver);
-    display_start (display);
-
-    return display;
-}
-
-void
-display_manager_switch_to_user (DisplayManager *manager, char *username)
+static gboolean
+switch_to_user (DisplayManager *manager, const gchar *username)
 {
     GList *link;
     Display *display;
@@ -469,25 +412,65 @@ display_manager_switch_to_user (DisplayManager *manager, char *username)
         const gchar *session_user;
 
         session_user = display_get_session_user (display);
-        if (session_user && strcmp (session_user, username) == 0)
+        if (g_strcmp0 (session_user, username) == 0)
         {
-            g_debug ("Switching to user %s session on display %s", username, xserver_get_address (display_get_xserver (display)));
-            //display_focus (display);
-            return;
+            if (username)
+                g_debug ("Switching to user %s session on display %s", username, xserver_get_address (display_get_xserver (display)));
+            else
+                g_debug ("Switching to greeter session on display %s", xserver_get_address (display_get_xserver (display)));
+            display_show (display);
+            return TRUE;
         }
     }
 
-    g_debug ("Starting new display for user %s", username);
+    if (username)
+        g_debug ("Starting new display for user %s", username);
+    else
+        g_debug ("Starting new display for greeter");
+
     xserver = make_xserver (manager, NULL);
     display = add_display (manager, xserver);
+    // FIXME: Add selected user hint
     g_object_unref (xserver);
+
+    /* Guest account should log in immediately */
+    if (username && g_strcmp0 (username, guest_account_get_username ()) == 0)
+        display_set_default_user (display, username);
+
     display_start (display);
+
+    return FALSE;
 }
 
 void
+display_manager_show_greeter (DisplayManager *manager)
+{
+    g_return_if_fail (manager != NULL);
+
+    g_debug ("Showing greeter");
+    switch_to_user (manager, NULL);
+}
+
+gboolean
+display_manager_switch_to_user (DisplayManager *manager, const gchar *username)
+{
+    g_return_val_if_fail (manager != NULL, FALSE);
+    g_return_val_if_fail (username != NULL, FALSE);
+
+    g_debug ("Switching to user %s", username);
+    return switch_to_user (manager, username);
+}
+
+gboolean
 display_manager_switch_to_guest (DisplayManager *manager)
 {
-    // fixme  
+    g_return_val_if_fail (manager != NULL, FALSE);
+  
+    if (!guest_account_get_is_enabled ())
+        return FALSE;
+
+    g_debug ("Switching to guest account");
+    return switch_to_user (manager, guest_account_get_username ());
 }
 
 static gboolean
@@ -617,6 +600,8 @@ display_manager_start (DisplayManager *manager)
     gchar **tokens, **i;
     gboolean plymouth_is_running, plymouth_on_active_vt = FALSE, plymouth_being_replaced = FALSE;
 
+    g_return_if_fail (manager != NULL);
+
     /* Make an empty authorization directory */
     setup_auth_dir (manager);
 
@@ -646,7 +631,7 @@ display_manager_start (DisplayManager *manager)
     {
         Display *display;
         gchar *value, *default_user, *display_name;
-        gint user_timeout;
+        gint vt, user_timeout;
         XServer *xserver;
         gboolean replaces_plymouth = FALSE;
 
@@ -657,18 +642,19 @@ display_manager_start (DisplayManager *manager)
         display = add_display (manager, xserver);
         g_object_unref (xserver);
 
-        /* If this is starting on the active VT, then this display will replace Plymouth */
+        /* Replace Plymouth */
         if (plymouth_on_active_vt && !plymouth_being_replaced)
         {
-            gchar *vt;
-            vt = config_get_string (config_get_instance (), display_name, "vt");
-            if (vt && strcmp (vt, "active") == 0)
-            {
-                plymouth_being_replaced = TRUE;
-                replaces_plymouth = TRUE;
-            }
-            g_free (vt);
+            g_debug ("Display %s will replace Plymouth", display_name);
+            plymouth_being_replaced = TRUE;
+            replaces_plymouth = TRUE;
+            vt = vt_get_active ();
         }
+        else
+            vt = vt_get_unused ();
+
+        g_debug ("Starting on /dev/tty%d", vt);          
+        xserver_set_vt (xserver, vt);
 
         value = config_get_string (config_get_instance (), display_name, "session");
         if (value)
@@ -712,7 +698,6 @@ display_manager_start (DisplayManager *manager)
         {
             XServer *xserver = display_get_xserver (display);
 
-            g_debug ("Display %s will replace Plymouth", display_name);
             xserver_set_no_root (xserver, TRUE);
             g_signal_connect (xserver, "ready", G_CALLBACK (stop_plymouth_cb), manager);
             g_signal_connect (xserver, "exited", G_CALLBACK (stop_plymouth_due_to_failure_cb), manager);
@@ -778,6 +763,8 @@ void
 display_manager_stop (DisplayManager *manager)
 {
     GList *link;
+
+    g_return_if_fail (manager != NULL);
 
     g_debug ("Stopping display manager");
 

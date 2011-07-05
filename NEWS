@@ -1,3 +1,15 @@
+Overview of changes in lightdm 0.4.2
+
+    * Fix errors communicating with PAM
+    * Fix interaction with Plytmouth.
+    * Removes the vt option in lightdm.conf, this is no longer required
+      and the active is used for the first display if Plymouth is
+      detected.  A new option minimum-vt is added to select the first
+      VT to be used for other displays.
+    * On login switch to an existing session if already logged in with that
+      username.
+    * Correctly connect up D-Bus interface for user switching
+
 Overview of changes in lightdm 0.4.1
 
     * Fix linking issue with -z,defs
