@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'greeter.h'
 **
-** Created: Wed Jun 29 17:15:05 2011
+** Created: Mon Jul 4 13:00:05 2011
 **      by: The Qt Meta Object Compiler version 62 (Qt 4.7.2)
 **
 ** WARNING! All changes made in this file will be lost!
@@ -23,8 +23,8 @@ static const uint qt_meta_data_QLightDM__Greeter[] = {
        5,       // revision
        0,       // classname
        0,    0, // classinfo
-      12,   14, // methods
-       5,   74, // properties
+      21,   14, // methods
+       5,  119, // properties
        0,    0, // enums/sets
        0,    0, // constructors
        0,       // flags
@@ -44,14 +44,25 @@ static const uint qt_meta_data_QLightDM__Greeter[] = {
      197,   18,   18,   18, 0x0a,
      209,   18,   18,   18, 0x0a,
      220,   18,   18,   18, 0x0a,
-     233,  230,   18,   18, 0x08,
+     230,   18,   18,   18, 0x0a,
+     248,   18,   18,   18, 0x0a,
+     267,  151,   18,   18, 0x0a,
+     282,   18,   18,   18, 0x0a,
+     304,  297,   18,   18, 0x0a,
+     327,   18,   18,   18, 0x0a,
+     358,  350,   18,   18, 0x0a,
+     380,   18,   18,   18, 0x2a,
+     398,  395,   18,   18, 0x08,
+
+ // methods: signature, parameters, type, tag, flags
+     424,  419,  410,   18, 0x02,
 
  // properties: name, type, flags
-     250,  245, 0x01095001,
-     261,  245, 0x01095001,
-     274,  245, 0x01095001,
-     286,  245, 0x01095001,
-     305,  297, 0x0a095001,
+     450,  445, 0x01095001,
+     461,  445, 0x01095001,
+     474,  445, 0x01095001,
+     486,  445, 0x01095001,
+     505,  497, 0x0a095401,
 
        0        // eod
 };
@@ -63,7 +74,13 @@ static const char qt_meta_stringdata_QLightDM__Greeter[] = {
     "isAuthenticated\0authenticationComplete(bool)\0"
     "username\0timedLogin(QString)\0quit()\0"
     "suspend()\0hibernate()\0shutdown()\0"
-    "restart()\0fd\0onRead(int)\0bool\0canSuspend\0"
+    "restart()\0connectToServer()\0"
+    "cancelTimedLogin()\0login(QString)\0"
+    "loginAsGuest()\0secret\0provideSecret(QString)\0"
+    "cancelAuthentication()\0session\0"
+    "startSession(QString)\0startSession()\0"
+    "fd\0onRead(int)\0QVariant\0name\0"
+    "getProperty(QString)\0bool\0canSuspend\0"
     "canHibernate\0canShutdown\0canRestart\0"
     "QString\0hostname\0"
 };
@@ -108,10 +125,20 @@ int QLightDM::Greeter::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
         case 8: hibernate(); break;
         case 9: shutdown(); break;
         case 10: restart(); break;
-        case 11: onRead((*reinterpret_cast< int(*)>(_a[1]))); break;
+        case 11: connectToServer(); break;
+        case 12: cancelTimedLogin(); break;
+        case 13: login((*reinterpret_cast< const QString(*)>(_a[1]))); break;
+        case 14: loginAsGuest(); break;
+        case 15: provideSecret((*reinterpret_cast< const QString(*)>(_a[1]))); break;
+        case 16: cancelAuthentication(); break;
+        case 17: startSession((*reinterpret_cast< const QString(*)>(_a[1]))); break;
+        case 18: startSession(); break;
+        case 19: onRead((*reinterpret_cast< int(*)>(_a[1]))); break;
+        case 20: { QVariant _r = getProperty((*reinterpret_cast< const QString(*)>(_a[1])));
+            if (_a[0]) *reinterpret_cast< QVariant*>(_a[0]) = _r; }  break;
         default: ;
         }
-        _id -= 12;
+        _id -= 21;
     }
 #ifndef QT_NO_PROPERTIES
       else if (_c == QMetaObject::ReadProperty) {

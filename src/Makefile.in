@@ -54,7 +54,8 @@ am_lightdm_OBJECTS = lightdm-child-process.$(OBJEXT) \
 	lightdm-lightdm.$(OBJEXT) lightdm-ldm-marshal.$(OBJEXT) \
 	lightdm-pam-session.$(OBJEXT) lightdm-session.$(OBJEXT) \
 	lightdm-theme.$(OBJEXT) lightdm-user.$(OBJEXT) \
-	lightdm-xauth.$(OBJEXT) lightdm-xdmcp-protocol.$(OBJEXT) \
+	lightdm-vt.$(OBJEXT) lightdm-xauth.$(OBJEXT) \
+	lightdm-xdmcp-protocol.$(OBJEXT) \
 	lightdm-xdmcp-server.$(OBJEXT) lightdm-xdmcp-session.$(OBJEXT) \
 	lightdm-xserver.$(OBJEXT)
 lightdm_OBJECTS = $(am_lightdm_OBJECTS)
@@ -135,6 +136,8 @@ ECHO_T = @ECHO_T@
 EGREP = @EGREP@
 EXEEXT = @EXEEXT@
 FGREP = @FGREP@
+GIO_CFLAGS = @GIO_CFLAGS@
+GIO_LIBS = @GIO_LIBS@
 GLIB_CFLAGS = @GLIB_CFLAGS@
 GLIB_GENMARSHAL = @GLIB_GENMARSHAL@
 GLIB_LIBS = @GLIB_LIBS@
@@ -302,6 +305,8 @@ lightdm_SOURCES = \
 	theme.h \
 	user.c \
 	user.h \
+	vt.c \
+	vt.h \
 	xauth.c \
 	xauth.h \
 	xdmcp-protocol.c \
@@ -443,6 +448,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lightdm-session.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lightdm-theme.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lightdm-user.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lightdm-vt.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lightdm-xauth.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lightdm-xdmcp-protocol.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lightdm-xdmcp-server.Po@am__quote@
@@ -680,6 +686,22 @@ lightdm-user.obj: user.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='user.c' object='lightdm-user.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(lightdm_CFLAGS) $(CFLAGS) -c -o lightdm-user.obj `if test -f 'user.c'; then $(CYGPATH_W) 'user.c'; else $(CYGPATH_W) '$(srcdir)/user.c'; fi`
+
+lightdm-vt.o: vt.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(lightdm_CFLAGS) $(CFLAGS) -MT lightdm-vt.o -MD -MP -MF $(DEPDIR)/lightdm-vt.Tpo -c -o lightdm-vt.o `test -f 'vt.c' || echo '$(srcdir)/'`vt.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/lightdm-vt.Tpo $(DEPDIR)/lightdm-vt.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='vt.c' object='lightdm-vt.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(lightdm_CFLAGS) $(CFLAGS) -c -o lightdm-vt.o `test -f 'vt.c' || echo '$(srcdir)/'`vt.c
+
+lightdm-vt.obj: vt.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(lightdm_CFLAGS) $(CFLAGS) -MT lightdm-vt.obj -MD -MP -MF $(DEPDIR)/lightdm-vt.Tpo -c -o lightdm-vt.obj `if test -f 'vt.c'; then $(CYGPATH_W) 'vt.c'; else $(CYGPATH_W) '$(srcdir)/vt.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/lightdm-vt.Tpo $(DEPDIR)/lightdm-vt.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='vt.c' object='lightdm-vt.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(lightdm_CFLAGS) $(CFLAGS) -c -o lightdm-vt.obj `if test -f 'vt.c'; then $(CYGPATH_W) 'vt.c'; else $(CYGPATH_W) '$(srcdir)/vt.c'; fi`
 
 lightdm-xauth.o: xauth.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(lightdm_CFLAGS) $(CFLAGS) -MT lightdm-xauth.o -MD -MP -MF $(DEPDIR)/lightdm-xauth.Tpo -c -o lightdm-xauth.o `test -f 'xauth.c' || echo '$(srcdir)/'`xauth.c

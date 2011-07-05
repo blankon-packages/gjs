@@ -93,11 +93,17 @@ pam_session_authorize (PAMSession *session)
     session->priv->in_session = TRUE;
 
     if (!use_fake_users)
-    {      
+    {
+        int result;
+
         // FIXME:-
         //pam_set_item (session->priv->pam_handle, PAM_TTY, &tty);
         //pam_set_item (session->priv->pam_handle, PAM_XDISPLAY, &display);
-        pam_open_session (session->priv->pam_handle, 0);
+        result = pam_open_session (session->priv->pam_handle, 0);
+        g_debug ("pam_open_session -> %s", pam_strerror (session->priv->pam_handle, result));
+
+        result = pam_setcred (session->priv->pam_handle, PAM_ESTABLISH_CRED);
+        g_debug ("pam_setcred(PAM_ESTABLISH_CRED) -> %s", pam_strerror (session->priv->pam_handle, result));
     }
 
     g_signal_emit (G_OBJECT (session), signals[STARTED], 0);
@@ -175,9 +181,21 @@ authenticate_cb (gpointer data)
     struct pam_conv conversation = { pam_conv_cb, session };
 
     pam_start (session->priv->service, session->priv->username, &conversation, &session->priv->pam_handle);
-    session->priv->result = pam_authenticate (session->priv->pam_handle, 0);
 
+    session->priv->result = pam_authenticate (session->priv->pam_handle, 0);
     g_debug ("pam_authenticate -> %s", pam_strerror (session->priv->pam_handle, session->priv->result));
+  
+    if (session->priv->result == PAM_SUCCESS)
+    {
+        session->priv->result = pam_acct_mgmt (session->priv->pam_handle, 0);
+        g_debug ("pam_acct_mgmt -> %s", pam_strerror (session->priv->pam_handle, session->priv->result));
+
+        if (session->priv->result == PAM_NEW_AUTHTOK_REQD)
+        {
+            session->priv->result = pam_chauthtok (session->priv->pam_handle, PAM_CHANGE_EXPIRED_AUTHTOK);
+            g_debug ("pam_chauthtok -> %s", pam_strerror (session->priv->pam_handle, session->priv->result));
+        }
+    }
 
     /* Notify user */
     g_idle_add (notify_auth_complete_cb, session);
@@ -350,7 +368,14 @@ pam_session_end (PAMSession *session)
     }
     else if (session->priv->in_session)
     {
-        pam_close_session (session->priv->pam_handle, 0);
+        int result;
+
+        result = pam_close_session (session->priv->pam_handle, 0);
+        g_debug ("pam_close_session -> %s", pam_strerror (session->priv->pam_handle, result));
+
+        pam_setcred (session->priv->pam_handle, PAM_DELETE_CRED);
+        g_debug ("pam_setcred(PAM_DELETE_CRED) -> %s", pam_strerror (session->priv->pam_handle, result));
+
         session->priv->in_session = FALSE;
         g_signal_emit (G_OBJECT (session), signals[ENDED], 0);
     }

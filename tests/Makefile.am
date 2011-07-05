@@ -2,6 +2,9 @@ SUBDIRS = src
 
 TESTS = \
 	test-headless \
+	test-show-greeter \
+	test-switch-to-guest \
+	test-switch-to-user \
 	test-autologin \
 	test-autologin-logout \
 	test-login-gobject \
@@ -59,4 +62,10 @@ EXTRA_DIST = \
 	scripts/login-gobject-wrong-password.script \
 	scripts/login-gobject-xserver-crash.conf \
 	scripts/login-gobject-xserver-crash.script \
-	scripts/no-config.script
+	scripts/no-config.script \
+	scripts/show-greeter.conf \
+	scripts/show-greeter.script \
+	scripts/switch-to-guest.conf \
+	scripts/switch-to-guest.script \
+	scripts/switch-to-user.conf \
+	scripts/switch-to-user.script
