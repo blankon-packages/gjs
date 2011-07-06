@@ -20,9 +20,10 @@ if [ -d "$xresourcedir" ]; then
         xrdb -nocpp -merge "$file"
     done
 fi
-if [ -f "$HOME/.Xresources" ]; then
-    echo "Loading resource: $file"
-    xrdb -nocpp -merge "$file"
+xresourcefile="$HOME/.Xresources"
+if [ -f "$xresourcefile" ]; then
+    echo "Loading resource: $xresourcefile"
+    xrdb -nocpp -merge "$xresourcefile"
 fi
 
 # Load keymaps

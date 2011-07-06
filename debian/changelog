@@ -1,3 +1,10 @@
+lightdm (0.4.2-0ubuntu2) oneiric; urgency=low
+
+  * debian/Xsession:
+    - Correctly load ~/.Xresource
+
+ -- Robert Ancell <robert.ancell@canonical.com>  Wed, 06 Jul 2011 09:29:15 +1000
+
 lightdm (0.4.2-0ubuntu1) oneiric; urgency=low
 
   * New upstream release
