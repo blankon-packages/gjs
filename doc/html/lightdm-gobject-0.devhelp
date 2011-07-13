@@ -28,19 +28,22 @@
     <function name="ldm_greeter_get_layout ()" link="LdmGreeter.html#ldm-greeter-get-layout"/>
     <function name="ldm_greeter_set_layout ()" link="LdmGreeter.html#ldm-greeter-set-layout"/>
     <function name="ldm_greeter_get_sessions ()" link="LdmGreeter.html#ldm-greeter-get-sessions"/>
+    <function name="ldm_greeter_get_is_first ()" link="LdmGreeter.html#ldm-greeter-get-is-first"/>
     <function name="ldm_greeter_get_default_session ()" link="LdmGreeter.html#ldm-greeter-get-default-session"/>
     <function name="ldm_greeter_get_has_guest_session ()" link="LdmGreeter.html#ldm-greeter-get-has-guest-session"/>
     <function name="ldm_greeter_get_timed_login_user ()" link="LdmGreeter.html#ldm-greeter-get-timed-login-user"/>
     <function name="ldm_greeter_get_timed_login_delay ()" link="LdmGreeter.html#ldm-greeter-get-timed-login-delay"/>
     <function name="ldm_greeter_cancel_timed_login ()" link="LdmGreeter.html#ldm-greeter-cancel-timed-login"/>
     <function name="ldm_greeter_login ()" link="LdmGreeter.html#ldm-greeter-login"/>
+    <function name="ldm_greeter_login_with_user_prompt ()" link="LdmGreeter.html#ldm-greeter-login-with-user-prompt"/>
     <function name="ldm_greeter_login_as_guest ()" link="LdmGreeter.html#ldm-greeter-login-as-guest"/>
-    <function name="ldm_greeter_provide_secret ()" link="LdmGreeter.html#ldm-greeter-provide-secret"/>
+    <function name="ldm_greeter_respond ()" link="LdmGreeter.html#ldm-greeter-respond"/>
     <function name="ldm_greeter_cancel_authentication ()" link="LdmGreeter.html#ldm-greeter-cancel-authentication"/>
     <function name="ldm_greeter_get_in_authentication ()" link="LdmGreeter.html#ldm-greeter-get-in-authentication"/>
     <function name="ldm_greeter_get_is_authenticated ()" link="LdmGreeter.html#ldm-greeter-get-is-authenticated"/>
     <function name="ldm_greeter_get_authentication_user ()" link="LdmGreeter.html#ldm-greeter-get-authentication-user"/>
     <function name="ldm_greeter_start_session ()" link="LdmGreeter.html#ldm-greeter-start-session"/>
+    <function name="ldm_greeter_start_default_session ()" link="LdmGreeter.html#ldm-greeter-start-default-session"/>
     <function name="ldm_greeter_get_can_suspend ()" link="LdmGreeter.html#ldm-greeter-get-can-suspend"/>
     <function name="ldm_greeter_suspend ()" link="LdmGreeter.html#ldm-greeter-suspend"/>
     <function name="ldm_greeter_get_can_hibernate ()" link="LdmGreeter.html#ldm-greeter-get-can-hibernate"/>
@@ -49,7 +52,6 @@
     <function name="ldm_greeter_restart ()" link="LdmGreeter.html#ldm-greeter-restart"/>
     <function name="ldm_greeter_get_can_shutdown ()" link="LdmGreeter.html#ldm-greeter-get-can-shutdown"/>
     <function name="ldm_greeter_shutdown ()" link="LdmGreeter.html#ldm-greeter-shutdown"/>
-    <function name="ldm_greeter_get_user_defaults ()" link="LdmGreeter.html#ldm-greeter-get-user-defaults"/>
     <function name="The &quot;authentication-user&quot; property" link="LdmGreeter.html#LdmGreeter--authentication-user"/>
     <function name="The &quot;can-hibernate&quot; property" link="LdmGreeter.html#LdmGreeter--can-hibernate"/>
     <function name="The &quot;can-restart&quot; property" link="LdmGreeter.html#LdmGreeter--can-restart"/>
@@ -66,7 +68,6 @@
     <function name="The &quot;authentication-complete&quot; signal" link="LdmGreeter.html#LdmGreeter-authentication-complete"/>
     <function name="The &quot;connected&quot; signal" link="LdmGreeter.html#LdmGreeter-connected"/>
     <function name="The &quot;quit&quot; signal" link="LdmGreeter.html#LdmGreeter-quit"/>
-    <function name="The &quot;show-error&quot; signal" link="LdmGreeter.html#LdmGreeter-show-error"/>
     <function name="The &quot;show-message&quot; signal" link="LdmGreeter.html#LdmGreeter-show-message"/>
     <function name="The &quot;show-prompt&quot; signal" link="LdmGreeter.html#LdmGreeter-show-prompt"/>
     <function name="The &quot;timed-login&quot; signal" link="LdmGreeter.html#LdmGreeter-timed-login"/>

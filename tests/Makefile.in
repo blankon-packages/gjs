@@ -124,6 +124,7 @@ DEFAULT_PAM_SERVICE = @DEFAULT_PAM_SERVICE@
 DEFAULT_XSESSION = @DEFAULT_XSESSION@
 DEFS = @DEFS@
 DEPDIR = @DEPDIR@
+DLLTOOL = @DLLTOOL@
 DSYMUTIL = @DSYMUTIL@
 DUMPBIN = @DUMPBIN@
 ECHO_C = @ECHO_C@
@@ -185,6 +186,7 @@ LOG_DIR = @LOG_DIR@
 LTLIBOBJS = @LTLIBOBJS@
 MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
+MANIFEST_TOOL = @MANIFEST_TOOL@
 MKDIR_P = @MKDIR_P@
 MSGFMT = @MSGFMT@
 MSGMERGE = @MSGMERGE@
@@ -225,6 +227,7 @@ abs_builddir = @abs_builddir@
 abs_srcdir = @abs_srcdir@
 abs_top_builddir = @abs_top_builddir@
 abs_top_srcdir = @abs_top_srcdir@
+ac_ct_AR = @ac_ct_AR@
 ac_ct_CC = @ac_ct_CC@
 ac_ct_CXX = @ac_ct_CXX@
 ac_ct_DUMPBIN = @ac_ct_DUMPBIN@
@@ -258,7 +261,6 @@ libdir = @libdir@
 libexecdir = @libexecdir@
 localedir = @localedir@
 localstatedir = @localstatedir@
-lt_ECHO = @lt_ECHO@
 mandir = @mandir@
 mkdir_p = @mkdir_p@
 oldincludedir = @oldincludedir@
@@ -283,6 +285,8 @@ TESTS = \
 	test-autologin \
 	test-autologin-logout \
 	test-login-gobject \
+	test-login-gobject-manual \
+	test-login-gobject-no-password \
 	test-login-gobject-wrong-password \
 	test-login-gobject-invalid-user \
 	test-login-gobject-logout \
@@ -329,6 +333,10 @@ EXTRA_DIST = \
 	scripts/login-gobject-invalid-user.script \
 	scripts/login-gobject-logout.conf \
 	scripts/login-gobject-logout.script \
+	scripts/login-gobject-manual.conf \
+	scripts/login-gobject-manual.script \
+	scripts/login-gobject-no-password.conf \
+	scripts/login-gobject-no-password.script \
 	scripts/login-gobject-session-crash.conf \
 	scripts/login-gobject-session-crash.script \
 	scripts/login-gobject-wrong-password.conf \

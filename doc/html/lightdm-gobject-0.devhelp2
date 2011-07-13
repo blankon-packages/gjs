@@ -28,19 +28,22 @@
     <keyword type="function" name="ldm_greeter_get_layout ()" link="LdmGreeter.html#ldm-greeter-get-layout"/>
     <keyword type="function" name="ldm_greeter_set_layout ()" link="LdmGreeter.html#ldm-greeter-set-layout"/>
     <keyword type="function" name="ldm_greeter_get_sessions ()" link="LdmGreeter.html#ldm-greeter-get-sessions"/>
+    <keyword type="function" name="ldm_greeter_get_is_first ()" link="LdmGreeter.html#ldm-greeter-get-is-first"/>
     <keyword type="function" name="ldm_greeter_get_default_session ()" link="LdmGreeter.html#ldm-greeter-get-default-session"/>
     <keyword type="function" name="ldm_greeter_get_has_guest_session ()" link="LdmGreeter.html#ldm-greeter-get-has-guest-session"/>
     <keyword type="function" name="ldm_greeter_get_timed_login_user ()" link="LdmGreeter.html#ldm-greeter-get-timed-login-user"/>
     <keyword type="function" name="ldm_greeter_get_timed_login_delay ()" link="LdmGreeter.html#ldm-greeter-get-timed-login-delay"/>
     <keyword type="function" name="ldm_greeter_cancel_timed_login ()" link="LdmGreeter.html#ldm-greeter-cancel-timed-login"/>
     <keyword type="function" name="ldm_greeter_login ()" link="LdmGreeter.html#ldm-greeter-login"/>
+    <keyword type="function" name="ldm_greeter_login_with_user_prompt ()" link="LdmGreeter.html#ldm-greeter-login-with-user-prompt"/>
     <keyword type="function" name="ldm_greeter_login_as_guest ()" link="LdmGreeter.html#ldm-greeter-login-as-guest"/>
-    <keyword type="function" name="ldm_greeter_provide_secret ()" link="LdmGreeter.html#ldm-greeter-provide-secret"/>
+    <keyword type="function" name="ldm_greeter_respond ()" link="LdmGreeter.html#ldm-greeter-respond"/>
     <keyword type="function" name="ldm_greeter_cancel_authentication ()" link="LdmGreeter.html#ldm-greeter-cancel-authentication"/>
     <keyword type="function" name="ldm_greeter_get_in_authentication ()" link="LdmGreeter.html#ldm-greeter-get-in-authentication"/>
     <keyword type="function" name="ldm_greeter_get_is_authenticated ()" link="LdmGreeter.html#ldm-greeter-get-is-authenticated"/>
     <keyword type="function" name="ldm_greeter_get_authentication_user ()" link="LdmGreeter.html#ldm-greeter-get-authentication-user"/>
     <keyword type="function" name="ldm_greeter_start_session ()" link="LdmGreeter.html#ldm-greeter-start-session"/>
+    <keyword type="function" name="ldm_greeter_start_default_session ()" link="LdmGreeter.html#ldm-greeter-start-default-session"/>
     <keyword type="function" name="ldm_greeter_get_can_suspend ()" link="LdmGreeter.html#ldm-greeter-get-can-suspend"/>
     <keyword type="function" name="ldm_greeter_suspend ()" link="LdmGreeter.html#ldm-greeter-suspend"/>
     <keyword type="function" name="ldm_greeter_get_can_hibernate ()" link="LdmGreeter.html#ldm-greeter-get-can-hibernate"/>
@@ -49,7 +52,6 @@
     <keyword type="function" name="ldm_greeter_restart ()" link="LdmGreeter.html#ldm-greeter-restart"/>
     <keyword type="function" name="ldm_greeter_get_can_shutdown ()" link="LdmGreeter.html#ldm-greeter-get-can-shutdown"/>
     <keyword type="function" name="ldm_greeter_shutdown ()" link="LdmGreeter.html#ldm-greeter-shutdown"/>
-    <keyword type="function" name="ldm_greeter_get_user_defaults ()" link="LdmGreeter.html#ldm-greeter-get-user-defaults"/>
     <keyword type="property" name="The &quot;authentication-user&quot; property" link="LdmGreeter.html#LdmGreeter--authentication-user"/>
     <keyword type="property" name="The &quot;can-hibernate&quot; property" link="LdmGreeter.html#LdmGreeter--can-hibernate"/>
     <keyword type="property" name="The &quot;can-restart&quot; property" link="LdmGreeter.html#LdmGreeter--can-restart"/>
@@ -66,7 +68,6 @@
     <keyword type="signal" name="The &quot;authentication-complete&quot; signal" link="LdmGreeter.html#LdmGreeter-authentication-complete"/>
     <keyword type="signal" name="The &quot;connected&quot; signal" link="LdmGreeter.html#LdmGreeter-connected"/>
     <keyword type="signal" name="The &quot;quit&quot; signal" link="LdmGreeter.html#LdmGreeter-quit"/>
-    <keyword type="signal" name="The &quot;show-error&quot; signal" link="LdmGreeter.html#LdmGreeter-show-error"/>
     <keyword type="signal" name="The &quot;show-message&quot; signal" link="LdmGreeter.html#LdmGreeter-show-message"/>
     <keyword type="signal" name="The &quot;show-prompt&quot; signal" link="LdmGreeter.html#LdmGreeter-show-prompt"/>
     <keyword type="signal" name="The &quot;timed-login&quot; signal" link="LdmGreeter.html#LdmGreeter-timed-login"/>

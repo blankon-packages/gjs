@@ -8,6 +8,8 @@ TESTS = \
 	test-autologin \
 	test-autologin-logout \
 	test-login-gobject \
+	test-login-gobject-manual \
+	test-login-gobject-no-password \
 	test-login-gobject-wrong-password \
 	test-login-gobject-invalid-user \
 	test-login-gobject-logout \
@@ -56,6 +58,10 @@ EXTRA_DIST = \
 	scripts/login-gobject-invalid-user.script \
 	scripts/login-gobject-logout.conf \
 	scripts/login-gobject-logout.script \
+	scripts/login-gobject-manual.conf \
+	scripts/login-gobject-manual.script \
+	scripts/login-gobject-no-password.conf \
+	scripts/login-gobject-no-password.script \
 	scripts/login-gobject-session-crash.conf \
 	scripts/login-gobject-session-crash.script \
 	scripts/login-gobject-wrong-password.conf \

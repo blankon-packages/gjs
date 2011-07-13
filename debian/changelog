@@ -1,3 +1,9 @@
+lightdm (0.4.3-0ubuntu1) oneiric; urgency=low
+
+  * New upstream release
+
+ -- Robert Ancell <robert.ancell@canonical.com>  Wed, 13 Jul 2011 15:06:13 +1000
+
 lightdm (0.4.2-0ubuntu2) oneiric; urgency=low
 
   * debian/Xsession:

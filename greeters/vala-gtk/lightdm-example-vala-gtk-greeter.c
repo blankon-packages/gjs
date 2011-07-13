@@ -66,15 +66,14 @@ Greeter* greeter_new (void);
 Greeter* greeter_construct (GType object_type);
 static void greeter_connect_cb (Greeter* self, LdmGreeter* greeter);
 static void _greeter_connect_cb_ldm_greeter_connected (LdmGreeter* _sender, gpointer self);
-static void greeter_show_prompt_cb (Greeter* self, LdmGreeter* greeter, const gchar* text);
-static void _greeter_show_prompt_cb_ldm_greeter_show_prompt (LdmGreeter* _sender, const gchar* greeter, gpointer self);
-static void greeter_show_message_cb (Greeter* self, LdmGreeter* greeter, const gchar* text);
-static void _greeter_show_message_cb_ldm_greeter_show_message (LdmGreeter* _sender, const gchar* greeter, gpointer self);
-static void _greeter_show_message_cb_ldm_greeter_show_error (LdmGreeter* _sender, const gchar* greeter, gpointer self);
+static void greeter_show_prompt_cb (Greeter* self, LdmGreeter* greeter, const gchar* text, LdmPromptType type);
+static void _greeter_show_prompt_cb_ldm_greeter_show_prompt (LdmGreeter* _sender, const gchar* text, LdmPromptType type, gpointer self);
+static void greeter_show_message_cb (Greeter* self, LdmGreeter* greeter, const gchar* text, LdmMessageType type);
+static void _greeter_show_message_cb_ldm_greeter_show_message (LdmGreeter* _sender, const gchar* text, LdmMessageType type, gpointer self);
 static void greeter_authentication_complete_cb (Greeter* self, LdmGreeter* greeter);
 static void _greeter_authentication_complete_cb_ldm_greeter_authentication_complete (LdmGreeter* _sender, gpointer self);
 static void greeter_timed_login_cb (Greeter* self, LdmGreeter* greeter, const gchar* username);
-static void _greeter_timed_login_cb_ldm_greeter_timed_login (LdmGreeter* _sender, const gchar* greeter, gpointer self);
+static void _greeter_timed_login_cb_ldm_greeter_timed_login (LdmGreeter* _sender, const gchar* username, gpointer self);
 static void greeter_quit_cb (Greeter* self, LdmGreeter* greeter);
 static void _greeter_quit_cb_ldm_greeter_quit (LdmGreeter* _sender, gpointer self);
 void greeter_start (Greeter* self);
@@ -91,18 +90,13 @@ static void _greeter_connect_cb_ldm_greeter_connected (LdmGreeter* _sender, gpoi
 }
 
 
-static void _greeter_show_prompt_cb_ldm_greeter_show_prompt (LdmGreeter* _sender, const gchar* greeter, gpointer self) {
-	greeter_show_prompt_cb (self, _sender, greeter);
+static void _greeter_show_prompt_cb_ldm_greeter_show_prompt (LdmGreeter* _sender, const gchar* text, LdmPromptType type, gpointer self) {
+	greeter_show_prompt_cb (self, _sender, text, type);
 }
 
 
-static void _greeter_show_message_cb_ldm_greeter_show_message (LdmGreeter* _sender, const gchar* greeter, gpointer self) {
-	greeter_show_message_cb (self, _sender, greeter);
-}
-
-
-static void _greeter_show_message_cb_ldm_greeter_show_error (LdmGreeter* _sender, const gchar* greeter, gpointer self) {
-	greeter_show_message_cb (self, _sender, greeter);
+static void _greeter_show_message_cb_ldm_greeter_show_message (LdmGreeter* _sender, const gchar* text, LdmMessageType type, gpointer self) {
+	greeter_show_message_cb (self, _sender, text, type);
 }
 
 
@@ -111,8 +105,8 @@ static void _greeter_authentication_complete_cb_ldm_greeter_authentication_compl
 }
 
 
-static void _greeter_timed_login_cb_ldm_greeter_timed_login (LdmGreeter* _sender, const gchar* greeter, gpointer self) {
-	greeter_timed_login_cb (self, _sender, greeter);
+static void _greeter_timed_login_cb_ldm_greeter_timed_login (LdmGreeter* _sender, const gchar* username, gpointer self) {
+	greeter_timed_login_cb (self, _sender, username);
 }
 
 
@@ -131,7 +125,6 @@ Greeter* greeter_construct (GType object_type) {
 	g_signal_connect (self->priv->greeter, "connected", (GCallback) _greeter_connect_cb_ldm_greeter_connected, self);
 	g_signal_connect (self->priv->greeter, "show-prompt", (GCallback) _greeter_show_prompt_cb_ldm_greeter_show_prompt, self);
 	g_signal_connect (self->priv->greeter, "show-message", (GCallback) _greeter_show_message_cb_ldm_greeter_show_message, self);
-	g_signal_connect (self->priv->greeter, "show-error", (GCallback) _greeter_show_message_cb_ldm_greeter_show_error, self);
 	g_signal_connect (self->priv->greeter, "authentication-complete", (GCallback) _greeter_authentication_complete_cb_ldm_greeter_authentication_complete, self);
 	g_signal_connect (self->priv->greeter, "timed-login", (GCallback) _greeter_timed_login_cb_ldm_greeter_timed_login, self);
 	g_signal_connect (self->priv->greeter, "quit", (GCallback) _greeter_quit_cb_ldm_greeter_quit, self);
@@ -166,7 +159,7 @@ static void greeter_password_activate_cb (Greeter* self, GtkEntry* entry) {
 	g_return_if_fail (entry != NULL);
 	gtk_widget_set_sensitive ((GtkWidget*) self->priv->password_entry, FALSE);
 	_tmp0_ = gtk_entry_get_text (self->priv->password_entry);
-	ldm_greeter_provide_secret (self->priv->greeter, _tmp0_);
+	ldm_greeter_respond (self->priv->greeter, _tmp0_);
 }
 
 
@@ -255,7 +248,6 @@ static void greeter_connect_cb (Greeter* self, LdmGreeter* greeter) {
 	_tmp16_ = (GtkEntry*) gtk_entry_new ();
 	_g_object_unref0 (self->priv->password_entry);
 	self->priv->password_entry = g_object_ref_sink (_tmp16_);
-	gtk_entry_set_visibility (self->priv->password_entry, FALSE);
 	gtk_widget_set_sensitive ((GtkWidget*) self->priv->password_entry, FALSE);
 	gtk_box_pack_start ((GtkBox*) login_vbox, (GtkWidget*) self->priv->password_entry, FALSE, FALSE, (guint) 0);
 	g_signal_connect (self->priv->password_entry, "activate", (GCallback) _greeter_password_activate_cb_gtk_entry_activate, self);
@@ -272,17 +264,18 @@ static void greeter_connect_cb (Greeter* self, LdmGreeter* greeter) {
 }
 
 
-static void greeter_show_prompt_cb (Greeter* self, LdmGreeter* greeter, const gchar* text) {
+static void greeter_show_prompt_cb (Greeter* self, LdmGreeter* greeter, const gchar* text, LdmPromptType type) {
 	g_return_if_fail (self != NULL);
 	g_return_if_fail (greeter != NULL);
 	g_return_if_fail (text != NULL);
 	gtk_widget_show ((GtkWidget*) self->priv->password_entry);
 	gtk_widget_set_sensitive ((GtkWidget*) self->priv->password_entry, TRUE);
+	gtk_entry_set_visibility (self->priv->password_entry, type != LDM_PROMPT_TYPE_SECRET);
 	gtk_widget_grab_focus ((GtkWidget*) self->priv->password_entry);
 }
 
 
-static void greeter_show_message_cb (Greeter* self, LdmGreeter* greeter, const gchar* text) {
+static void greeter_show_message_cb (Greeter* self, LdmGreeter* greeter, const gchar* text, LdmMessageType type) {
 	g_return_if_fail (self != NULL);
 	g_return_if_fail (greeter != NULL);
 	g_return_if_fail (text != NULL);

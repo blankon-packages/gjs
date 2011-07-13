@@ -1,8 +1,8 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'greeter.h'
 **
-** Created: Mon Jul 4 13:00:05 2011
-**      by: The Qt Meta Object Compiler version 62 (Qt 4.7.2)
+** Created: Wed Jul 13 11:10:38 2011
+**      by: The Qt Meta Object Compiler version 62 (Qt 4.7.3)
 **
 ** WARNING! All changes made in this file will be lost!
 *****************************************************************************/
@@ -11,7 +11,7 @@
 #if !defined(Q_MOC_OUTPUT_REVISION)
 #error "The header file 'greeter.h' doesn't include <QObject>."
 #elif Q_MOC_OUTPUT_REVISION != 62
-#error "This file was generated using the moc from 4.7.2. It"
+#error "This file was generated using the moc from 4.7.3. It"
 #error "cannot be used with the include files from this version of Qt."
 #error "(The moc has changed too much.)"
 #endif
@@ -48,21 +48,21 @@ static const uint qt_meta_data_QLightDM__Greeter[] = {
      248,   18,   18,   18, 0x0a,
      267,  151,   18,   18, 0x0a,
      282,   18,   18,   18, 0x0a,
-     304,  297,   18,   18, 0x0a,
-     327,   18,   18,   18, 0x0a,
-     358,  350,   18,   18, 0x0a,
-     380,   18,   18,   18, 0x2a,
-     398,  395,   18,   18, 0x08,
+     306,  297,   18,   18, 0x0a,
+     323,   18,   18,   18, 0x0a,
+     354,  346,   18,   18, 0x0a,
+     376,   18,   18,   18, 0x2a,
+     394,  391,   18,   18, 0x08,
 
  // methods: signature, parameters, type, tag, flags
-     424,  419,  410,   18, 0x02,
+     420,  415,  406,   18, 0x02,
 
  // properties: name, type, flags
-     450,  445, 0x01095001,
-     461,  445, 0x01095001,
-     474,  445, 0x01095001,
-     486,  445, 0x01095001,
-     505,  497, 0x0a095401,
+     446,  441, 0x01095001,
+     457,  441, 0x01095001,
+     470,  441, 0x01095001,
+     482,  441, 0x01095001,
+     501,  493, 0x0a095401,
 
        0        // eod
 };
@@ -76,7 +76,7 @@ static const char qt_meta_stringdata_QLightDM__Greeter[] = {
     "suspend()\0hibernate()\0shutdown()\0"
     "restart()\0connectToServer()\0"
     "cancelTimedLogin()\0login(QString)\0"
-    "loginAsGuest()\0secret\0provideSecret(QString)\0"
+    "loginAsGuest()\0response\0respond(QString)\0"
     "cancelAuthentication()\0session\0"
     "startSession(QString)\0startSession()\0"
     "fd\0onRead(int)\0QVariant\0name\0"
@@ -129,7 +129,7 @@ int QLightDM::Greeter::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
         case 12: cancelTimedLogin(); break;
         case 13: login((*reinterpret_cast< const QString(*)>(_a[1]))); break;
         case 14: loginAsGuest(); break;
-        case 15: provideSecret((*reinterpret_cast< const QString(*)>(_a[1]))); break;
+        case 15: respond((*reinterpret_cast< const QString(*)>(_a[1]))); break;
         case 16: cancelAuthentication(); break;
         case 17: startSession((*reinterpret_cast< const QString(*)>(_a[1]))); break;
         case 18: startSession(); break;

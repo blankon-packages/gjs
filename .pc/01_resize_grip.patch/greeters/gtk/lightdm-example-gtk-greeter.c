@@ -65,20 +65,12 @@ set_session (const gchar *session)
 static void
 start_authentication (const gchar *username)
 {
-    gchar *language, *layout, *session;
-
     gtk_widget_hide (message_label);
     gtk_label_set_text (GTK_LABEL (message_label), "");
 
     if (strcmp (username, "*other") == 0)
     {
-        gtk_label_set_text (GTK_LABEL (prompt_label), _("Username:"));
-        gtk_widget_set_sensitive (prompt_entry, TRUE);
-        gtk_entry_set_text (GTK_ENTRY (prompt_entry), "");
-        gtk_entry_set_visibility (GTK_ENTRY (prompt_entry), TRUE);
-        gtk_widget_show (prompt_box);
-        gtk_widget_grab_focus (prompt_entry);
-        return;
+        ldm_greeter_login_with_user_prompt (greeter);
     }
     else if (strcmp (username, "*guest") == 0)
     {
@@ -86,13 +78,12 @@ start_authentication (const gchar *username)
     }
     else
     {
-        if (ldm_greeter_get_user_defaults (greeter, username, &language, &layout, &session))
-        {
-            set_session (session);
-            g_free (language);
-            g_free (layout);
-            g_free (session);
-        }
+        LdmUser *user;
+        user = ldm_greeter_get_user_by_name (greeter, username);
+        if (user)
+            set_session (ldm_user_get_session (user));
+        else
+            set_session (ldm_greeter_get_default_session (greeter));
 
         ldm_greeter_login (greeter, username);
     }
@@ -150,7 +141,7 @@ login_cb (GtkWidget *widget)
     if (!ldm_greeter_get_in_authentication (greeter))
         start_authentication (gtk_entry_get_text (GTK_ENTRY (prompt_entry)));
     else
-        ldm_greeter_provide_secret (greeter, gtk_entry_get_text (GTK_ENTRY (prompt_entry)));
+        ldm_greeter_respond (greeter, gtk_entry_get_text (GTK_ENTRY (prompt_entry)));
     gtk_entry_set_text (GTK_ENTRY (prompt_entry), "");
 }
 
@@ -163,18 +154,18 @@ cancel_cb (GtkWidget *widget)
 }
 
 static void
-show_prompt_cb (LdmGreeter *greeter, const gchar *text)
+show_prompt_cb (LdmGreeter *greeter, const gchar *text, LdmPromptType type)
 {
     gtk_label_set_text (GTK_LABEL (prompt_label), text);
     gtk_widget_set_sensitive (prompt_entry, TRUE);
     gtk_entry_set_text (GTK_ENTRY (prompt_entry), "");
-    gtk_entry_set_visibility (GTK_ENTRY (prompt_entry), FALSE);
+    gtk_entry_set_visibility (GTK_ENTRY (prompt_entry), type != LDM_PROMPT_TYPE_SECRET);
     gtk_widget_show (prompt_box);
     gtk_widget_grab_focus (prompt_entry);
 }
 
 static void
-show_message_cb (LdmGreeter *greeter, const gchar *text)
+show_message_cb (LdmGreeter *greeter, const gchar *text, LdmMessageType type)
 {
     gtk_label_set_text (GTK_LABEL (message_label), text);
     gtk_widget_show (message_label);
@@ -614,7 +605,6 @@ main(int argc, char **argv)
     g_signal_connect (G_OBJECT (greeter), "connected", G_CALLBACK (connect_cb), NULL);    
     g_signal_connect (G_OBJECT (greeter), "show-prompt", G_CALLBACK (show_prompt_cb), NULL);  
     g_signal_connect (G_OBJECT (greeter), "show-message", G_CALLBACK (show_message_cb), NULL);
-    g_signal_connect (G_OBJECT (greeter), "show-error", G_CALLBACK (show_message_cb), NULL);
     g_signal_connect (G_OBJECT (greeter), "authentication-complete", G_CALLBACK (authentication_complete_cb), NULL);
     g_signal_connect (G_OBJECT (greeter), "timed-login", G_CALLBACK (timed_login_cb), NULL);
     g_signal_connect (G_OBJECT (greeter), "user-added", G_CALLBACK (user_added_cb), NULL);

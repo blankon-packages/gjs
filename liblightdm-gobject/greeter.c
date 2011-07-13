@@ -48,7 +48,6 @@ enum {
     CONNECTED,
     SHOW_PROMPT,
     SHOW_MESSAGE,
-    SHOW_ERROR,
     AUTHENTICATION_COMPLETE,
     TIMED_LOGIN,
     USER_ADDED,
@@ -106,6 +105,7 @@ struct _LdmGreeterPrivate
     gchar *authentication_user;
     gboolean in_authentication;
     gboolean is_authenticated;
+    guint32 authenticate_sequence_number;
 
     gchar *timed_user;
     gint login_delay;
@@ -258,14 +258,16 @@ handle_prompt_authentication (LdmGreeter *greeter, gsize *offset)
         switch (msg_style)
         {
         case PAM_PROMPT_ECHO_OFF:
+            g_signal_emit (G_OBJECT (greeter), signals[SHOW_PROMPT], 0, msg, LDM_PROMPT_TYPE_SECRET);
+            break;
         case PAM_PROMPT_ECHO_ON:
-            g_signal_emit (G_OBJECT (greeter), signals[SHOW_PROMPT], 0, msg);
+            g_signal_emit (G_OBJECT (greeter), signals[SHOW_PROMPT], 0, msg, LDM_PROMPT_TYPE_QUESTION);
             break;
         case PAM_ERROR_MSG:
-            g_signal_emit (G_OBJECT (greeter), signals[SHOW_ERROR], 0, msg);
+            g_signal_emit (G_OBJECT (greeter), signals[SHOW_MESSAGE], 0, msg, LDM_MESSAGE_TYPE_ERROR);
             break;
         case PAM_TEXT_INFO:
-            g_signal_emit (G_OBJECT (greeter), signals[SHOW_MESSAGE], 0, msg);
+            g_signal_emit (G_OBJECT (greeter), signals[SHOW_MESSAGE], 0, msg, LDM_MESSAGE_TYPE_INFO);
             break;
         }
 
@@ -324,7 +326,7 @@ from_server_cb (GIOChannel *source, GIOCondition condition, gpointer data)
 {
     LdmGreeter *greeter = data;
     gsize offset;
-    guint32 id, return_code;
+    guint32 id, sequence_number, return_code;
   
     if (!read_packet (greeter, FALSE))
         return TRUE;
@@ -365,16 +367,23 @@ from_server_cb (GIOChannel *source, GIOCondition condition, gpointer data)
         handle_prompt_authentication (greeter, &offset);
         break;
     case GREETER_MESSAGE_END_AUTHENTICATION:
+        sequence_number = read_int (greeter, &offset);
         return_code = read_int (greeter, &offset);
-        g_debug ("Authentication complete with return code %d", return_code);
-        greeter->priv->is_authenticated = (return_code == 0);
-        if (!greeter->priv->is_authenticated)
+
+        if (sequence_number == greeter->priv->authenticate_sequence_number)
         {
-            g_free (greeter->priv->authentication_user);
-            greeter->priv->authentication_user = NULL;
+            g_debug ("Authentication complete with return code %d", return_code);
+            greeter->priv->is_authenticated = (return_code == 0);
+            if (!greeter->priv->is_authenticated)
+            {
+                g_free (greeter->priv->authentication_user);
+                greeter->priv->authentication_user = NULL;
+            }
+            g_signal_emit (G_OBJECT (greeter), signals[AUTHENTICATION_COMPLETE], 0);
+            greeter->priv->in_authentication = FALSE;
         }
-        g_signal_emit (G_OBJECT (greeter), signals[AUTHENTICATION_COMPLETE], 0);
-        greeter->priv->in_authentication = FALSE;
+        else
+            g_debug ("Ignoring end authentication with invalid sequence number %d", sequence_number);
         break;
     default:
         g_warning ("Unknown message from server: %d", id);
@@ -862,9 +871,9 @@ ldm_greeter_get_num_users (LdmGreeter *greeter)
  * Get a list of users to present to the user.  This list may be a subset of the
  * available users and may be empty depending on the server configuration.
  *
- * Return value: (element-type LdmUser): A list of #LdmUser that should be presented to the user.
+ * Return value: (element-type LdmUser) (transfer none): A list of #LdmUser that should be presented to the user.
  **/
-const GList *
+GList *
 ldm_greeter_get_users (LdmGreeter *greeter)
 {
     g_return_val_if_fail (LDM_IS_GREETER (greeter), NULL);
@@ -879,12 +888,13 @@ ldm_greeter_get_users (LdmGreeter *greeter)
  *
  * Get infomation about a given user or NULL if this user doesn't exist.
  *
- * Return value: (allow-none): A #LdmUser entry for the given user.
+ * Return value: (transfer none): A #LdmUser entry for the given user.
  **/
-const LdmUser *
+LdmUser *
 ldm_greeter_get_user_by_name (LdmGreeter *greeter, const gchar *username)
 {
     g_return_val_if_fail (LDM_IS_GREETER (greeter), NULL);
+    g_return_val_if_fail (username != NULL, NULL);
 
     update_users (greeter);
 
@@ -964,9 +974,9 @@ ldm_greeter_get_default_language (LdmGreeter *greeter)
  *
  * Get a list of languages to present to the user.
  *
- * Return value: (element-type LdmLanguage): A list of #LdmLanguage that should be presented to the user.
+ * Return value: (element-type LdmLanguage) (transfer none): A list of #LdmLanguage that should be presented to the user.
  **/
-const GList *
+GList *
 ldm_greeter_get_languages (LdmGreeter *greeter)
 {
     g_return_val_if_fail (LDM_IS_GREETER (greeter), NULL);
@@ -1010,9 +1020,9 @@ setup_xkl (LdmGreeter *greeter)
  *
  * Get a list of keyboard layouts to present to the user.
  *
- * Return value: (element-type LdmLayout): A list of #LdmLayout that should be presented to the user.
+ * Return value: (element-type LdmLayout) (transfer none): A list of #LdmLayout that should be presented to the user.
  **/
-const GList *
+GList *
 ldm_greeter_get_layouts (LdmGreeter *greeter)
 {
     XklConfigRegistry *registry;
@@ -1162,9 +1172,9 @@ update_sessions (LdmGreeter *greeter)
  *
  * Get the available sessions.
  *
- * Return value: (element-type LdmSession): A list of #LdmSession
+ * Return value: (element-type LdmSession) (transfer none): A list of #LdmSession
  **/
-const GList *
+GList *
 ldm_greeter_get_sessions (LdmGreeter *greeter)
 {
     g_return_val_if_fail (LDM_IS_GREETER (greeter), NULL);
@@ -1266,7 +1276,7 @@ ldm_greeter_cancel_timed_login (LdmGreeter *greeter)
 /**
  * ldm_greeter_login:
  * @greeter: A #LdmGreeter
- * @username: A username
+ * @username: (allow-none): A username or NULL to prompt for a username.
  *
  * Starts the authentication procedure for a user.
  **/
@@ -1277,16 +1287,33 @@ ldm_greeter_login (LdmGreeter *greeter, const char *username)
     gsize offset = 0;
 
     g_return_if_fail (LDM_IS_GREETER (greeter));
-    g_return_if_fail (username != NULL);
 
+    if (!username)
+        username = "";
+
+    greeter->priv->authenticate_sequence_number++;
     greeter->priv->in_authentication = TRUE;  
     greeter->priv->is_authenticated = FALSE;
     g_free (greeter->priv->authentication_user);
     greeter->priv->authentication_user = g_strdup (username);
+
     g_debug ("Starting authentication for user %s...", username);
-    write_header (message, MAX_MESSAGE_LENGTH, GREETER_MESSAGE_LOGIN, string_length (username), &offset);
+    write_header (message, MAX_MESSAGE_LENGTH, GREETER_MESSAGE_LOGIN, int_length () + string_length (username), &offset);
+    write_int (message, MAX_MESSAGE_LENGTH, greeter->priv->authenticate_sequence_number, &offset);
     write_string (message, MAX_MESSAGE_LENGTH, username, &offset);
     write_message (greeter, message, offset);
+}
+
+/**
+ * ldm_greeter_login_with_user_prompt:
+ * @greeter: A #LdmGreeter
+ *
+ * Starts the authentication procedure, prompting the greeter for a username.
+ **/
+void
+ldm_greeter_login_with_user_prompt (LdmGreeter *greeter)
+{
+    ldm_greeter_login (greeter, NULL);
 }
 
 /**
@@ -1303,36 +1330,39 @@ ldm_greeter_login_as_guest (LdmGreeter *greeter)
 
     g_return_if_fail (LDM_IS_GREETER (greeter));
 
+    greeter->priv->authenticate_sequence_number++;
     greeter->priv->in_authentication = TRUE;
     greeter->priv->is_authenticated = FALSE;
     g_free (greeter->priv->authentication_user);
     greeter->priv->authentication_user = NULL;
+
     g_debug ("Starting authentication for guest account...");
-    write_header (message, MAX_MESSAGE_LENGTH, GREETER_MESSAGE_LOGIN_AS_GUEST, 0, &offset);
+    write_header (message, MAX_MESSAGE_LENGTH, GREETER_MESSAGE_LOGIN_AS_GUEST, int_length (), &offset);
+    write_int (message, MAX_MESSAGE_LENGTH, greeter->priv->authenticate_sequence_number, &offset);
     write_message (greeter, message, offset);
 }
 
 /**
- * ldm_greeter_provide_secret:
+ * ldm_greeter_respond:
  * @greeter: A #LdmGreeter
- * @secret: Response to a prompt
+ * @response: Response to a prompt
  *
- * Provide secret information from a prompt.
+ * Provide response to a prompt.
  **/
 void
-ldm_greeter_provide_secret (LdmGreeter *greeter, const gchar *secret)
+ldm_greeter_respond (LdmGreeter *greeter, const gchar *response)
 {
     guint8 message[MAX_MESSAGE_LENGTH];
     gsize offset = 0;
 
     g_return_if_fail (LDM_IS_GREETER (greeter));
-    g_return_if_fail (secret != NULL);
+    g_return_if_fail (response != NULL);
 
-    g_debug ("Providing secret to display manager");
-    write_header (message, MAX_MESSAGE_LENGTH, GREETER_MESSAGE_CONTINUE_AUTHENTICATION, int_length () + string_length (secret), &offset);
-    // FIXME: Could be multiple secrets required
+    g_debug ("Providing response to display manager");
+    write_header (message, MAX_MESSAGE_LENGTH, GREETER_MESSAGE_CONTINUE_AUTHENTICATION, int_length () + string_length (response), &offset);
+    // FIXME: Could be multiple responses required
     write_int (message, MAX_MESSAGE_LENGTH, 1, &offset);
-    write_string (message, MAX_MESSAGE_LENGTH, secret, &offset);
+    write_string (message, MAX_MESSAGE_LENGTH, response, &offset);
     write_message (greeter, message, offset);
 }
 
@@ -1627,55 +1657,6 @@ ldm_greeter_shutdown (LdmGreeter *greeter)
     ck_call_function (greeter, "Stop", FALSE);
 }
 
-/**
- * ldm_greeter_get_user_defaults:
- * @greeter: A #LdmGreeter
- * @username: The user to check
- * @language: (out): Default language for this user.
- * @layout: (out): Default keyboard layout for this user.
- * @session: (out): Default session for this user.
- *
- * Get the default settings for a given user.  If the user does not exist FALSE
- * is returned and language, layout and session are not set.
- *
- * Return value: TRUE if this user exists.
- **/
-gboolean
-ldm_greeter_get_user_defaults (LdmGreeter *greeter, const gchar *username, gchar **language, gchar **layout, gchar **session)
-{
-    gsize offset = 0;
-    guint32 id;
-    guint8 message[MAX_MESSAGE_LENGTH];
-
-    g_return_val_if_fail (LDM_IS_GREETER (greeter), FALSE);
-    g_return_val_if_fail (username != NULL, FALSE);
-
-    offset = 0;
-    write_header (message, MAX_MESSAGE_LENGTH, GREETER_MESSAGE_GET_USER_DEFAULTS, string_length (username), &offset);
-    write_string (message, MAX_MESSAGE_LENGTH, username, &offset);
-    write_message (greeter, message, offset);
-
-    if (!read_packet (greeter, TRUE))
-    {
-        g_warning ("Error reading user defaults from server");
-        return FALSE;
-    }
-
-    offset = 0;
-    id = read_int (greeter, &offset);
-    g_assert (id == GREETER_MESSAGE_USER_DEFAULTS);
-    read_int (greeter, &offset);
-    *language = read_string (greeter, &offset);
-    *layout = read_string (greeter, &offset);
-    *session = read_string (greeter, &offset);
-
-    g_debug ("User defaults for %s: language=%s, layout=%s, session=%s", username, *language, *layout, *session);
-
-    greeter->priv->n_read = 0;
-
-    return TRUE;
-}
-
 static void
 ldm_greeter_init (LdmGreeter *greeter)
 {
@@ -1768,6 +1749,42 @@ ldm_greeter_get_property (GObject    *object,
         G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
         break;
     }
+}
+
+static void
+marshal_VOID__STRING_INT (GClosure     *closure,
+                          GValue       *return_value G_GNUC_UNUSED,
+                          guint         n_param_values,
+                          const GValue *param_values,
+                          gpointer      invocation_hint G_GNUC_UNUSED,
+                          gpointer      marshal_data)
+{
+    typedef void (*GMarshalFunc_VOID__STRING_INT) (gpointer     data1,
+                                                   gpointer     arg_1,
+                                                   gint         arg_2,
+                                                   gpointer     data2);
+    register GMarshalFunc_VOID__STRING_INT callback;
+    register GCClosure *cc = (GCClosure*) closure;
+    register gpointer data1, data2;
+
+    g_return_if_fail (n_param_values == 3);
+
+    if (G_CCLOSURE_SWAP_DATA (closure))
+    {
+        data1 = closure->data;
+        data2 = g_value_peek_pointer (param_values + 0);
+    }
+    else
+    {
+        data1 = g_value_peek_pointer (param_values + 0);
+        data2 = closure->data;
+    }
+    callback = (GMarshalFunc_VOID__STRING_INT) (marshal_data ? marshal_data : cc->callback);
+
+    callback (data1,
+              (param_values + 1)->data[0].v_pointer,
+              (param_values + 2)->data[0].v_int,
+              data2);
 }
 
 static void
@@ -1914,12 +1931,13 @@ ldm_greeter_class_init (LdmGreeterClass *klass)
      * LdmGreeter::show-prompt:
      * @greeter: A #LdmGreeter
      * @text: Prompt text
+     * @type: Prompt type
      *
      * The ::show-prompt signal gets emitted when the greeter should show a
      * prompt to the user.  The given text should be displayed and an input
      * field for the user to provide a response.
      *
-     * Call ldm_greeter_provide_secret() with the resultant input or
+     * Call ldm_greeter_respond() with the resultant input or
      * ldm_greeter_cancel_authentication() to abort the authentication.
      **/
     signals[SHOW_PROMPT] =
@@ -1928,16 +1946,17 @@ ldm_greeter_class_init (LdmGreeterClass *klass)
                       G_SIGNAL_RUN_LAST,
                       G_STRUCT_OFFSET (LdmGreeterClass, show_prompt),
                       NULL, NULL,
-                      g_cclosure_marshal_VOID__STRING,
-                      G_TYPE_NONE, 1, G_TYPE_STRING);
+                      marshal_VOID__STRING_INT,
+                      G_TYPE_NONE, 2, G_TYPE_STRING, G_TYPE_INT);
 
     /**
      * LdmGreeter::show-message:
      * @greeter: A #LdmGreeter
      * @text: Message text
+     * @type: Message type
      *
      * The ::show-message signal gets emitted when the greeter
-     * should show an informational message to the user.
+     * should show a message to the user.
      **/
     signals[SHOW_MESSAGE] =
         g_signal_new ("show-message",
@@ -1945,25 +1964,8 @@ ldm_greeter_class_init (LdmGreeterClass *klass)
                       G_SIGNAL_RUN_LAST,
                       G_STRUCT_OFFSET (LdmGreeterClass, show_message),
                       NULL, NULL,
-                      g_cclosure_marshal_VOID__STRING,
-                      G_TYPE_NONE, 1, G_TYPE_STRING);
-
-    /**
-     * LdmGreeter::show-error:
-     * @greeter: A #LdmGreeter
-     * @text: Message text
-     *
-     * The ::show-error signal gets emitted when the greeter
-     * should show an error message to the user.
-     **/
-    signals[SHOW_ERROR] =
-        g_signal_new ("show-error",
-                      G_TYPE_FROM_CLASS (klass),
-                      G_SIGNAL_RUN_LAST,
-                      G_STRUCT_OFFSET (LdmGreeterClass, show_error),
-                      NULL, NULL,
-                      g_cclosure_marshal_VOID__STRING,
-                      G_TYPE_NONE, 1, G_TYPE_STRING);
+                      marshal_VOID__STRING_INT,
+                      G_TYPE_NONE, 2, G_TYPE_STRING, G_TYPE_INT);
 
     /**
      * LdmGreeter::authentication-complete:

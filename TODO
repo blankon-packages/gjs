@@ -1,0 +1,2 @@
+allow non secret prompts
+check double start authentication does not return end authentication

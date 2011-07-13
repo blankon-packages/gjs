@@ -23,10 +23,15 @@ connected_cb (LdmGreeter *greeter)
             notify_status ("GREETER LOGIN-GUEST");
             ldm_greeter_login_as_guest (greeter);
         }
+        else if (g_key_file_get_boolean (config, "test-greeter-config", "prompt-username", NULL))
+        {
+            notify_status ("GREETER LOGIN");
+            ldm_greeter_login (greeter, NULL);
+        }
         else if (username)
         {
-          notify_status ("GREETER LOGIN USERNAME=%s", username);
-          ldm_greeter_login (greeter, username);
+            notify_status ("GREETER LOGIN USERNAME=%s", username);
+            ldm_greeter_login (greeter, username);
         }
 
         g_free (username);
@@ -34,30 +39,37 @@ connected_cb (LdmGreeter *greeter)
 }
 
 static void
-show_message_cb (LdmGreeter *greeter, const gchar *text)
+show_message_cb (LdmGreeter *greeter, const gchar *text, LdmMessageType type)
 {
     notify_status ("GREETER SHOW-MESSAGE TEXT=\"%s\"", text);
 }
 
 static void
-show_error_cb (LdmGreeter *greeter, const gchar *text)
+show_prompt_cb (LdmGreeter *greeter, const gchar *text, LdmPromptType type)
 {
-    notify_status ("GREETER SHOW-ERROR TEXT=\"%s\"", text);
-}
-
-static void
-show_prompt_cb (LdmGreeter *greeter, const gchar *text)
-{
-    gchar *password;
+    gchar *username, *password, *response = NULL;
 
     notify_status ("GREETER SHOW-PROMPT TEXT=\"%s\"", text);
 
+    username = g_key_file_get_string (config, "test-greeter-config", "username", NULL);
     password = g_key_file_get_string (config, "test-greeter-config", "password", NULL);
-    if (password)
+
+    if (g_key_file_get_boolean (config, "test-greeter-config", "prompt-username", NULL))
     {
-        notify_status ("GREETER PROVIDE-SECRET TEXT=\"%s\"", password);
-        ldm_greeter_provide_secret (greeter, password);
+        g_key_file_set_boolean (config, "test-greeter-config", "prompt-username", FALSE);
+        response = username;
     }
+    else if (password)
+        response = password;
+
+    if (response)
+    {
+        notify_status ("GREETER RESPOND TEXT=\"%s\"", response);
+        ldm_greeter_respond (greeter, response);
+    }
+
+    g_free (username);
+    g_free (password);
 }
 
 static void
@@ -112,7 +124,6 @@ main (int argc, char **argv)
     greeter = ldm_greeter_new ();
     g_signal_connect (greeter, "connected", G_CALLBACK (connected_cb), NULL);
     g_signal_connect (greeter, "show-message", G_CALLBACK (show_message_cb), NULL);
-    g_signal_connect (greeter, "show-error", G_CALLBACK (show_error_cb), NULL);
     g_signal_connect (greeter, "show-prompt", G_CALLBACK (show_prompt_cb), NULL);
     g_signal_connect (greeter, "authentication-complete", G_CALLBACK (authentication_complete_cb), NULL);
     g_signal_connect (greeter, "quit", G_CALLBACK (quit_cb), NULL);

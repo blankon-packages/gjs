@@ -32,6 +32,18 @@ typedef struct _LdmGreeterPrivate LdmGreeterPrivate;
 #include "layout.h"
 #include "session.h"
 
+typedef enum
+{
+    LDM_PROMPT_TYPE_QUESTION,
+    LDM_PROMPT_TYPE_SECRET
+} LdmPromptType;
+
+typedef enum
+{
+    LDM_MESSAGE_TYPE_INFO,
+    LDM_MESSAGE_TYPE_ERROR
+} LdmMessageType;
+
 struct _LdmGreeter
 {
     GObject            parent_instance;
@@ -44,9 +56,8 @@ struct _LdmGreeterClass
     GObjectClass parent_class;
 
     void (*connected)(LdmGreeter *greeter);
-    void (*show_prompt)(LdmGreeter *greeter, const gchar *text);
-    void (*show_message)(LdmGreeter *greeter, const gchar *text);
-    void (*show_error)(LdmGreeter *greeter, const gchar *text);
+    void (*show_prompt)(LdmGreeter *greeter, const gchar *text, LdmPromptType type);
+    void (*show_message)(LdmGreeter *greeter, const gchar *text, LdmMessageType type);
     void (*authentication_complete)(LdmGreeter *greeter);
     void (*timed_login)(LdmGreeter *greeter, const gchar *username);
     void (*user_added)(LdmGreeter *greeter, LdmUser *user);
@@ -73,21 +84,21 @@ gboolean ldm_greeter_get_boolean_property (LdmGreeter *greeter, const gchar *nam
 
 gint ldm_greeter_get_num_users (LdmGreeter *greeter);
 
-const GList *ldm_greeter_get_users (LdmGreeter *greeter);
+GList *ldm_greeter_get_users (LdmGreeter *greeter);
 
-const LdmUser *ldm_greeter_get_user_by_name (LdmGreeter *greeter, const gchar *username);
+LdmUser *ldm_greeter_get_user_by_name (LdmGreeter *greeter, const gchar *username);
 
 const gchar *ldm_greeter_get_default_language (LdmGreeter *greeter);
 
-const GList *ldm_greeter_get_languages (LdmGreeter *greeter);
+GList *ldm_greeter_get_languages (LdmGreeter *greeter);
 
-const GList *ldm_greeter_get_layouts (LdmGreeter *greeter);
+GList *ldm_greeter_get_layouts (LdmGreeter *greeter);
 
 void ldm_greeter_set_layout (LdmGreeter *greeter, const gchar *layout);
 
 const gchar *ldm_greeter_get_layout (LdmGreeter *greeter);
 
-const GList *ldm_greeter_get_sessions (LdmGreeter *greeter);
+GList *ldm_greeter_get_sessions (LdmGreeter *greeter);
 
 const gchar *ldm_greeter_get_default_session (LdmGreeter *greeter);
 
@@ -103,9 +114,11 @@ void ldm_greeter_cancel_timed_login (LdmGreeter *greeter);
 
 void ldm_greeter_login (LdmGreeter *greeter, const char *username);
 
+void ldm_greeter_login_with_user_prompt (LdmGreeter *greeter);
+
 void ldm_greeter_login_as_guest (LdmGreeter *greeter);
 
-void ldm_greeter_provide_secret (LdmGreeter *greeter, const gchar *secret);
+void ldm_greeter_respond (LdmGreeter *greeter, const gchar *response);
 
 void ldm_greeter_cancel_authentication (LdmGreeter *greeter);
 
@@ -134,8 +147,6 @@ void ldm_greeter_restart (LdmGreeter *greeter);
 gboolean ldm_greeter_get_can_shutdown (LdmGreeter *greeter);
 
 void ldm_greeter_shutdown (LdmGreeter *greeter);
-
-gboolean ldm_greeter_get_user_defaults (LdmGreeter *greeter, const gchar *username, gchar **language, gchar **layout, gchar **session);
 
 G_END_DECLS
 
