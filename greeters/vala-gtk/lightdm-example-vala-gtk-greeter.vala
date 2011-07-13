@@ -11,7 +11,6 @@ class Greeter
         greeter.connected.connect (connect_cb);
         greeter.show_prompt.connect (show_prompt_cb);
         greeter.show_message.connect (show_message_cb);
-        greeter.show_error.connect (show_message_cb);
         greeter.authentication_complete.connect (authentication_complete_cb);
         greeter.timed_login.connect (timed_login_cb);
         greeter.quit.connect (quit_cb);
@@ -31,7 +30,7 @@ class Greeter
     private void password_activate_cb (Gtk.Entry entry)
     {
         password_entry.sensitive = false;
-        greeter.provide_secret (password_entry.text);
+        greeter.respond (password_entry.text);
     }
 
     private void connect_cb (LightDM.Greeter greeter)
@@ -66,7 +65,6 @@ class Greeter
         username_entry.activate.connect (username_activate_cb);
         
         password_entry = new Gtk.Entry ();
-        password_entry.visibility = false;
         password_entry.sensitive = false;
         login_vbox.pack_start (password_entry, false, false, 0);
         password_entry.activate.connect (password_activate_cb);
@@ -76,14 +74,15 @@ class Greeter
         username_entry.grab_focus ();
     }
 
-    private void show_prompt_cb (LightDM.Greeter greeter, string text)
+    private void show_prompt_cb (LightDM.Greeter greeter, string text, LightDM.PromptType type)
     {
         password_entry.show ();
         password_entry.sensitive = true;
+        password_entry.visibility = type != LightDM.PromptType.SECRET;
         password_entry.grab_focus ();
     }
 
-    private void show_message_cb (LightDM.Greeter greeter, string text)
+    private void show_message_cb (LightDM.Greeter greeter, string text, LightDM.MessageType type)
     {
         message_label.label = text;
         message_label.show ();

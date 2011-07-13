@@ -39,7 +39,6 @@ typedef enum
     GREETER_MESSAGE_CONTINUE_AUTHENTICATION = 4,
     GREETER_MESSAGE_START_SESSION           = 5,
     GREETER_MESSAGE_CANCEL_AUTHENTICATION   = 6,
-    GREETER_MESSAGE_GET_USER_DEFAULTS       = 7,
 
     /* Messages from the server to the greeter */
     GREETER_MESSAGE_CONNECTED               = 101,
@@ -78,6 +77,7 @@ public:
     bool inAuthentication;
     bool isAuthenticated;
     QString authenticationUser;
+    int authenticateSequenceNumber;
 };
 
 
@@ -89,6 +89,7 @@ Greeter::Greeter(QObject *parent) :
     d->nRead = 0;
     d->config = 0;
     d->sessionsModel = new SessionsModel(this);
+    d->authenticateSequenceNumber = 0;
 }
 
 Greeter::~Greeter()
@@ -221,28 +222,32 @@ void Greeter::login(const QString &username)
     d->isAuthenticated = false;
     d->authenticationUser = username;
     qDebug() << "Starting authentication for user " << username << "...";
-    writeHeader(GREETER_MESSAGE_LOGIN, stringLength(username));
+    writeHeader(GREETER_MESSAGE_LOGIN, intLength() + stringLength(username));
+    d->authenticateSequenceNumber++;
+    writeInt(d->authenticateSequenceNumber);
     writeString(username);
     flush();
 }
 
 void Greeter::loginAsGuest()
 {
+    d->authenticateSequenceNumber++;
     d->inAuthentication = true;
     d->isAuthenticated = false;
     d->authenticationUser = "";
     qDebug() << "Starting authentication for guest account";
-    writeHeader(GREETER_MESSAGE_LOGIN_AS_GUEST, 0);
+    writeHeader(GREETER_MESSAGE_LOGIN_AS_GUEST, intLength());
+    writeInt(d->authenticateSequenceNumber);
     flush();     
 }
 
-void Greeter::provideSecret(const QString &secret)
+void Greeter::respond(const QString &response)
 {
-    qDebug() << "Providing secret to display manager";
-    writeHeader(GREETER_MESSAGE_CONTINUE_AUTHENTICATION, intLength() + stringLength(secret));
-    // FIXME: Could be multiple secrets required
+    qDebug() << "Providing response to display manager";
+    writeHeader(GREETER_MESSAGE_CONTINUE_AUTHENTICATION, intLength() + stringLength(response));
+    // FIXME: Could be multiple response required
     writeInt(1);
-    writeString(secret);
+    writeString(response);
     flush();
 }
 
@@ -317,7 +322,7 @@ void Greeter::onRead(int fd)
     int offset = 0;
     int id = readInt(&offset);
     readInt(&offset);
-    int nMessages, returnCode;
+    int nMessages, sequenceNumber, returnCode;
     switch(id)
     {
     case GREETER_MESSAGE_CONNECTED:
@@ -366,14 +371,21 @@ void Greeter::onRead(int fd)
         }
         break;
     case GREETER_MESSAGE_END_AUTHENTICATION:
+        sequenceNumber = readInt(&offset);
         returnCode = readInt(&offset);
-        qDebug() << "Authentication complete with return code " << returnCode;
-        d->isAuthenticated = (returnCode == 0);
-        if(!d->isAuthenticated) {
-            d->authenticationUser = "";
+
+        if (sequenceNumber == d->authenticateSequenceNumber)
+        {
+            qDebug() << "Authentication complete with return code " << returnCode;
+            d->isAuthenticated = (returnCode == 0);
+            if(!d->isAuthenticated) {
+                d->authenticationUser = "";
+            }
+            emit authenticationComplete(d->isAuthenticated);
+            d->inAuthentication = false;
         }
-        emit authenticationComplete(d->isAuthenticated);
-        d->inAuthentication = false;
+        else
+            qDebug () << "Ignoring end authentication with invalid sequence number " << sequenceNumber;
         break;
     default:
         qDebug() << "Unknown message from server: " << id;
