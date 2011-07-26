@@ -15,7 +15,6 @@
 
 @SET_MAKE@
 
-
 VPATH = @srcdir@
 pkgdatadir = $(datadir)/@PACKAGE@
 pkgincludedir = $(includedir)/@PACKAGE@
@@ -36,32 +35,63 @@ POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
 noinst_PROGRAMS = test-runner$(EXEEXT) test-xserver$(EXEEXT) \
-	test-gobject-greeter$(EXEEXT) test-session$(EXEEXT)
+	test-gobject-greeter$(EXEEXT) test-guest-account$(EXEEXT) \
+	test-session$(EXEEXT) plymouth$(EXEEXT) $(am__EXEEXT_1)
+@COMPILE_LIBLIGHTDM_QT_TRUE@am__append_1 = test-qt-greeter
 subdir = tests/src
-DIST_COMMON = $(dist_noinst_SCRIPTS) $(srcdir)/Makefile.am \
-	$(srcdir)/Makefile.in
+DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
-am__aclocal_m4_deps = $(top_srcdir)/configure.ac
+am__aclocal_m4_deps = $(top_srcdir)/m4/gtk-doc.m4 \
+	$(top_srcdir)/m4/intltool.m4 $(top_srcdir)/m4/introspection.m4 \
+	$(top_srcdir)/m4/libtool.m4 $(top_srcdir)/m4/ltoptions.m4 \
+	$(top_srcdir)/m4/ltsugar.m4 $(top_srcdir)/m4/ltversion.m4 \
+	$(top_srcdir)/m4/lt~obsolete.m4 $(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 mkinstalldirs = $(install_sh) -d
 CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
+@COMPILE_LIBLIGHTDM_QT_TRUE@am__EXEEXT_1 = test-qt-greeter$(EXEEXT)
 PROGRAMS = $(noinst_PROGRAMS)
+am_plymouth_OBJECTS = plymouth-plymouth.$(OBJEXT) \
+	plymouth-status.$(OBJEXT)
+plymouth_OBJECTS = $(am_plymouth_OBJECTS)
+am__DEPENDENCIES_1 =
+plymouth_DEPENDENCIES = $(am__DEPENDENCIES_1)
+AM_V_lt = $(am__v_lt_$(V))
+am__v_lt_ = $(am__v_lt_$(AM_DEFAULT_VERBOSITY))
+am__v_lt_0 = --silent
+plymouth_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
+	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(plymouth_CFLAGS) \
+	$(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
 am_test_gobject_greeter_OBJECTS =  \
 	test_gobject_greeter-test-gobject-greeter.$(OBJEXT) \
 	test_gobject_greeter-status.$(OBJEXT)
 test_gobject_greeter_OBJECTS = $(am_test_gobject_greeter_OBJECTS)
-am__DEPENDENCIES_1 =
 test_gobject_greeter_DEPENDENCIES = $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
-AM_V_lt = $(am__v_lt_$(V))
-am__v_lt_ = $(am__v_lt_$(AM_DEFAULT_VERBOSITY))
-am__v_lt_0 = --silent
 test_gobject_greeter_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(test_gobject_greeter_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
+	$(LDFLAGS) -o $@
+am_test_guest_account_OBJECTS =  \
+	test_guest_account-test-guest-account.$(OBJEXT) \
+	test_guest_account-status.$(OBJEXT)
+test_guest_account_OBJECTS = $(am_test_guest_account_OBJECTS)
+test_guest_account_DEPENDENCIES = $(am__DEPENDENCIES_1)
+test_guest_account_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
+	$(test_guest_account_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
+	$(LDFLAGS) -o $@
+am_test_qt_greeter_OBJECTS =  \
+	test_qt_greeter-test-qt-greeter.$(OBJEXT) \
+	test_qt_greeter-test-qt-greeter_moc.$(OBJEXT) status.$(OBJEXT)
+test_qt_greeter_OBJECTS = $(am_test_qt_greeter_OBJECTS)
+test_qt_greeter_DEPENDENCIES = $(am__DEPENDENCIES_1)
+test_qt_greeter_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CXXLD) \
+	$(test_qt_greeter_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
 test_runner_SOURCES = test-runner.c
 test_runner_OBJECTS = test_runner-test-runner.$(OBJEXT)
@@ -81,11 +111,11 @@ am_test_xserver_OBJECTS = test_xserver-test-xserver.$(OBJEXT) \
 	test_xserver-status.$(OBJEXT)
 test_xserver_OBJECTS = $(am_test_xserver_OBJECTS)
 test_xserver_DEPENDENCIES = $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1)
 test_xserver_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(test_xserver_CFLAGS) \
 	$(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
-SCRIPTS = $(dist_noinst_SCRIPTS)
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
@@ -109,13 +139,31 @@ LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 AM_V_CCLD = $(am__v_CCLD_$(V))
 am__v_CCLD_ = $(am__v_CCLD_$(AM_DEFAULT_VERBOSITY))
 am__v_CCLD_0 = @echo "  CCLD  " $@;
+CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
+	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
+LTCXXCOMPILE = $(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) \
+	$(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) \
+	$(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) \
+	$(AM_CXXFLAGS) $(CXXFLAGS)
+AM_V_CXX = $(am__v_CXX_$(V))
+am__v_CXX_ = $(am__v_CXX_$(AM_DEFAULT_VERBOSITY))
+am__v_CXX_0 = @echo "  CXX   " $@;
+CXXLD = $(CXX)
+CXXLINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) \
+	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(AM_CXXFLAGS) \
+	$(CXXFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
+AM_V_CXXLD = $(am__v_CXXLD_$(V))
+am__v_CXXLD_ = $(am__v_CXXLD_$(AM_DEFAULT_VERBOSITY))
+am__v_CXXLD_0 = @echo "  CXXLD " $@;
 AM_V_GEN = $(am__v_GEN_$(V))
 am__v_GEN_ = $(am__v_GEN_$(AM_DEFAULT_VERBOSITY))
 am__v_GEN_0 = @echo "  GEN   " $@;
-SOURCES = $(test_gobject_greeter_SOURCES) test-runner.c \
-	$(test_session_SOURCES) $(test_xserver_SOURCES)
-DIST_SOURCES = $(test_gobject_greeter_SOURCES) test-runner.c \
-	$(test_session_SOURCES) $(test_xserver_SOURCES)
+SOURCES = $(plymouth_SOURCES) $(test_gobject_greeter_SOURCES) \
+	$(test_guest_account_SOURCES) $(test_qt_greeter_SOURCES) \
+	test-runner.c $(test_session_SOURCES) $(test_xserver_SOURCES)
+DIST_SOURCES = $(plymouth_SOURCES) $(test_gobject_greeter_SOURCES) \
+	$(test_guest_account_SOURCES) $(test_qt_greeter_SOURCES) \
+	test-runner.c $(test_session_SOURCES) $(test_xserver_SOURCES)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
@@ -128,7 +176,6 @@ AUTOCONF = @AUTOCONF@
 AUTOHEADER = @AUTOHEADER@
 AUTOMAKE = @AUTOMAKE@
 AWK = @AWK@
-CACHE_DIR = @CACHE_DIR@
 CC = @CC@
 CCDEPMODE = @CCDEPMODE@
 CFLAGS = @CFLAGS@
@@ -141,12 +188,6 @@ CXXFLAGS = @CXXFLAGS@
 CYGPATH_W = @CYGPATH_W@
 DATADIRNAME = @DATADIRNAME@
 DBUSBINDINGTOOL = @DBUSBINDINGTOOL@
-DBUS_SYS_DIR = @DBUS_SYS_DIR@
-DEFAULT_CONFIG_FILE = @DEFAULT_CONFIG_FILE@
-DEFAULT_GREETER_THEME = @DEFAULT_GREETER_THEME@
-DEFAULT_PAM_AUTOLOGIN_SERVICE = @DEFAULT_PAM_AUTOLOGIN_SERVICE@
-DEFAULT_PAM_SERVICE = @DEFAULT_PAM_SERVICE@
-DEFAULT_XSESSION = @DEFAULT_XSESSION@
 DEFS = @DEFS@
 DEPDIR = @DEPDIR@
 DLLTOOL = @DLLTOOL@
@@ -158,15 +199,18 @@ ECHO_T = @ECHO_T@
 EGREP = @EGREP@
 EXEEXT = @EXEEXT@
 FGREP = @FGREP@
+GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
 GIO_CFLAGS = @GIO_CFLAGS@
 GIO_LIBS = @GIO_LIBS@
+GIO_UNIX_CFLAGS = @GIO_UNIX_CFLAGS@
+GIO_UNIX_LIBS = @GIO_UNIX_LIBS@
 GLIB_CFLAGS = @GLIB_CFLAGS@
 GLIB_GENMARSHAL = @GLIB_GENMARSHAL@
 GLIB_LIBS = @GLIB_LIBS@
 GMSGFMT = @GMSGFMT@
 GOBJECT_CFLAGS = @GOBJECT_CFLAGS@
 GOBJECT_LIBS = @GOBJECT_LIBS@
-GREETER_THEME_DIR = @GREETER_THEME_DIR@
+GREETER_SESSION = @GREETER_SESSION@
 GREETER_USER = @GREETER_USER@
 GREP = @GREP@
 GTKDOC_CHECK = @GTKDOC_CHECK@
@@ -200,14 +244,13 @@ LIBOBJS = @LIBOBJS@
 LIBS = @LIBS@
 LIBTOOL = @LIBTOOL@
 LIGHTDM_CFLAGS = @LIGHTDM_CFLAGS@
-LIGHTDM_EXAMPLE_GTK_GREETER_CFLAGS = @LIGHTDM_EXAMPLE_GTK_GREETER_CFLAGS@
-LIGHTDM_EXAMPLE_GTK_GREETER_LIBS = @LIGHTDM_EXAMPLE_GTK_GREETER_LIBS@
-LIGHTDM_EXAMPLE_QT_GREETER_CFLAGS = @LIGHTDM_EXAMPLE_QT_GREETER_CFLAGS@
-LIGHTDM_EXAMPLE_QT_GREETER_LIBS = @LIGHTDM_EXAMPLE_QT_GREETER_LIBS@
+LIGHTDM_GTK_GREETER_CFLAGS = @LIGHTDM_GTK_GREETER_CFLAGS@
+LIGHTDM_GTK_GREETER_LIBS = @LIGHTDM_GTK_GREETER_LIBS@
 LIGHTDM_LIBS = @LIGHTDM_LIBS@
+LIGHTDM_QT_GREETER_CFLAGS = @LIGHTDM_QT_GREETER_CFLAGS@
+LIGHTDM_QT_GREETER_LIBS = @LIGHTDM_QT_GREETER_LIBS@
 LIPO = @LIPO@
 LN_S = @LN_S@
-LOG_DIR = @LOG_DIR@
 LTLIBOBJS = @LTLIBOBJS@
 MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
@@ -237,17 +280,14 @@ SED = @SED@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
 STRIP = @STRIP@
+USER_SESSION = @USER_SESSION@
 USE_NLS = @USE_NLS@
-VALAC = @VALAC@
 VALA_API_GEN = @VALA_API_GEN@
 VERSION = @VERSION@
 WARN_CFLAGS = @WARN_CFLAGS@
-XAUTH_DIR = @XAUTH_DIR@
 XCB_CFLAGS = @XCB_CFLAGS@
 XCB_LIBS = @XCB_LIBS@
 XGETTEXT = @XGETTEXT@
-XSERVER_BINARY = @XSERVER_BINARY@
-XSESSIONS_DIR = @XSESSIONS_DIR@
 abs_builddir = @abs_builddir@
 abs_srcdir = @abs_srcdir@
 abs_top_builddir = @abs_top_builddir@
@@ -301,7 +341,6 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-dist_noinst_SCRIPTS = test-setup-guest test-cleanup-guest
 test_runner_CFLAGS = \
 	$(WARN_CFLAGS) \
 	$(GLIB_CFLAGS) \
@@ -317,11 +356,15 @@ test_xserver_SOURCES = test-xserver.c status.c status.h
 test_xserver_CFLAGS = \
 	$(WARN_CFLAGS) \
 	$(GOBJECT_CFLAGS) \
-	$(GLIB_CFLAGS)
+	$(GLIB_CFLAGS) \
+	$(GIO_CFLAGS) \
+	$(GIO_UNIX_CFLAGS)
 
 test_xserver_LDADD = \
 	$(GOBJECT_LIBS) \
-	$(GLIB_LIBS)
+	$(GLIB_LIBS) \
+	$(GIO_LIBS) \
+	$(GIO_UNIX_LIBS)
 
 test_gobject_greeter_SOURCES = test-gobject-greeter.c status.c status.h
 test_gobject_greeter_CFLAGS = \
@@ -333,10 +376,28 @@ test_gobject_greeter_CFLAGS = \
 
 test_gobject_greeter_LDADD = \
 	-L$(top_builddir)/liblightdm-gobject \
-	-llightdm-gobject-0 \
+	-llightdm-gobject-1 \
 	$(GLIB_LIBS) \
 	$(GOBJECT_LIBS) \
 	$(XCB_LIBS)
+
+test_guest_account_SOURCES = test-guest-account.c status.c status.h
+test_guest_account_CFLAGS = \
+	$(WARN_CFLAGS) \
+	$(GLIB_CFLAGS)
+
+test_guest_account_LDADD = \
+	$(GLIB_LIBS)
+
+test_qt_greeter_SOURCES = test-qt-greeter.cpp test-qt-greeter.h test-qt-greeter_moc.cpp status.c status.h
+test_qt_greeter_CXXFLAGS = \
+	-I$(top_srcdir)/liblightdm-qt \
+	$(LIGHTDM_QT_GREETER_CFLAGS)
+
+test_qt_greeter_LDADD = \
+	-L$(top_builddir)/liblightdm-qt \
+	-llightdm-qt-1 \
+	$(LIGHTDM_QT_GREETER_LIBS)
 
 test_session_SOURCES = test-session.c status.c status.h
 test_session_CFLAGS = \
@@ -348,10 +409,21 @@ test_session_LDADD = \
 	$(GLIB_LIBS) \
 	$(XCB_LIBS)
 
+plymouth_SOURCES = plymouth.c status.c status.h
+plymouth_CFLAGS = \
+	$(WARN_CFLAGS) \
+	$(GLIB_CFLAGS)
+
+plymouth_LDADD = \
+	$(GLIB_LIBS)
+
+CLEANFILES = \
+	test-qt-greeter_moc.cpp
+
 all: all-am
 
 .SUFFIXES:
-.SUFFIXES: .c .lo .o .obj
+.SUFFIXES: .c .cpp .lo .o .obj
 $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am  $(am__configure_deps)
 	@for dep in $?; do \
 	  case '$(am__configure_deps)' in \
@@ -391,9 +463,18 @@ clean-noinstPROGRAMS:
 	list=`for p in $$list; do echo "$$p"; done | sed 's/$(EXEEXT)$$//'`; \
 	echo " rm -f" $$list; \
 	rm -f $$list
+plymouth$(EXEEXT): $(plymouth_OBJECTS) $(plymouth_DEPENDENCIES) 
+	@rm -f plymouth$(EXEEXT)
+	$(AM_V_CCLD)$(plymouth_LINK) $(plymouth_OBJECTS) $(plymouth_LDADD) $(LIBS)
 test-gobject-greeter$(EXEEXT): $(test_gobject_greeter_OBJECTS) $(test_gobject_greeter_DEPENDENCIES) 
 	@rm -f test-gobject-greeter$(EXEEXT)
 	$(AM_V_CCLD)$(test_gobject_greeter_LINK) $(test_gobject_greeter_OBJECTS) $(test_gobject_greeter_LDADD) $(LIBS)
+test-guest-account$(EXEEXT): $(test_guest_account_OBJECTS) $(test_guest_account_DEPENDENCIES) 
+	@rm -f test-guest-account$(EXEEXT)
+	$(AM_V_CCLD)$(test_guest_account_LINK) $(test_guest_account_OBJECTS) $(test_guest_account_LDADD) $(LIBS)
+test-qt-greeter$(EXEEXT): $(test_qt_greeter_OBJECTS) $(test_qt_greeter_DEPENDENCIES) 
+	@rm -f test-qt-greeter$(EXEEXT)
+	$(AM_V_CXXLD)$(test_qt_greeter_LINK) $(test_qt_greeter_OBJECTS) $(test_qt_greeter_LDADD) $(LIBS)
 test-runner$(EXEEXT): $(test_runner_OBJECTS) $(test_runner_DEPENDENCIES) 
 	@rm -f test-runner$(EXEEXT)
 	$(AM_V_CCLD)$(test_runner_LINK) $(test_runner_OBJECTS) $(test_runner_LDADD) $(LIBS)
@@ -410,8 +491,15 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/plymouth-plymouth.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/plymouth-status.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/status.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_gobject_greeter-status.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_gobject_greeter-test-gobject-greeter.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_guest_account-status.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_guest_account-test-guest-account.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_qt_greeter-test-qt-greeter.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_qt_greeter-test-qt-greeter_moc.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_runner-test-runner.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_session-status.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_session-test-session.Po@am__quote@
@@ -441,6 +529,38 @@ distclean-compile:
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LTCOMPILE) -c -o $@ $<
+
+plymouth-plymouth.o: plymouth.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(plymouth_CFLAGS) $(CFLAGS) -MT plymouth-plymouth.o -MD -MP -MF $(DEPDIR)/plymouth-plymouth.Tpo -c -o plymouth-plymouth.o `test -f 'plymouth.c' || echo '$(srcdir)/'`plymouth.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/plymouth-plymouth.Tpo $(DEPDIR)/plymouth-plymouth.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='plymouth.c' object='plymouth-plymouth.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(plymouth_CFLAGS) $(CFLAGS) -c -o plymouth-plymouth.o `test -f 'plymouth.c' || echo '$(srcdir)/'`plymouth.c
+
+plymouth-plymouth.obj: plymouth.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(plymouth_CFLAGS) $(CFLAGS) -MT plymouth-plymouth.obj -MD -MP -MF $(DEPDIR)/plymouth-plymouth.Tpo -c -o plymouth-plymouth.obj `if test -f 'plymouth.c'; then $(CYGPATH_W) 'plymouth.c'; else $(CYGPATH_W) '$(srcdir)/plymouth.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/plymouth-plymouth.Tpo $(DEPDIR)/plymouth-plymouth.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='plymouth.c' object='plymouth-plymouth.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(plymouth_CFLAGS) $(CFLAGS) -c -o plymouth-plymouth.obj `if test -f 'plymouth.c'; then $(CYGPATH_W) 'plymouth.c'; else $(CYGPATH_W) '$(srcdir)/plymouth.c'; fi`
+
+plymouth-status.o: status.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(plymouth_CFLAGS) $(CFLAGS) -MT plymouth-status.o -MD -MP -MF $(DEPDIR)/plymouth-status.Tpo -c -o plymouth-status.o `test -f 'status.c' || echo '$(srcdir)/'`status.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/plymouth-status.Tpo $(DEPDIR)/plymouth-status.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='status.c' object='plymouth-status.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(plymouth_CFLAGS) $(CFLAGS) -c -o plymouth-status.o `test -f 'status.c' || echo '$(srcdir)/'`status.c
+
+plymouth-status.obj: status.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(plymouth_CFLAGS) $(CFLAGS) -MT plymouth-status.obj -MD -MP -MF $(DEPDIR)/plymouth-status.Tpo -c -o plymouth-status.obj `if test -f 'status.c'; then $(CYGPATH_W) 'status.c'; else $(CYGPATH_W) '$(srcdir)/status.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/plymouth-status.Tpo $(DEPDIR)/plymouth-status.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='status.c' object='plymouth-status.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(plymouth_CFLAGS) $(CFLAGS) -c -o plymouth-status.obj `if test -f 'status.c'; then $(CYGPATH_W) 'status.c'; else $(CYGPATH_W) '$(srcdir)/status.c'; fi`
 
 test_gobject_greeter-test-gobject-greeter.o: test-gobject-greeter.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_gobject_greeter_CFLAGS) $(CFLAGS) -MT test_gobject_greeter-test-gobject-greeter.o -MD -MP -MF $(DEPDIR)/test_gobject_greeter-test-gobject-greeter.Tpo -c -o test_gobject_greeter-test-gobject-greeter.o `test -f 'test-gobject-greeter.c' || echo '$(srcdir)/'`test-gobject-greeter.c
@@ -473,6 +593,38 @@ test_gobject_greeter-status.obj: status.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='status.c' object='test_gobject_greeter-status.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_gobject_greeter_CFLAGS) $(CFLAGS) -c -o test_gobject_greeter-status.obj `if test -f 'status.c'; then $(CYGPATH_W) 'status.c'; else $(CYGPATH_W) '$(srcdir)/status.c'; fi`
+
+test_guest_account-test-guest-account.o: test-guest-account.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_guest_account_CFLAGS) $(CFLAGS) -MT test_guest_account-test-guest-account.o -MD -MP -MF $(DEPDIR)/test_guest_account-test-guest-account.Tpo -c -o test_guest_account-test-guest-account.o `test -f 'test-guest-account.c' || echo '$(srcdir)/'`test-guest-account.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/test_guest_account-test-guest-account.Tpo $(DEPDIR)/test_guest_account-test-guest-account.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='test-guest-account.c' object='test_guest_account-test-guest-account.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_guest_account_CFLAGS) $(CFLAGS) -c -o test_guest_account-test-guest-account.o `test -f 'test-guest-account.c' || echo '$(srcdir)/'`test-guest-account.c
+
+test_guest_account-test-guest-account.obj: test-guest-account.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_guest_account_CFLAGS) $(CFLAGS) -MT test_guest_account-test-guest-account.obj -MD -MP -MF $(DEPDIR)/test_guest_account-test-guest-account.Tpo -c -o test_guest_account-test-guest-account.obj `if test -f 'test-guest-account.c'; then $(CYGPATH_W) 'test-guest-account.c'; else $(CYGPATH_W) '$(srcdir)/test-guest-account.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/test_guest_account-test-guest-account.Tpo $(DEPDIR)/test_guest_account-test-guest-account.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='test-guest-account.c' object='test_guest_account-test-guest-account.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_guest_account_CFLAGS) $(CFLAGS) -c -o test_guest_account-test-guest-account.obj `if test -f 'test-guest-account.c'; then $(CYGPATH_W) 'test-guest-account.c'; else $(CYGPATH_W) '$(srcdir)/test-guest-account.c'; fi`
+
+test_guest_account-status.o: status.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_guest_account_CFLAGS) $(CFLAGS) -MT test_guest_account-status.o -MD -MP -MF $(DEPDIR)/test_guest_account-status.Tpo -c -o test_guest_account-status.o `test -f 'status.c' || echo '$(srcdir)/'`status.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/test_guest_account-status.Tpo $(DEPDIR)/test_guest_account-status.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='status.c' object='test_guest_account-status.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_guest_account_CFLAGS) $(CFLAGS) -c -o test_guest_account-status.o `test -f 'status.c' || echo '$(srcdir)/'`status.c
+
+test_guest_account-status.obj: status.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_guest_account_CFLAGS) $(CFLAGS) -MT test_guest_account-status.obj -MD -MP -MF $(DEPDIR)/test_guest_account-status.Tpo -c -o test_guest_account-status.obj `if test -f 'status.c'; then $(CYGPATH_W) 'status.c'; else $(CYGPATH_W) '$(srcdir)/status.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/test_guest_account-status.Tpo $(DEPDIR)/test_guest_account-status.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='status.c' object='test_guest_account-status.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_guest_account_CFLAGS) $(CFLAGS) -c -o test_guest_account-status.obj `if test -f 'status.c'; then $(CYGPATH_W) 'status.c'; else $(CYGPATH_W) '$(srcdir)/status.c'; fi`
 
 test_runner-test-runner.o: test-runner.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_runner_CFLAGS) $(CFLAGS) -MT test_runner-test-runner.o -MD -MP -MF $(DEPDIR)/test_runner-test-runner.Tpo -c -o test_runner-test-runner.o `test -f 'test-runner.c' || echo '$(srcdir)/'`test-runner.c
@@ -553,6 +705,62 @@ test_xserver-status.obj: status.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='status.c' object='test_xserver-status.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_xserver_CFLAGS) $(CFLAGS) -c -o test_xserver-status.obj `if test -f 'status.c'; then $(CYGPATH_W) 'status.c'; else $(CYGPATH_W) '$(srcdir)/status.c'; fi`
+
+.cpp.o:
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXXCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
+@am__fastdepCXX_FALSE@	$(AM_V_CXX) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXXCOMPILE) -c -o $@ $<
+
+.cpp.obj:
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXXCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ `$(CYGPATH_W) '$<'`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
+@am__fastdepCXX_FALSE@	$(AM_V_CXX) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXXCOMPILE) -c -o $@ `$(CYGPATH_W) '$<'`
+
+.cpp.lo:
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LTCXXCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Plo
+@am__fastdepCXX_FALSE@	$(AM_V_CXX) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$<' object='$@' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(LTCXXCOMPILE) -c -o $@ $<
+
+test_qt_greeter-test-qt-greeter.o: test-qt-greeter.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_qt_greeter_CXXFLAGS) $(CXXFLAGS) -MT test_qt_greeter-test-qt-greeter.o -MD -MP -MF $(DEPDIR)/test_qt_greeter-test-qt-greeter.Tpo -c -o test_qt_greeter-test-qt-greeter.o `test -f 'test-qt-greeter.cpp' || echo '$(srcdir)/'`test-qt-greeter.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/test_qt_greeter-test-qt-greeter.Tpo $(DEPDIR)/test_qt_greeter-test-qt-greeter.Po
+@am__fastdepCXX_FALSE@	$(AM_V_CXX) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='test-qt-greeter.cpp' object='test_qt_greeter-test-qt-greeter.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_qt_greeter_CXXFLAGS) $(CXXFLAGS) -c -o test_qt_greeter-test-qt-greeter.o `test -f 'test-qt-greeter.cpp' || echo '$(srcdir)/'`test-qt-greeter.cpp
+
+test_qt_greeter-test-qt-greeter.obj: test-qt-greeter.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_qt_greeter_CXXFLAGS) $(CXXFLAGS) -MT test_qt_greeter-test-qt-greeter.obj -MD -MP -MF $(DEPDIR)/test_qt_greeter-test-qt-greeter.Tpo -c -o test_qt_greeter-test-qt-greeter.obj `if test -f 'test-qt-greeter.cpp'; then $(CYGPATH_W) 'test-qt-greeter.cpp'; else $(CYGPATH_W) '$(srcdir)/test-qt-greeter.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/test_qt_greeter-test-qt-greeter.Tpo $(DEPDIR)/test_qt_greeter-test-qt-greeter.Po
+@am__fastdepCXX_FALSE@	$(AM_V_CXX) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='test-qt-greeter.cpp' object='test_qt_greeter-test-qt-greeter.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_qt_greeter_CXXFLAGS) $(CXXFLAGS) -c -o test_qt_greeter-test-qt-greeter.obj `if test -f 'test-qt-greeter.cpp'; then $(CYGPATH_W) 'test-qt-greeter.cpp'; else $(CYGPATH_W) '$(srcdir)/test-qt-greeter.cpp'; fi`
+
+test_qt_greeter-test-qt-greeter_moc.o: test-qt-greeter_moc.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_qt_greeter_CXXFLAGS) $(CXXFLAGS) -MT test_qt_greeter-test-qt-greeter_moc.o -MD -MP -MF $(DEPDIR)/test_qt_greeter-test-qt-greeter_moc.Tpo -c -o test_qt_greeter-test-qt-greeter_moc.o `test -f 'test-qt-greeter_moc.cpp' || echo '$(srcdir)/'`test-qt-greeter_moc.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/test_qt_greeter-test-qt-greeter_moc.Tpo $(DEPDIR)/test_qt_greeter-test-qt-greeter_moc.Po
+@am__fastdepCXX_FALSE@	$(AM_V_CXX) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='test-qt-greeter_moc.cpp' object='test_qt_greeter-test-qt-greeter_moc.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_qt_greeter_CXXFLAGS) $(CXXFLAGS) -c -o test_qt_greeter-test-qt-greeter_moc.o `test -f 'test-qt-greeter_moc.cpp' || echo '$(srcdir)/'`test-qt-greeter_moc.cpp
+
+test_qt_greeter-test-qt-greeter_moc.obj: test-qt-greeter_moc.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_qt_greeter_CXXFLAGS) $(CXXFLAGS) -MT test_qt_greeter-test-qt-greeter_moc.obj -MD -MP -MF $(DEPDIR)/test_qt_greeter-test-qt-greeter_moc.Tpo -c -o test_qt_greeter-test-qt-greeter_moc.obj `if test -f 'test-qt-greeter_moc.cpp'; then $(CYGPATH_W) 'test-qt-greeter_moc.cpp'; else $(CYGPATH_W) '$(srcdir)/test-qt-greeter_moc.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/test_qt_greeter-test-qt-greeter_moc.Tpo $(DEPDIR)/test_qt_greeter-test-qt-greeter_moc.Po
+@am__fastdepCXX_FALSE@	$(AM_V_CXX) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='test-qt-greeter_moc.cpp' object='test_qt_greeter-test-qt-greeter_moc.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_qt_greeter_CXXFLAGS) $(CXXFLAGS) -c -o test_qt_greeter-test-qt-greeter_moc.obj `if test -f 'test-qt-greeter_moc.cpp'; then $(CYGPATH_W) 'test-qt-greeter_moc.cpp'; else $(CYGPATH_W) '$(srcdir)/test-qt-greeter_moc.cpp'; fi`
 
 mostlyclean-libtool:
 	-rm -f *.lo
@@ -644,7 +852,7 @@ distdir: $(DISTFILES)
 	done
 check-am: all-am
 check: check-am
-all-am: Makefile $(PROGRAMS) $(SCRIPTS)
+all-am: Makefile $(PROGRAMS)
 installdirs:
 install: install-am
 install-exec: install-exec-am
@@ -663,6 +871,7 @@ install-strip:
 mostlyclean-generic:
 
 clean-generic:
+	-test -z "$(CLEANFILES)" || rm -f $(CLEANFILES)
 
 distclean-generic:
 	-test -z "$(CONFIG_CLEAN_FILES)" || rm -f $(CONFIG_CLEAN_FILES)
@@ -757,6 +966,9 @@ uninstall-am:
 	mostlyclean-compile mostlyclean-generic mostlyclean-libtool \
 	pdf pdf-am ps ps-am tags uninstall uninstall-am
 
+
+test-qt-greeter_moc.cpp: test-qt-greeter.h
+	moc $< -o $@
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

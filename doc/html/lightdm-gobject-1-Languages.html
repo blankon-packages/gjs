@@ -1,0 +1,191 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Languages</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.75.2">
+<link rel="home" href="index.html" title="LightDM Reference Manual">
+<link rel="up" href="core.html" title="Part I. liblightdm-gobject">
+<link rel="prev" href="lightdm-gobject-1-Greeter-Interface.html" title="Greeter Interface">
+<link rel="next" href="lightdm-gobject-1-Keyboard-Layout.html" title="Keyboard Layouts">
+<meta name="generator" content="GTK-Doc V1.17 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
+<tr valign="middle">
+<td><a accesskey="p" href="lightdm-gobject-1-Greeter-Interface.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="u" href="core.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
+<th width="100%" align="center">LightDM Reference Manual</th>
+<td><a accesskey="n" href="lightdm-gobject-1-Keyboard-Layout.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+</tr>
+<tr><td colspan="5" class="shortcuts">
+<a href="#lightdm-gobject-1-Languages.synopsis" class="shortcut">Top</a>
+                   | 
+                  <a href="#lightdm-gobject-1-Languages.description" class="shortcut">Description</a>
+</td></tr>
+</table>
+<div class="refentry">
+<a name="lightdm-gobject-1-Languages"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2><span class="refentrytitle"><a name="lightdm-gobject-1-Languages.top_of_page"></a>Languages</span></h2>
+<p>Languages — Get information on available languges</p>
+</td>
+<td valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsynopsisdiv">
+<a name="lightdm-gobject-1-Languages.synopsis"></a><h2>Synopsis</h2>
+<pre class="synopsis">
+#include &lt;lightdm.h&gt;
+
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Doubly-Linked-Lists.html#GList"><span class="returnvalue">GList</span></a> *             <a class="link" href="lightdm-gobject-1-Languages.html#lightdm-get-languages" title="lightdm_get_languages ()">lightdm_get_languages</a>               (<em class="parameter"><code><span class="type">void</span></code></em>);
+const <span class="returnvalue">LightDMLanguage</span> * <a class="link" href="lightdm-gobject-1-Languages.html#lightdm-get-language" title="lightdm_get_language ()">lightdm_get_language</a>            (<em class="parameter"><code><span class="type">void</span></code></em>);
+const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       <a class="link" href="lightdm-gobject-1-Languages.html#lightdm-language-get-code" title="lightdm_language_get_code ()">lightdm_language_get_code</a>           (<em class="parameter"><code><span class="type">LightDMLanguage</span> *language</code></em>);
+const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       <a class="link" href="lightdm-gobject-1-Languages.html#lightdm-language-get-name" title="lightdm_language_get_name ()">lightdm_language_get_name</a>           (<em class="parameter"><code><span class="type">LightDMLanguage</span> *language</code></em>);
+const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       <a class="link" href="lightdm-gobject-1-Languages.html#lightdm-language-get-territory" title="lightdm_language_get_territory ()">lightdm_language_get_territory</a>      (<em class="parameter"><code><span class="type">LightDMLanguage</span> *language</code></em>);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="lightdm-gobject-1-Languages.html#lightdm-language-matches" title="lightdm_language_matches ()">lightdm_language_matches</a>            (<em class="parameter"><code><span class="type">LightDMLanguage</span> *language</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *code</code></em>);
+</pre>
+</div>
+<div class="refsect1">
+<a name="lightdm-gobject-1-Languages.description"></a><h2>Description</h2>
+<p>
+<span class="type">LightDMLanguage</span> is an object that describes a language that is available on the system.
+</p>
+</div>
+<div class="refsect1">
+<a name="lightdm-gobject-1-Languages.details"></a><h2>Details</h2>
+<div class="refsect2">
+<a name="lightdm-get-languages"></a><h3>lightdm_get_languages ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Doubly-Linked-Lists.html#GList"><span class="returnvalue">GList</span></a> *             lightdm_get_languages               (<em class="parameter"><code><span class="type">void</span></code></em>);</pre>
+<p>
+Get a list of languages to present to the user.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody><tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>A list of <span class="type">LightDMLanguage</span> that should be presented to the user. <span class="annotation">[<a href="http://foldoc.org/element-type"><span class="acronym">element-type</span></a> LightDMLanguage][<a href="http://foldoc.org/transfer%20none"><span class="acronym">transfer none</span></a>]</span>
+</td>
+</tr></tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="lightdm-get-language"></a><h3>lightdm_get_language ()</h3>
+<pre class="programlisting">const <span class="returnvalue">LightDMLanguage</span> * lightdm_get_language            (<em class="parameter"><code><span class="type">void</span></code></em>);</pre>
+<p>
+Get the current language.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody><tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>The current language or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><span class="type">NULL</span></a> if no language. <span class="annotation">[<a href="http://foldoc.org/transfer%20none"><span class="acronym">transfer none</span></a>]</span>
+</td>
+</tr></tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="lightdm-language-get-code"></a><h3>lightdm_language_get_code ()</h3>
+<pre class="programlisting">const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       lightdm_language_get_code           (<em class="parameter"><code><span class="type">LightDMLanguage</span> *language</code></em>);</pre>
+<p>
+Get the code of a language.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>language</code></em> :</span></p></td>
+<td>A <span class="type">LightDMLanguage</span>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>The code of the language</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="lightdm-language-get-name"></a><h3>lightdm_language_get_name ()</h3>
+<pre class="programlisting">const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       lightdm_language_get_name           (<em class="parameter"><code><span class="type">LightDMLanguage</span> *language</code></em>);</pre>
+<p>
+Get the name of a language.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>language</code></em> :</span></p></td>
+<td>A <span class="type">LightDMLanguage</span>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>The name of the language</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="lightdm-language-get-territory"></a><h3>lightdm_language_get_territory ()</h3>
+<pre class="programlisting">const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       lightdm_language_get_territory      (<em class="parameter"><code><span class="type">LightDMLanguage</span> *language</code></em>);</pre>
+<p>
+Get the territory the language is used in.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>language</code></em> :</span></p></td>
+<td>A <span class="type">LightDMLanguage</span>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>The territory the language is used in.</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="lightdm-language-matches"></a><h3>lightdm_language_matches ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            lightdm_language_matches            (<em class="parameter"><code><span class="type">LightDMLanguage</span> *language</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *code</code></em>);</pre>
+<p>
+Check if a language code matches this language.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>language</code></em> :</span></p></td>
+<td>A <span class="type">LightDMLanguage</span>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>code</code></em> :</span></p></td>
+<td>A language code</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><span class="type">TRUE</span></a> if the code matches this language.</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+</div>
+<div class="footer">
+<hr>
+          Generated by GTK-Doc V1.17</div>
+</body>
+</html>

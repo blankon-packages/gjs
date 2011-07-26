@@ -1,0 +1,5 @@
+usr/sbin/lightdm-gtk-greeter
+usr/share/lightdm-gtk-greeter
+usr/share/xgreeters/lightdm-gtk-greeter.desktop
+etc/lightdm/lightdm-gtk-greeter.conf usr/share/doc/lightdm-gtk-greeter
+debian/lightdm-gtk-greeter.conf etc/lightdm

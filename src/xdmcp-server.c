@@ -20,7 +20,7 @@
 #include "xdmcp-server.h"
 #include "xdmcp-protocol.h"
 #include "xdmcp-session-private.h"
-#include "xauth.h"
+#include "xauthority.h"
 
 enum {
     NEW_SESSION,
@@ -42,19 +42,8 @@ struct XDMCPServerPrivate
     /* Status to report to clients */
     gchar *status;
 
-    /* Auhentication scheme to use */
-    gchar *authentication_name;
-
-    /* Auhentication data */  
-    guchar *authentication_data;
-    gsize authentication_data_length;
-
-    /* Authorization scheme to use */
-    gchar *authorization_name;
-
-    /* Authorization data */
-    guchar *authorization_data;
-    gsize authorization_data_length;
+    /* XDM-AUTHENTICATION-1 key */
+    gchar *key;
 
     /* Active XDMCP sessions */
     GHashTable *sessions;
@@ -115,71 +104,11 @@ xdmcp_server_get_status (XDMCPServer *server)
 }
 
 void
-xdmcp_server_set_authentication (XDMCPServer *server, const gchar *name, const guchar *data, gsize data_length)
+xdmcp_server_set_key (XDMCPServer *server, const gchar *key)
 {
     g_return_if_fail (server != NULL);
-
-    g_free (server->priv->authentication_name);
-    server->priv->authentication_name = g_strdup (name);
-    g_free (server->priv->authentication_data);
-    server->priv->authentication_data = g_malloc (data_length);
-    server->priv->authentication_data_length = data_length;
-    memcpy (server->priv->authentication_data, data, data_length);
-}
-
-const gchar *
-xdmcp_server_get_authentication_name (XDMCPServer *server)
-{
-    g_return_val_if_fail (server != NULL, NULL);
-    return server->priv->authentication_name;
-}
-
-const guchar *
-xdmcp_server_get_authentication_data (XDMCPServer *server)
-{
-    g_return_val_if_fail (server != NULL, NULL);
-    return server->priv->authentication_data;
-}
-
-gsize
-xdmcp_server_get_authentication_data_length (XDMCPServer *server)
-{
-    g_return_val_if_fail (server != NULL, 0);
-    return server->priv->authentication_data_length;
-}
-
-void
-xdmcp_server_set_authorization (XDMCPServer *server, const gchar *name, const guchar *data, gsize data_length)
-{
-    g_return_if_fail (server != NULL);
-
-    g_free (server->priv->authorization_name);
-    server->priv->authorization_name = g_strdup (name);
-    g_free (server->priv->authorization_data);
-    server->priv->authorization_data = g_malloc (data_length);
-    server->priv->authorization_data_length = data_length;
-    memcpy (server->priv->authorization_data, data, data_length);
-}
-
-const gchar *
-xdmcp_server_get_authorization_name (XDMCPServer *server)
-{
-    g_return_val_if_fail (server != NULL, NULL);
-    return server->priv->authorization_name;
-}
-
-const guchar *
-xdmcp_server_get_authorization_data (XDMCPServer *server)
-{
-    g_return_val_if_fail (server != NULL, NULL);
-    return server->priv->authorization_data;
-}
-
-gsize
-xdmcp_server_get_authorization_data_length (XDMCPServer *server)
-{
-    g_return_val_if_fail (server != NULL, 0);
-    return server->priv->authorization_data_length;
+    g_free (server->priv->key);
+    server->priv->key = g_strdup (key);
 }
 
 static gboolean
@@ -218,7 +147,7 @@ get_session (XDMCPServer *server, guint16 id)
 static void
 send_packet (GSocket *socket, GSocketAddress *address, XDMCPPacket *packet)
 {
-    guchar data[1024];
+    guint8 data[1024];
     gssize n_written;
 
     g_debug ("Send %s", xdmcp_packet_tostring (packet));
@@ -237,30 +166,39 @@ send_packet (GSocket *socket, GSocketAddress *address, XDMCPPacket *packet)
     }
 }
 
+static const gchar *
+get_authentication_name (XDMCPServer *server)
+{
+    if (server->priv->key)
+        return "XDM-AUTHENTICATION-1";
+    else
+        return "";
+}
+
 static void
 handle_query (XDMCPServer *server, GSocket *socket, GSocketAddress *address, XDMCPPacket *packet)
 {
     XDMCPPacket *response;
     gchar **i;
-    gboolean match_authentication = FALSE;
+    gchar *authentication_name = NULL;
 
     /* If no authentication requested and we are configured for none then allow */
-    if (packet->Query.authentication_names[0] == NULL && strcmp (server->priv->authentication_name, "") == 0)
-        match_authentication = TRUE;
+    if (packet->Query.authentication_names[0] == NULL && server->priv->key == NULL)
+        authentication_name = "";
 
     for (i = packet->Query.authentication_names; *i; i++)
     {
-        if (strcmp (*i, server->priv->authentication_name) == 0)
+        if (strcmp (*i, get_authentication_name (server)) == 0 && server->priv->key != NULL)
         {
-            match_authentication = TRUE;
+            authentication_name = *i;
             break;
         }
     }
 
-    if (match_authentication)
+    if (authentication_name)
     {
         response = xdmcp_packet_alloc (XDMCP_Willing);
-        response->Willing.authentication_name = g_strdup (server->priv->authentication_name);
+        response->Willing.authentication_name = g_strdup (authentication_name);
         response->Willing.hostname = g_strdup (server->priv->hostname);
         response->Willing.status = g_strdup (server->priv->status);
     }
@@ -268,8 +206,8 @@ handle_query (XDMCPServer *server, GSocket *socket, GSocketAddress *address, XDM
     {
         response = xdmcp_packet_alloc (XDMCP_Unwilling);
         response->Unwilling.hostname = g_strdup (server->priv->hostname);
-        if (strcmp (server->priv->authentication_name, "") != 0)
-            response->Unwilling.status = g_strdup_printf ("No matching authentication, server requires %s", server->priv->authentication_name);
+        if (server->priv->key)
+            response->Unwilling.status = g_strdup_printf ("No matching authentication, server requires %s", get_authentication_name (server));
         else
             response->Unwilling.status = g_strdup ("Server does not support authentication");
     }
@@ -279,31 +217,99 @@ handle_query (XDMCPServer *server, GSocket *socket, GSocketAddress *address, XDM
     xdmcp_packet_free (response);
 }
 
+static guint8
+atox (char c)
+{
+    if (c >= '0' && c <= '9')
+        return c - '0';
+    if (c >= 'a' && c <= 'f')
+        return c - 'a' + 10;
+    if (c >= 'A' && c <= 'F')
+        return c - 'A' + 10;
+    return 0;
+}
+
+static void
+decode_key (const gchar *key, guint8 *data)
+{
+    gint i;
+
+    memset (data, 0, sizeof (data));
+    if (strncmp (key, "0x", 2) == 0 || strncmp (key, "0X", 2) == 0)
+    {
+        for (i = 0; i < 8; i++)
+        {
+            if (key[i*2] == '\0')
+                break;
+            data[i] |= atox (key[i*2]) << 8;
+            if (key[i*2+1] == '\0')
+                break;
+            data[i] |= atox (key[i*2+1]);
+        }
+    }
+    else
+    {
+        for (i = 1; i < 8 && key[i-1]; i++)
+           data[i] = key[i-1];
+    }
+}
+
 static void
 handle_request (XDMCPServer *server, GSocket *socket, GSocketAddress *address, XDMCPPacket *packet)
 {
     int i;
     XDMCPPacket *response;
     XDMCPSession *session;
-    guchar *authentication_data = NULL;
+    guint8 *authentication_data = NULL;
     gsize authentication_data_length = 0;
     gboolean match_authorization = FALSE;
-    guchar *authorization_data = NULL;
+    gchar *authorization_name;
+    guint8 *authorization_data = NULL;
     gsize authorization_data_length = 0;
-    guchar *session_authorization_data = NULL;
+    guint8 *session_authorization_data = NULL;
     gsize session_authorization_data_length = 0;
     gchar **j;
     GInetAddress *address4 = NULL, *address6 = NULL;
+    gchar *host, *display_number;
     XdmAuthKeyRec rho;
-  
-    /* Must be using our authentication scheme */
-    if (strcmp (packet->Request.authentication_name, server->priv->authentication_name) != 0)
+
+    for (i = 0; i < packet->Request.n_connections; i++)
+    {
+        XDMCPConnection *connection;
+
+        connection = &packet->Request.connections[i];
+        switch (connection->type)
+        {
+        case FamilyInternet:
+            if (connection->address.length == 4)
+                address4 = g_inet_address_new_from_bytes (connection->address.data, G_SOCKET_FAMILY_IPV4);
+            break;
+        /*case FamilyInternet6:
+            if (connection->address.length == 16)
+                address6 = g_inet_address_new_from_bytes (connection->address.data, G_SOCKET_FAMILY_IPV6);          
+            break;*/
+        }
+    }
+    if (!address4) // FIXME: && !address6)
     {
         response = xdmcp_packet_alloc (XDMCP_Decline);
-        if (strcmp (server->priv->authentication_name, "") == 0)
-            response->Decline.status = g_strdup ("Server does not support authentication");
+        response->Decline.status = g_strdup ("No valid address found");
+        response->Decline.authentication_name = g_strdup (packet->Request.authentication_name);
+        response->Decline.authentication_data.data = authentication_data;
+        response->Decline.authentication_data.length = authentication_data_length;
+        send_packet (socket, address, response);
+        xdmcp_packet_free (response);
+        return;
+    }
+  
+    /* Must be using our authentication scheme */
+    if (strcmp (packet->Request.authentication_name, get_authentication_name (server)) != 0)
+    {
+        response = xdmcp_packet_alloc (XDMCP_Decline);
+        if (server->priv->key)
+            response->Decline.status = g_strdup_printf ("Server only supports %s authentication", get_authentication_name (server));
         else
-            response->Decline.status = g_strdup_printf ("Server only supports %s authentication", server->priv->authentication_name);
+            response->Decline.status = g_strdup ("Server does not support authentication");
         response->Decline.authentication_name = g_strdup ("");
         send_packet (socket, address, response);
         xdmcp_packet_free (response);
@@ -311,30 +317,33 @@ handle_request (XDMCPServer *server, GSocket *socket, GSocketAddress *address, X
     }
 
     /* Perform requested authentication */
-    if (strcmp (server->priv->authentication_name, "XDM-AUTHENTICATION-1") == 0)
+    if (server->priv->key)
     {
-        guchar input[8], key[8];
+        guint8 input[8], key[8];
 
         memset (input, 0, 8);
         memcpy (input, packet->Request.authentication_data.data, packet->Request.authentication_data.length > 8 ? 8 : packet->Request.authentication_data.length);
 
         /* Setup key */
-        memset (key, 0, 8);
-        memcpy (key, server->priv->authentication_data, server->priv->authentication_data_length > 8 ? 8 : server->priv->authentication_data_length);
+        decode_key (server->priv->key, key);
 
         /* Decode message from server */
-        authentication_data = g_malloc (sizeof (guchar) * 8);
+        authentication_data = g_malloc (sizeof (guint8) * 8);
         authentication_data_length = 8;
 
         XdmcpUnwrap (input, key, rho.data, authentication_data_length);
         XdmcpIncrementKey (&rho);
         XdmcpWrap (rho.data, key, authentication_data, authentication_data_length);
+
+        authorization_name = g_strdup ("XDM-AUTHORIZATION-1");
     }
+    else
+        authorization_name = g_strdup ("MIT-MAGIC-COOKIE-1");
 
     /* Check if they support our authorization */
     for (j = packet->Request.authorization_names; *j; j++)
     {
-        if (strcmp (*j, server->priv->authorization_name) == 0)
+        if (strcmp (*j, authorization_name) == 0)
         {
              match_authorization = TRUE;
              break;
@@ -344,10 +353,8 @@ handle_request (XDMCPServer *server, GSocket *socket, GSocketAddress *address, X
     if (!match_authorization)
     {
         response = xdmcp_packet_alloc (XDMCP_Decline);
-        if (strcmp (server->priv->authorization_name, "") == 0)
-            response->Decline.status = g_strdup ("Server does not support authorization");
-        else
-            response->Decline.status = g_strdup_printf ("Server only supports %s authorization", server->priv->authorization_name);
+        response->Decline.status = g_strdup_printf ("Server requires %s authorization", authorization_name);
+        g_free (authorization_name);
         response->Decline.authentication_name = g_strdup (packet->Request.authentication_name);
         response->Decline.authentication_data.data = authentication_data;
         response->Decline.authentication_data.length = authentication_data_length;
@@ -357,25 +364,13 @@ handle_request (XDMCPServer *server, GSocket *socket, GSocketAddress *address, X
     }
 
     /* Perform requested authorization */
-    if (strcmp (server->priv->authorization_name, "MIT-MAGIC-COOKIE-1") == 0)
-    {
-        XAuthorization *auth;
-
-        /* Data is the cookie */
-        auth = xauth_new_cookie ();
-        authorization_data = xauth_copy_authorization_data (auth);
-        authorization_data_length = xauth_get_authorization_data_length (auth);
-        session_authorization_data = xauth_copy_authorization_data (auth);
-        session_authorization_data_length = xauth_get_authorization_data_length (auth);
-    }
-    else if (strcmp (server->priv->authorization_name, "XDM-AUTHORIZATION-1") == 0)
+    if (server->priv->key)
     {
         gint i;
-        guchar key[8], session_key[8];
+        guint8 key[8], session_key[8];
 
         /* Setup key */
-        memset (key, 0, 8);
-        memcpy (key, server->priv->authentication_data, server->priv->authentication_data_length > 8 ? 8 : server->priv->authentication_data_length);
+        decode_key (server->priv->key, key);
 
         /* Generate a private session key */
         // FIXME: Pick a good DES key?
@@ -395,50 +390,41 @@ handle_request (XDMCPServer *server, GSocket *socket, GSocketAddress *address, X
         memcpy (session_authorization_data, rho.data, 8);
         memcpy (session_authorization_data + 8, session_key, 8);
     }
-
-    for (i = 0; i < packet->Request.n_connections; i++)
+    else
     {
-        XDMCPConnection *connection;
+        XAuthority *auth;
 
-        connection = &packet->Request.connections[i];
-        switch (connection->type)
-        {
-        case FamilyInternet:
-            if (connection->address.length == 4)
-                address4 = g_inet_address_new_from_bytes (connection->address.data, G_SOCKET_FAMILY_IPV4);
-            break;
-        case FamilyInternet6:
-            if (connection->address.length == 16)
-                address6 = g_inet_address_new_from_bytes (connection->address.data, G_SOCKET_FAMILY_IPV6);          
-            break;
-        }
-    }
-
-    if (!address4) // FIXME: && !address6)
-    {
-        response = xdmcp_packet_alloc (XDMCP_Decline);
-        response->Decline.status = g_strdup ("No valid address found");
-        response->Decline.authentication_name = g_strdup (packet->Request.authentication_name);
-        response->Decline.authentication_data.data = authentication_data;
-        response->Decline.authentication_data.length = authentication_data_length;
-        send_packet (socket, address, response);
-        xdmcp_packet_free (response);
-        return;
+        /* Data is the cookie */
+        auth = xauth_new_cookie (XAUTH_FAMILY_WILD, "", "");
+        authorization_data = xauth_copy_authorization_data (auth);
+        authorization_data_length = xauth_get_authorization_data_length (auth);
+        session_authorization_data = xauth_copy_authorization_data (auth);
+        session_authorization_data_length = xauth_get_authorization_data_length (auth);
+      
+        g_object_unref (auth);
     }
 
     session = add_session (server);
     session->priv->address = address4;
     session->priv->address6 = address6;
-    session->priv->authorization_name = g_strdup (server->priv->authorization_name);
-    session->priv->authorization_data = session_authorization_data;
-    session->priv->authorization_data_length = session_authorization_data_length;
+    session->priv->display_number = packet->Request.display_number;
+    host = g_inet_address_to_string (G_INET_ADDRESS (address4)); // FIXME: IPv6
+    display_number = g_strdup_printf ("%d", packet->Request.display_number);
+    session->priv->authority = xauth_new (XAUTH_FAMILY_INTERNET, // FIXME: IPv6
+                                          host,
+                                          display_number,
+                                          authorization_name,
+                                          session_authorization_data,
+                                          session_authorization_data_length);
+    g_free (host);
+    g_free (display_number);
 
     response = xdmcp_packet_alloc (XDMCP_Accept);
     response->Accept.session_id = xdmcp_session_get_id (session);
     response->Accept.authentication_name = g_strdup (packet->Request.authentication_name);
     response->Accept.authentication_data.data = authentication_data;
     response->Accept.authentication_data.length = authentication_data_length;
-    response->Accept.authorization_name = g_strdup (server->priv->authorization_name);
+    response->Accept.authorization_name = authorization_name;
     response->Accept.authorization_data.data = authorization_data;
     response->Accept.authorization_data.length = authorization_data_length;
     send_packet (socket, address, response);
@@ -460,11 +446,22 @@ handle_manage (XDMCPServer *server, GSocket *socket, GSocketAddress *address, XD
         {
             if (session->priv->display_number != packet->Manage.display_number ||
                 strcmp (session->priv->display_class, packet->Manage.display_class) != 0)
-                g_warning ("Duplicate Manage received with different data");
+                g_debug ("Ignoring duplicate Manage with different data");
             return;
         }
 
-        session->priv->display_number = packet->Manage.display_number;  
+        /* Reject if has changed display number */
+        if (packet->Manage.display_number != session->priv->display_number)
+        {
+            XDMCPPacket *response;
+
+            g_debug ("Received Manage for display number %d, but Request was %d", packet->Manage.display_number, session->priv->display_number);
+            response = xdmcp_packet_alloc (XDMCP_Refuse);
+            response->Refuse.session_id = packet->Manage.session_id;
+            send_packet (socket, address, response);
+            xdmcp_packet_free (response);
+        }
+
         session->priv->display_class = g_strdup (packet->Manage.display_class);
 
         g_signal_emit (server, signals[NEW_SESSION], 0, session, &result);
@@ -506,7 +503,7 @@ handle_keep_alive (XDMCPServer *server, GSocket *socket, GSocketAddress *address
 
     session = get_session (server, packet->KeepAlive.session_id);
     if (session)
-        alive = TRUE; //xdmcp_session_get_alive (session);
+        alive = TRUE; // FIXME: xdmcp_session_get_alive (session);
 
     response = xdmcp_packet_alloc (XDMCP_Alive);
     response->Alive.session_running = alive;
@@ -528,7 +525,7 @@ read_cb (GSocket *socket, GIOCondition condition, XDMCPServer *server)
     {
         XDMCPPacket *packet;
 
-        packet = xdmcp_packet_decode ((guchar *)data, n_read);
+        packet = xdmcp_packet_decode ((guint8 *)data, n_read);
         if (packet)
         {        
             g_debug ("Got %s", xdmcp_packet_tostring (packet));
@@ -631,8 +628,6 @@ xdmcp_server_init (XDMCPServer *server)
     server->priv->hostname = g_strdup ("");
     server->priv->status = g_strdup ("");
     server->priv->sessions = g_hash_table_new_full (g_direct_hash, g_direct_equal, NULL, g_object_unref);
-    server->priv->authentication_name = g_strdup ("");
-    server->priv->authorization_name = g_strdup ("");
 }
 
 static void
@@ -648,10 +643,7 @@ xdmcp_server_finalize (GObject *object)
         g_object_unref (self->priv->socket6);
     g_free (self->priv->hostname);
     g_free (self->priv->status);
-    g_free (self->priv->authentication_name);
-    g_free (self->priv->authentication_data);
-    g_free (self->priv->authorization_name);
-    g_free (self->priv->authorization_data);
+    g_free (self->priv->key);
     g_hash_table_unref (self->priv->sessions);
   
     G_OBJECT_CLASS (xdmcp_server_parent_class)->finalize (object);  

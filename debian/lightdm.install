@@ -1,7 +1,8 @@
-usr/bin
+usr/sbin/lightdm
 usr/share/man
 etc/dbus-1/
-debian/lightdm.conf etc/lightdm
-debian/Xsession etc/lightdm
-debian/guest-session-cleanup.sh /usr/share/lightdm/guest-session
-debian/guest-session-setup.sh /usr/share/lightdm/guest-session
+etc/lightdm/users.conf
+etc/lightdm/lightdm.conf usr/share/doc/lightdm/
+etc/lightdm/keys.conf usr/share/doc/lightdm/
+debian/lightdm-session usr/sbin
+debian/guest-account usr/sbin

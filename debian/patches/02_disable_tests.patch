@@ -1,13 +1,13 @@
-Index: lightdm-0.4.1/tests/Makefile.am
+Index: lightdm-0.9.0/tests/Makefile.am
 ===================================================================
---- lightdm-0.4.1.orig/tests/Makefile.am	2011-06-30 12:30:15.005664514 +0100
-+++ lightdm-0.4.1/tests/Makefile.am	2011-06-30 12:30:25.155664518 +0100
-@@ -25,6 +25,8 @@
- # conflicts with an existing running X server
- #	test-no-config
+--- lightdm-0.9.0.orig/tests/Makefile.am	2011-07-22 16:03:37.000000000 +1000
++++ lightdm-0.9.0/tests/Makefile.am	2011-07-22 17:04:50.109290576 +1000
+@@ -49,6 +49,8 @@
+ #	test-xserver-fail-start
+ #	test-greeter-xserver-crash
  
 +TESTS =
 +
  EXTRA_DIST = \
  	$(TESTS) \
- 	data/themes/test-theme/index.theme \
+ 	data/xgreeters/test-gobject-greeter.desktop \

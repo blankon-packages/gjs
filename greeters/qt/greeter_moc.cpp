@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'greeter.h'
 **
-** Created: Tue Jul 12 17:27:26 2011
+** Created: Tue Jul 26 19:00:58 2011
 **      by: The Qt Meta Object Compiler version 62 (Qt 4.7.3)
 **
 ** WARNING! All changes made in this file will be lost!
@@ -31,13 +31,13 @@ static const uint qt_meta_data_Greeter[] = {
        0,       // signalCount
 
  // slots: signature, parameters, type, tag, flags
-       9,    8,    8,    8, 0x08,
+      14,    8,    9,    8, 0x08,
 
        0        // eod
 };
 
 static const char qt_meta_stringdata_Greeter[] = {
-    "Greeter\0\0onStartSession()\0"
+    "Greeter\0\0bool\0onStartSession()\0"
 };
 
 const QMetaObject Greeter::staticMetaObject = {
@@ -69,7 +69,8 @@ int Greeter::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
         switch (_id) {
-        case 0: onStartSession(); break;
+        case 0: { bool _r = onStartSession();
+            if (_a[0]) *reinterpret_cast< bool*>(_a[0]) = _r; }  break;
         default: ;
         }
         _id -= 1;

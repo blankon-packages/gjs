@@ -9,48 +9,52 @@
  * license.
  */
 
-#ifndef _LDM_LANGUAGE_H_
-#define _LDM_LANGUAGE_H_
+#ifndef _LIGHTDM_LANGUAGE_H_
+#define _LIGHTDM_LANGUAGE_H_
 
 #include <glib-object.h>
 
 G_BEGIN_DECLS
 
-#define LDM_TYPE_LANGUAGE            (ldm_language_get_type())
-#define LDM_LANGUAGE(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), LDM_TYPE_LANGUAGE, LdmLanguage));
-#define LDM_LANGUAGE_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass), LDM_TYPE_LANGUAGE, LdmLanguageClass))
-#define LDM_IS_LANGUAGE(obj)         (G_TYPE_CHECK_INSTANCE_TYPE ((obj), LDM_TYPE_LANGUAGE))
-#define LDM_IS_LANGUAGE_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), LDM_TYPE_LANGUAGE))
-#define LDM_LANGUAGE_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj), LDM_TYPE_LANGUAGE, LdmLanguageClass))
+#define LIGHTDM_TYPE_LANGUAGE            (lightdm_language_get_type())
+#define LIGHTDM_LANGUAGE(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), LIGHTDM_TYPE_LANGUAGE, LightDMLanguage));
+#define LIGHTDM_LANGUAGE_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass), LIGHTDM_TYPE_LANGUAGE, LightDMLanguageClass))
+#define LIGHTDM_IS_LANGUAGE(obj)         (G_TYPE_CHECK_INSTANCE_TYPE ((obj), LIGHTDM_TYPE_LANGUAGE))
+#define LIGHTDM_IS_LANGUAGE_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), LIGHTDM_TYPE_LANGUAGE))
+#define LIGHTDM_LANGUAGE_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj), LIGHTDM_TYPE_LANGUAGE, LightDMLanguageClass))
 
-typedef struct _LdmLanguage        LdmLanguage;
-typedef struct _LdmLanguageClass   LdmLanguageClass;
-typedef struct _LdmLanguagePrivate LdmLanguagePrivate;
-
-struct _LdmLanguage
+typedef struct
 {
-    GObject         parent_instance;
-    /*<private>*/
-    LdmLanguagePrivate *priv;
-};
+    GObject parent_instance;
+} LightDMLanguage;
 
-struct _LdmLanguageClass
+typedef struct
 {
     GObjectClass parent_class;
-};
 
-GType ldm_language_get_type (void);
+	/* Reserved */
+	void (*reserved1) (void);
+	void (*reserved2) (void);
+	void (*reserved3) (void);
+	void (*reserved4) (void);
+	void (*reserved5) (void);
+	void (*reserved6) (void);
+} LightDMLanguageClass;
 
-LdmLanguage *ldm_language_new (const gchar *code);
+GType lightdm_language_get_type (void);
 
-const gchar *ldm_language_get_code (LdmLanguage *language);
+GList *lightdm_get_languages (void);
 
-const gchar *ldm_language_get_name (LdmLanguage *language);
+const LightDMLanguage *lightdm_get_language (void);
 
-const gchar *ldm_language_get_territory (LdmLanguage *language);
+const gchar *lightdm_language_get_code (LightDMLanguage *language);
 
-gboolean ldm_language_matches (LdmLanguage *language, const gchar *code);
+const gchar *lightdm_language_get_name (LightDMLanguage *language);
+
+const gchar *lightdm_language_get_territory (LightDMLanguage *language);
+
+gboolean lightdm_language_matches (LightDMLanguage *language, const gchar *code);
 
 G_END_DECLS
 
-#endif /* _LDM_LANGUAGE_H_ */
+#endif /* _LIGHTDM_LANGUAGE_H_ */

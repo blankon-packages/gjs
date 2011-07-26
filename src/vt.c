@@ -28,7 +28,9 @@ static GList *used_vts = NULL;
 static gint
 open_console (void)
 {
-    int fd = g_open ("/dev/console", O_RDONLY | O_NOCTTY);
+    int fd;
+
+    fd = g_open ("/dev/console", O_RDONLY | O_NOCTTY);
     if (fd < 0)
         g_warning ("Error opening /dev/console: %s", strerror (errno));
     return fd;
@@ -40,6 +42,10 @@ vt_get_active (void)
 #ifdef __linux__
     gint console_fd;
     gint active = -1;
+
+    /* Pretend always active */
+    if (getuid () != 0)
+        return 1;
 
     console_fd = open_console ();
     if (console_fd >= 0)
@@ -65,6 +71,10 @@ vt_set_active (gint number)
     gint console_fd;
 
     g_debug ("Activating VT %d", number);
+  
+    /* Pretend always active */
+    if (getuid () != 0)
+        return;   
 
     console_fd = open_console ();
     if (console_fd >= 0)
@@ -109,27 +119,26 @@ vt_get_unused (void)
 {
     gint number;
 
+    if (getuid () != 0)
+        return -1;
+
     number = vt_get_min ();
     while (vt_is_used (number))
         number++;
-
-    used_vts = g_list_append (used_vts, GINT_TO_POINTER (number));
  
     return number;
 }
 
 void
-vt_release (gint number)
+vt_ref (gint number)
 {
-    GList *link;
+    g_debug ("Using VT %d", number);
+    used_vts = g_list_append (used_vts, GINT_TO_POINTER (number)); 
+}
 
-    for (link = used_vts; link; link = link->next)
-    {
-        int n = GPOINTER_TO_INT (link->data);
-        if (n == number)
-            break;
-    }
-
-    if (link)
-        used_vts = g_list_remove_link (used_vts, link);
+void
+vt_unref (gint number)
+{
+    g_debug ("Releasing VT %d", number);
+    used_vts = g_list_remove (used_vts, GINT_TO_POINTER (number));
 }

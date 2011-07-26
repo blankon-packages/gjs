@@ -24,27 +24,28 @@ typedef struct GreeterPrivate GreeterPrivate;
 
 typedef struct
 {
-    Session         parent_instance;
+    GObject         parent_instance;
     GreeterPrivate *priv;
 } Greeter;
 
 typedef struct
 {
-    SessionClass parent_class;
-    void (*start_session)(Greeter *greeter, const gchar *session);
+    GObjectClass parent_class;
+    PAMSession *(*start_authentication)(Greeter *greeter, const gchar *username);
+    gboolean (*start_session)(Greeter *greeter, const gchar *session, gboolean is_guest);
 } GreeterClass;
 
 GType greeter_get_type (void);
 
-Greeter *greeter_new (const gchar *theme, guint count);
+Greeter *greeter_new (Session *session);
 
-void greeter_set_default_user (Greeter *greeter, const gchar *username, gint timeout);
+void greeter_set_allow_guest (Greeter *greeter, gboolean allow_guest);
 
-const gchar *greeter_get_theme (Greeter *greeter);
+void greeter_set_hint (Greeter *greeter, const gchar *name, const gchar *value);
 
-void greeter_set_default_session (Greeter *greeter, const gchar *session);
+gboolean greeter_start (Greeter *greeter);
 
-const gchar *greeter_get_default_session (Greeter *greeter);
+gboolean greeter_get_guest_authenticated (Greeter *greeter);
 
 PAMSession *greeter_get_pam_session (Greeter *greeter);
 

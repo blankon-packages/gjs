@@ -1,3 +1,101 @@
+lightdm (0.9.2-0ubuntu1) oneiric; urgency=low
+
+  * New upstream release
+    [0.9.0]
+    - Fix invalid XAUTHORITY variable being set for second X server.
+    - Fix bug where switching users created X servers without VTs
+    - Release a VT when the X server on it stops
+    - Greeters are now just standard X sessions that are stored in
+      /usr/share/xgreeters.
+    - Drop most of the configure options, they aren't necessary
+    - Config changes:
+      - Major reorginisation of configuration to make it easier to configure and
+        understand.  Users should set [SeatDefaults] section with settings for
+        all seats, and can override each setting in a per seat configuration.
+      - Default seats are now specified using a [Seat:<name>] section.  If no
+        seats are specified then one is started.  This can be overridden by
+        setting start-default-seat=false in [LightDM].
+      - Support setting autologin user to guest account
+      - Split the user accounts configuration into /etc/lightdm/users.conf so
+        the  main config can be private.
+      - The default user session is now "default".  Distributions should put a
+        symlink to their chosen default or set one in lightdm.conf.
+      - XDMCP keys now stored in keys.conf
+    - liblightdm API changes:
+      - Both libraries are now version 1 and have API and ABI guarantees.
+      - Face images are now local paths not URIs
+      - liblightdm-gobject now uses lightdm_ prefix instead of ldm_
+      - Non-greeter functions are now moved out of the Greeter class
+      - connect_to_server() is now called connect_sync and blocks until
+        completion.
+      - start_session() is now called start_session_sync and blocks until
+        completion. The quit signal is removed, and the greeter should quit if
+        this method returns TRUE.
+      - login() is now called authenticate()
+      - Greeters now have hints instead of configuration (greeters should load
+        their own configuration from /etc/lightdm if they need it).
+      - liblightdm-gobject uses AccountsService if it is available
+      - Added regression tests for liblightdm-qt
+    - D-Bus API changes:
+      - Expose Seats and Sessions on org.freedesktop.DisplayManager
+      - Add a CanSwitch property
+      - Rename ShowGreeter() to SwitchToGreeter()
+    - Greeter changes:
+      - Drop "example" from the name of the GTK+ and Qt greeters and make them
+        official default greeters.
+      - Use GTK3 for GTK+ greeter.
+      - Removed the Vala and Python GTK+ greeters, they weren't being well
+        maintained.
+    [0.9.1]
+    - Fix up translation build system
+    - Add a --with-greeter-user configure option
+    - Fix greeter-user configuration not being used
+    - Abort greeter if attempted to be run as root and greeter-user set
+    - Fix setting session in GTK+ greeter
+    [0.9.2]
+    - Fix annotation and Vala bindings for getting the UserList singleton
+    - Fix GTK+ greeter error label not being shown
+    - Don't set SIGQUIT to ignore in child processes
+    - Reworked the PAM code as ecryptfs users weren't able to log in.  They
+      can now but not sure what changed to fix that!?
+  * debian/control:
+    - Build depend on libgtk3.0-dev, not libgtk2.0-dev
+    - Drop obsolete greeters, use new ones
+    - lightdm conflicts with liblightdm-gobject-1 and liblightdm-qt-1 so old
+      greeters will be removed.
+    - Update versions of libraries
+  * debian/lightdm.conf:
+    - Removed, no longer needs configuration
+  * debian/patches/01_resize_grip.patch:
+    - Dropped, not required anymore
+
+ -- Robert Ancell <robert.ancell@canonical.com>  Tue, 26 Jul 2011 19:19:00 +1000
+
+lightdm (0.4.4-0ubuntu1) oneiric; urgency=low
+
+  * New upstream release
+    - Fix failure to accept XDMCP connections due to invalid assert.
+    - Allow minimum-display-number to be set in lightdm.conf and on the command
+      line.
+    - Session X authority now written to ~/.Xauthority by default.  It can be
+      configured to run from the system location by setting
+      user-authority-in-system-dir=true in lightdm.conf.
+    - When using system authority the authority can be updated by the user.
+      (LP: #795046)
+    - Written X authority files now checks hostname and display number.
+    - Enironment is no longer passed through to X servers and sessions, this is
+      no longer required now PAM works correctly.
+    - liblightdm API changes:
+      - Drop ldm_greeter_get_is_first() - it was added for testing and doesn't
+        work well.
+    - Fix more errors where authentication messages from previous sessions could
+      be confused with new sessions.
+    - Added XDMCP regression tests.
+  * debian/lightdm.conf:
+    - Updated to latest format
+
+ -- Robert Ancell <robert.ancell@canonical.com>  Fri, 15 Jul 2011 13:35:49 +1000
+
 lightdm (0.4.3-0ubuntu1) oneiric; urgency=low
 
   * New upstream release

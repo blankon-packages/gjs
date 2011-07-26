@@ -9,46 +9,52 @@
  * license.
  */
 
-#ifndef _LDM_LAYOUT_H_
-#define _LDM_LAYOUT_H_
+#ifndef _LIGHTDM_LAYOUT_H_
+#define _LIGHTDM_LAYOUT_H_
 
 #include <glib-object.h>
 
 G_BEGIN_DECLS
 
-#define LDM_TYPE_LAYOUT            (ldm_layout_get_type())
-#define LDM_LAYOUT(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), LDM_TYPE_LAYOUT, LdmLayout));
-#define LDM_LAYOUT_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass), LDM_TYPE_LAYOUT, LdmLayoutClass))
-#define LDM_IS_LAYOUT(obj)         (G_TYPE_CHECK_INSTANCE_TYPE ((obj), LDM_TYPE_LAYOUT))
-#define LDM_IS_LAYOUT_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), LDM_TYPE_LAYOUT))
-#define LDM_LAYOUT_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj), LDM_TYPE_LAYOUT, LdmLayoutClass))
+#define LIGHTDM_TYPE_LAYOUT            (lightdm_layout_get_type())
+#define LIGHTDM_LAYOUT(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), LIGHTDM_TYPE_LAYOUT, LightDMLayout));
+#define LIGHTDM_LAYOUT_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass), LIGHTDM_TYPE_LAYOUT, LightDMLayoutClass))
+#define LIGHTDM_IS_LAYOUT(obj)         (G_TYPE_CHECK_INSTANCE_TYPE ((obj), LIGHTDM_TYPE_LAYOUT))
+#define LIGHTDM_IS_LAYOUT_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), LIGHTDM_TYPE_LAYOUT))
+#define LIGHTDM_LAYOUT_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj), LIGHTDM_TYPE_LAYOUT, LightDMLayoutClass))
 
-typedef struct _LdmLayout        LdmLayout;
-typedef struct _LdmLayoutClass   LdmLayoutClass;
-typedef struct _LdmLayoutPrivate LdmLayoutPrivate;
-
-struct _LdmLayout
+typedef struct
 {
-    GObject         parent_instance;
-    /*<private>*/
-    LdmLayoutPrivate *priv;
-};
+    GObject parent_instance;
+} LightDMLayout;
 
-struct _LdmLayoutClass
+typedef struct
 {
     GObjectClass parent_class;
-};
 
-GType ldm_layout_get_type (void);
+	/* Reserved */
+	void (*reserved1) (void);
+	void (*reserved2) (void);
+	void (*reserved3) (void);
+	void (*reserved4) (void);
+	void (*reserved5) (void);
+	void (*reserved6) (void);
+} LightDMLayoutClass;
 
-LdmLayout *ldm_layout_new (const gchar *name, const gchar *short_description, const gchar *description);
+GType lightdm_layout_get_type (void);
 
-const gchar *ldm_layout_get_name (LdmLayout *layout);
+GList *lightdm_get_layouts (void);
 
-const gchar *ldm_layout_get_short_description (LdmLayout *layout);
+void lightdm_set_layout (LightDMLayout *layout);
 
-const gchar *ldm_layout_get_description (LdmLayout *layout);
+LightDMLayout *lightdm_get_layout (void);
+
+const gchar *lightdm_layout_get_name (LightDMLayout *layout);
+
+const gchar *lightdm_layout_get_short_description (LightDMLayout *layout);
+
+const gchar *lightdm_layout_get_description (LightDMLayout *layout);
 
 G_END_DECLS
 
-#endif /* _LDM_LAYOUT_H_ */
+#endif /* _LIGHTDM_LAYOUT_H_ */

@@ -16,6 +16,7 @@
 @SET_MAKE@
 
 
+
 VPATH = @srcdir@
 pkgdatadir = $(datadir)/@PACKAGE@
 pkgincludedir = $(includedir)/@PACKAGE@
@@ -36,15 +37,20 @@ POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
 subdir = liblightdm-gobject
-DIST_COMMON = $(dist_vapi_DATA) $(srcdir)/Makefile.am \
-	$(srcdir)/Makefile.in $(srcdir)/liblightdm-gobject-0.pc.in
+DIST_COMMON = $(dist_vapi_DATA) $(liblightdm_gobject_1include_HEADERS) \
+	$(mainheader_HEADERS) $(srcdir)/Makefile.am \
+	$(srcdir)/Makefile.in $(srcdir)/liblightdm-gobject-1.pc.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
-am__aclocal_m4_deps = $(top_srcdir)/configure.ac
+am__aclocal_m4_deps = $(top_srcdir)/m4/gtk-doc.m4 \
+	$(top_srcdir)/m4/intltool.m4 $(top_srcdir)/m4/introspection.m4 \
+	$(top_srcdir)/m4/libtool.m4 $(top_srcdir)/m4/ltoptions.m4 \
+	$(top_srcdir)/m4/ltsugar.m4 $(top_srcdir)/m4/ltversion.m4 \
+	$(top_srcdir)/m4/lt~obsolete.m4 $(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 mkinstalldirs = $(install_sh) -d
 CONFIG_HEADER = $(top_builddir)/config.h
-CONFIG_CLEAN_FILES = liblightdm-gobject-0.pc
+CONFIG_CLEAN_FILES = liblightdm-gobject-1.pc
 CONFIG_CLEAN_VPATH_FILES =
 am__vpath_adj_setup = srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`;
 am__vpath_adj = case $$p in \
@@ -69,24 +75,29 @@ am__base_list = \
   sed '$$!N;$$!N;$$!N;$$!N;s/\n/ /g'
 am__installdirs = "$(DESTDIR)$(libdir)" "$(DESTDIR)$(vapidir)" \
 	"$(DESTDIR)$(girdir)" "$(DESTDIR)$(pkgconfigdir)" \
-	"$(DESTDIR)$(typelibdir)"
+	"$(DESTDIR)$(typelibdir)" \
+	"$(DESTDIR)$(liblightdm_gobject_1includedir)" \
+	"$(DESTDIR)$(mainheaderdir)"
 LTLIBRARIES = $(lib_LTLIBRARIES)
 am__DEPENDENCIES_1 =
-liblightdm_gobject_0_la_DEPENDENCIES = $(am__DEPENDENCIES_1)
-am_liblightdm_gobject_0_la_OBJECTS =  \
-	liblightdm_gobject_0_la-greeter.lo \
-	liblightdm_gobject_0_la-language.lo \
-	liblightdm_gobject_0_la-layout.lo \
-	liblightdm_gobject_0_la-session.lo \
-	liblightdm_gobject_0_la-user.lo
-liblightdm_gobject_0_la_OBJECTS =  \
-	$(am_liblightdm_gobject_0_la_OBJECTS)
+liblightdm_gobject_1_la_DEPENDENCIES = $(am__DEPENDENCIES_1)
+am__objects_1 =
+am_liblightdm_gobject_1_la_OBJECTS =  \
+	liblightdm_gobject_1_la-greeter.lo \
+	liblightdm_gobject_1_la-system.lo \
+	liblightdm_gobject_1_la-language.lo \
+	liblightdm_gobject_1_la-layout.lo \
+	liblightdm_gobject_1_la-power.lo \
+	liblightdm_gobject_1_la-session.lo \
+	liblightdm_gobject_1_la-user.lo $(am__objects_1)
+liblightdm_gobject_1_la_OBJECTS =  \
+	$(am_liblightdm_gobject_1_la_OBJECTS)
 AM_V_lt = $(am__v_lt_$(V))
 am__v_lt_ = $(am__v_lt_$(AM_DEFAULT_VERBOSITY))
 am__v_lt_0 = --silent
-liblightdm_gobject_0_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
+liblightdm_gobject_1_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
-	$(liblightdm_gobject_0_la_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
+	$(liblightdm_gobject_1_la_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
@@ -114,50 +125,13 @@ am__v_CCLD_0 = @echo "  CCLD  " $@;
 AM_V_GEN = $(am__v_GEN_$(V))
 am__v_GEN_ = $(am__v_GEN_$(AM_DEFAULT_VERBOSITY))
 am__v_GEN_0 = @echo "  GEN   " $@;
-SOURCES = $(liblightdm_gobject_0_la_SOURCES)
-DIST_SOURCES = $(liblightdm_gobject_0_la_SOURCES)
-RECURSIVE_TARGETS = all-recursive check-recursive dvi-recursive \
-	html-recursive info-recursive install-data-recursive \
-	install-dvi-recursive install-exec-recursive \
-	install-html-recursive install-info-recursive \
-	install-pdf-recursive install-ps-recursive install-recursive \
-	installcheck-recursive installdirs-recursive pdf-recursive \
-	ps-recursive uninstall-recursive
+SOURCES = $(liblightdm_gobject_1_la_SOURCES)
+DIST_SOURCES = $(liblightdm_gobject_1_la_SOURCES)
 DATA = $(dist_vapi_DATA) $(gir_DATA) $(pkgconfig_DATA) $(typelib_DATA)
-RECURSIVE_CLEAN_TARGETS = mostlyclean-recursive clean-recursive	\
-  distclean-recursive maintainer-clean-recursive
-AM_RECURSIVE_TARGETS = $(RECURSIVE_TARGETS:-recursive=) \
-	$(RECURSIVE_CLEAN_TARGETS:-recursive=) tags TAGS ctags CTAGS \
-	distdir
+HEADERS = $(liblightdm_gobject_1include_HEADERS) $(mainheader_HEADERS)
 ETAGS = etags
 CTAGS = ctags
-DIST_SUBDIRS = $(SUBDIRS)
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
-am__relativize = \
-  dir0=`pwd`; \
-  sed_first='s,^\([^/]*\)/.*$$,\1,'; \
-  sed_rest='s,^[^/]*/*,,'; \
-  sed_last='s,^.*/\([^/]*\)$$,\1,'; \
-  sed_butlast='s,/*[^/]*$$,,'; \
-  while test -n "$$dir1"; do \
-    first=`echo "$$dir1" | sed -e "$$sed_first"`; \
-    if test "$$first" != "."; then \
-      if test "$$first" = ".."; then \
-        dir2=`echo "$$dir0" | sed -e "$$sed_last"`/"$$dir2"; \
-        dir0=`echo "$$dir0" | sed -e "$$sed_butlast"`; \
-      else \
-        first2=`echo "$$dir2" | sed -e "$$sed_first"`; \
-        if test "$$first2" = "$$first"; then \
-          dir2=`echo "$$dir2" | sed -e "$$sed_rest"`; \
-        else \
-          dir2="../$$dir2"; \
-        fi; \
-        dir0="$$dir0"/"$$first"; \
-      fi; \
-    fi; \
-    dir1=`echo "$$dir1" | sed -e "$$sed_rest"`; \
-  done; \
-  reldir="$$dir2"
 ACLOCAL = @ACLOCAL@
 ALL_LINGUAS = @ALL_LINGUAS@
 AMTAR = @AMTAR@
@@ -167,7 +141,6 @@ AUTOCONF = @AUTOCONF@
 AUTOHEADER = @AUTOHEADER@
 AUTOMAKE = @AUTOMAKE@
 AWK = @AWK@
-CACHE_DIR = @CACHE_DIR@
 CC = @CC@
 CCDEPMODE = @CCDEPMODE@
 CFLAGS = @CFLAGS@
@@ -180,12 +153,6 @@ CXXFLAGS = @CXXFLAGS@
 CYGPATH_W = @CYGPATH_W@
 DATADIRNAME = @DATADIRNAME@
 DBUSBINDINGTOOL = @DBUSBINDINGTOOL@
-DBUS_SYS_DIR = @DBUS_SYS_DIR@
-DEFAULT_CONFIG_FILE = @DEFAULT_CONFIG_FILE@
-DEFAULT_GREETER_THEME = @DEFAULT_GREETER_THEME@
-DEFAULT_PAM_AUTOLOGIN_SERVICE = @DEFAULT_PAM_AUTOLOGIN_SERVICE@
-DEFAULT_PAM_SERVICE = @DEFAULT_PAM_SERVICE@
-DEFAULT_XSESSION = @DEFAULT_XSESSION@
 DEFS = @DEFS@
 DEPDIR = @DEPDIR@
 DLLTOOL = @DLLTOOL@
@@ -197,15 +164,18 @@ ECHO_T = @ECHO_T@
 EGREP = @EGREP@
 EXEEXT = @EXEEXT@
 FGREP = @FGREP@
+GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
 GIO_CFLAGS = @GIO_CFLAGS@
 GIO_LIBS = @GIO_LIBS@
+GIO_UNIX_CFLAGS = @GIO_UNIX_CFLAGS@
+GIO_UNIX_LIBS = @GIO_UNIX_LIBS@
 GLIB_CFLAGS = @GLIB_CFLAGS@
 GLIB_GENMARSHAL = @GLIB_GENMARSHAL@
 GLIB_LIBS = @GLIB_LIBS@
 GMSGFMT = @GMSGFMT@
 GOBJECT_CFLAGS = @GOBJECT_CFLAGS@
 GOBJECT_LIBS = @GOBJECT_LIBS@
-GREETER_THEME_DIR = @GREETER_THEME_DIR@
+GREETER_SESSION = @GREETER_SESSION@
 GREETER_USER = @GREETER_USER@
 GREP = @GREP@
 GTKDOC_CHECK = @GTKDOC_CHECK@
@@ -239,14 +209,13 @@ LIBOBJS = @LIBOBJS@
 LIBS = @LIBS@
 LIBTOOL = @LIBTOOL@
 LIGHTDM_CFLAGS = @LIGHTDM_CFLAGS@
-LIGHTDM_EXAMPLE_GTK_GREETER_CFLAGS = @LIGHTDM_EXAMPLE_GTK_GREETER_CFLAGS@
-LIGHTDM_EXAMPLE_GTK_GREETER_LIBS = @LIGHTDM_EXAMPLE_GTK_GREETER_LIBS@
-LIGHTDM_EXAMPLE_QT_GREETER_CFLAGS = @LIGHTDM_EXAMPLE_QT_GREETER_CFLAGS@
-LIGHTDM_EXAMPLE_QT_GREETER_LIBS = @LIGHTDM_EXAMPLE_QT_GREETER_LIBS@
+LIGHTDM_GTK_GREETER_CFLAGS = @LIGHTDM_GTK_GREETER_CFLAGS@
+LIGHTDM_GTK_GREETER_LIBS = @LIGHTDM_GTK_GREETER_LIBS@
 LIGHTDM_LIBS = @LIGHTDM_LIBS@
+LIGHTDM_QT_GREETER_CFLAGS = @LIGHTDM_QT_GREETER_CFLAGS@
+LIGHTDM_QT_GREETER_LIBS = @LIGHTDM_QT_GREETER_LIBS@
 LIPO = @LIPO@
 LN_S = @LN_S@
-LOG_DIR = @LOG_DIR@
 LTLIBOBJS = @LTLIBOBJS@
 MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
@@ -276,17 +245,14 @@ SED = @SED@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
 STRIP = @STRIP@
+USER_SESSION = @USER_SESSION@
 USE_NLS = @USE_NLS@
-VALAC = @VALAC@
 VALA_API_GEN = @VALA_API_GEN@
 VERSION = @VERSION@
 WARN_CFLAGS = @WARN_CFLAGS@
-XAUTH_DIR = @XAUTH_DIR@
 XCB_CFLAGS = @XCB_CFLAGS@
 XCB_LIBS = @XCB_LIBS@
 XGETTEXT = @XGETTEXT@
-XSERVER_BINARY = @XSERVER_BINARY@
-XSESSIONS_DIR = @XSESSIONS_DIR@
 abs_builddir = @abs_builddir@
 abs_srcdir = @abs_srcdir@
 abs_top_builddir = @abs_top_builddir@
@@ -340,50 +306,57 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-SUBDIRS = lightdm
-lib_LTLIBRARIES = liblightdm-gobject-0.la
+lib_LTLIBRARIES = liblightdm-gobject-1.la
 CLEANFILES = 
-liblightdm_gobject_0_la_LIBADD = $(LIBLIGHTDM_GOBJECT_LIBS)
-liblightdm_gobject_0_la_CFLAGS = $(LIBLIGHTDM_GOBJECT_CFLAGS) \
+liblightdm_gobject_1_la_LIBADD = $(LIBLIGHTDM_GOBJECT_LIBS)
+liblightdm_gobject_1_la_CFLAGS = $(LIBLIGHTDM_GOBJECT_CFLAGS) \
 	$(WARN_CFLAGS) \
-	-DXSESSIONS_DIR=\"$(XSESSIONS_DIR)\"
+	-DXSESSIONS_DIR=\"$(datadir)/xsessions\"
 
-liblightdm_gobject_0_la_SOURCES = \
-	greeter.c \
-	greeter-protocol.h \
-	language.c \
-	layout.c \
-	session.c \
-	user.c \
-	user-private.h \
+mainheader_HEADERS = lightdm.h
+mainheaderdir = $(includedir)/lightdm-gobject-1
+liblightdm_gobject_1include_HEADERS = \
 	lightdm/greeter.h \
+	lightdm/system.h \
 	lightdm/language.h \
 	lightdm/layout.h \
+	lightdm/power.h \
 	lightdm/session.h \
 	lightdm/user.h
 
+liblightdm_gobject_1includedir = $(mainheaderdir)/lightdm
+liblightdm_gobject_1_la_SOURCES = \
+	greeter.c \
+	system.c \
+	language.c \
+	layout.c \
+	power.c \
+	session.c \
+	user.c \
+	$(liblightdm_gobject_1include_HEADERS)
+
 @HAVE_INTROSPECTION_TRUE@INTROSPECTION_SCANNER_ARGS = --add-include-path=$(srcdir)
 @HAVE_INTROSPECTION_TRUE@INTROSPECTION_COMPILER_ARGS = --includedir=$(srcdir)
-@HAVE_INTROSPECTION_TRUE@INTROSPECTION_GIRS = LightDM-0.gir
-@HAVE_INTROSPECTION_TRUE@LightDM_0_gir_INCLUDES = GObject-2.0
-@HAVE_INTROSPECTION_TRUE@LightDM_0_gir_CFLAGS = $(INCLUDES) --identifier-prefix=Ldm
-@HAVE_INTROSPECTION_TRUE@LightDM_0_gir_LIBS = liblightdm-gobject-0.la
-@HAVE_INTROSPECTION_TRUE@LightDM_0_gir_FILES = $(liblightdm_gobject_0_la_SOURCES)
+@HAVE_INTROSPECTION_TRUE@INTROSPECTION_GIRS = LightDM-1.gir
+@HAVE_INTROSPECTION_TRUE@LightDM_1_gir_INCLUDES = GObject-2.0
+@HAVE_INTROSPECTION_TRUE@LightDM_1_gir_CFLAGS = $(INCLUDES) --identifier-prefix=LightDM
+@HAVE_INTROSPECTION_TRUE@LightDM_1_gir_LIBS = liblightdm-gobject-1.la
+@HAVE_INTROSPECTION_TRUE@LightDM_1_gir_FILES = $(liblightdm_gobject_1_la_SOURCES)
 @HAVE_INTROSPECTION_TRUE@girdir = $(datadir)/gir-1.0
-@HAVE_INTROSPECTION_TRUE@gir_DATA = LightDM-0.gir
+@HAVE_INTROSPECTION_TRUE@gir_DATA = LightDM-1.gir
 @HAVE_INTROSPECTION_TRUE@typelibdir = $(libdir)/girepository-1.0
-@HAVE_INTROSPECTION_TRUE@typelib_DATA = LightDM-0.typelib
+@HAVE_INTROSPECTION_TRUE@typelib_DATA = LightDM-1.typelib
 vapidir = $(datadir)/vala/vapi
-dist_vapi_DATA = liblightdm-gobject-0.vapi
+dist_vapi_DATA = liblightdm-gobject-1.vapi
 pkgconfigdir = $(libdir)/pkgconfig
-pkgconfig_DATA = liblightdm-gobject-0.pc
+pkgconfig_DATA = liblightdm-gobject-1.pc
 DISTCLEANFILES = \
 	Makefile.in \
 	$(pkgconfig_DATA) \
 	$(gir_DATA) \
 	$(typelib_DATA)
 
-all: all-recursive
+all: all-am
 
 .SUFFIXES:
 .SUFFIXES: .c .lo .o .obj
@@ -417,7 +390,7 @@ $(top_srcdir)/configure: @MAINTAINER_MODE_TRUE@ $(am__configure_deps)
 $(ACLOCAL_M4): @MAINTAINER_MODE_TRUE@ $(am__aclocal_m4_deps)
 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
 $(am__aclocal_m4_deps):
-liblightdm-gobject-0.pc: $(top_builddir)/config.status $(srcdir)/liblightdm-gobject-0.pc.in
+liblightdm-gobject-1.pc: $(top_builddir)/config.status $(srcdir)/liblightdm-gobject-1.pc.in
 	cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@
 install-libLTLIBRARIES: $(lib_LTLIBRARIES)
 	@$(NORMAL_INSTALL)
@@ -450,8 +423,8 @@ clean-libLTLIBRARIES:
 	  echo "rm -f \"$${dir}/so_locations\""; \
 	  rm -f "$${dir}/so_locations"; \
 	done
-liblightdm-gobject-0.la: $(liblightdm_gobject_0_la_OBJECTS) $(liblightdm_gobject_0_la_DEPENDENCIES) 
-	$(AM_V_CCLD)$(liblightdm_gobject_0_la_LINK) -rpath $(libdir) $(liblightdm_gobject_0_la_OBJECTS) $(liblightdm_gobject_0_la_LIBADD) $(LIBS)
+liblightdm-gobject-1.la: $(liblightdm_gobject_1_la_OBJECTS) $(liblightdm_gobject_1_la_DEPENDENCIES) 
+	$(AM_V_CCLD)$(liblightdm_gobject_1_la_LINK) -rpath $(libdir) $(liblightdm_gobject_1_la_OBJECTS) $(liblightdm_gobject_1_la_LIBADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -459,11 +432,13 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liblightdm_gobject_0_la-greeter.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liblightdm_gobject_0_la-language.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liblightdm_gobject_0_la-layout.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liblightdm_gobject_0_la-session.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liblightdm_gobject_0_la-user.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liblightdm_gobject_1_la-greeter.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liblightdm_gobject_1_la-language.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liblightdm_gobject_1_la-layout.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liblightdm_gobject_1_la-power.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liblightdm_gobject_1_la-session.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liblightdm_gobject_1_la-system.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liblightdm_gobject_1_la-user.Plo@am__quote@
 
 .c.o:
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
@@ -489,45 +464,61 @@ distclean-compile:
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LTCOMPILE) -c -o $@ $<
 
-liblightdm_gobject_0_la-greeter.lo: greeter.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(liblightdm_gobject_0_la_CFLAGS) $(CFLAGS) -MT liblightdm_gobject_0_la-greeter.lo -MD -MP -MF $(DEPDIR)/liblightdm_gobject_0_la-greeter.Tpo -c -o liblightdm_gobject_0_la-greeter.lo `test -f 'greeter.c' || echo '$(srcdir)/'`greeter.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/liblightdm_gobject_0_la-greeter.Tpo $(DEPDIR)/liblightdm_gobject_0_la-greeter.Plo
+liblightdm_gobject_1_la-greeter.lo: greeter.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(liblightdm_gobject_1_la_CFLAGS) $(CFLAGS) -MT liblightdm_gobject_1_la-greeter.lo -MD -MP -MF $(DEPDIR)/liblightdm_gobject_1_la-greeter.Tpo -c -o liblightdm_gobject_1_la-greeter.lo `test -f 'greeter.c' || echo '$(srcdir)/'`greeter.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/liblightdm_gobject_1_la-greeter.Tpo $(DEPDIR)/liblightdm_gobject_1_la-greeter.Plo
 @am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='greeter.c' object='liblightdm_gobject_0_la-greeter.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='greeter.c' object='liblightdm_gobject_1_la-greeter.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(liblightdm_gobject_0_la_CFLAGS) $(CFLAGS) -c -o liblightdm_gobject_0_la-greeter.lo `test -f 'greeter.c' || echo '$(srcdir)/'`greeter.c
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(liblightdm_gobject_1_la_CFLAGS) $(CFLAGS) -c -o liblightdm_gobject_1_la-greeter.lo `test -f 'greeter.c' || echo '$(srcdir)/'`greeter.c
 
-liblightdm_gobject_0_la-language.lo: language.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(liblightdm_gobject_0_la_CFLAGS) $(CFLAGS) -MT liblightdm_gobject_0_la-language.lo -MD -MP -MF $(DEPDIR)/liblightdm_gobject_0_la-language.Tpo -c -o liblightdm_gobject_0_la-language.lo `test -f 'language.c' || echo '$(srcdir)/'`language.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/liblightdm_gobject_0_la-language.Tpo $(DEPDIR)/liblightdm_gobject_0_la-language.Plo
+liblightdm_gobject_1_la-system.lo: system.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(liblightdm_gobject_1_la_CFLAGS) $(CFLAGS) -MT liblightdm_gobject_1_la-system.lo -MD -MP -MF $(DEPDIR)/liblightdm_gobject_1_la-system.Tpo -c -o liblightdm_gobject_1_la-system.lo `test -f 'system.c' || echo '$(srcdir)/'`system.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/liblightdm_gobject_1_la-system.Tpo $(DEPDIR)/liblightdm_gobject_1_la-system.Plo
 @am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='language.c' object='liblightdm_gobject_0_la-language.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='system.c' object='liblightdm_gobject_1_la-system.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(liblightdm_gobject_0_la_CFLAGS) $(CFLAGS) -c -o liblightdm_gobject_0_la-language.lo `test -f 'language.c' || echo '$(srcdir)/'`language.c
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(liblightdm_gobject_1_la_CFLAGS) $(CFLAGS) -c -o liblightdm_gobject_1_la-system.lo `test -f 'system.c' || echo '$(srcdir)/'`system.c
 
-liblightdm_gobject_0_la-layout.lo: layout.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(liblightdm_gobject_0_la_CFLAGS) $(CFLAGS) -MT liblightdm_gobject_0_la-layout.lo -MD -MP -MF $(DEPDIR)/liblightdm_gobject_0_la-layout.Tpo -c -o liblightdm_gobject_0_la-layout.lo `test -f 'layout.c' || echo '$(srcdir)/'`layout.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/liblightdm_gobject_0_la-layout.Tpo $(DEPDIR)/liblightdm_gobject_0_la-layout.Plo
+liblightdm_gobject_1_la-language.lo: language.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(liblightdm_gobject_1_la_CFLAGS) $(CFLAGS) -MT liblightdm_gobject_1_la-language.lo -MD -MP -MF $(DEPDIR)/liblightdm_gobject_1_la-language.Tpo -c -o liblightdm_gobject_1_la-language.lo `test -f 'language.c' || echo '$(srcdir)/'`language.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/liblightdm_gobject_1_la-language.Tpo $(DEPDIR)/liblightdm_gobject_1_la-language.Plo
 @am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='layout.c' object='liblightdm_gobject_0_la-layout.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='language.c' object='liblightdm_gobject_1_la-language.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(liblightdm_gobject_0_la_CFLAGS) $(CFLAGS) -c -o liblightdm_gobject_0_la-layout.lo `test -f 'layout.c' || echo '$(srcdir)/'`layout.c
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(liblightdm_gobject_1_la_CFLAGS) $(CFLAGS) -c -o liblightdm_gobject_1_la-language.lo `test -f 'language.c' || echo '$(srcdir)/'`language.c
 
-liblightdm_gobject_0_la-session.lo: session.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(liblightdm_gobject_0_la_CFLAGS) $(CFLAGS) -MT liblightdm_gobject_0_la-session.lo -MD -MP -MF $(DEPDIR)/liblightdm_gobject_0_la-session.Tpo -c -o liblightdm_gobject_0_la-session.lo `test -f 'session.c' || echo '$(srcdir)/'`session.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/liblightdm_gobject_0_la-session.Tpo $(DEPDIR)/liblightdm_gobject_0_la-session.Plo
+liblightdm_gobject_1_la-layout.lo: layout.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(liblightdm_gobject_1_la_CFLAGS) $(CFLAGS) -MT liblightdm_gobject_1_la-layout.lo -MD -MP -MF $(DEPDIR)/liblightdm_gobject_1_la-layout.Tpo -c -o liblightdm_gobject_1_la-layout.lo `test -f 'layout.c' || echo '$(srcdir)/'`layout.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/liblightdm_gobject_1_la-layout.Tpo $(DEPDIR)/liblightdm_gobject_1_la-layout.Plo
 @am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='session.c' object='liblightdm_gobject_0_la-session.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='layout.c' object='liblightdm_gobject_1_la-layout.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(liblightdm_gobject_0_la_CFLAGS) $(CFLAGS) -c -o liblightdm_gobject_0_la-session.lo `test -f 'session.c' || echo '$(srcdir)/'`session.c
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(liblightdm_gobject_1_la_CFLAGS) $(CFLAGS) -c -o liblightdm_gobject_1_la-layout.lo `test -f 'layout.c' || echo '$(srcdir)/'`layout.c
 
-liblightdm_gobject_0_la-user.lo: user.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(liblightdm_gobject_0_la_CFLAGS) $(CFLAGS) -MT liblightdm_gobject_0_la-user.lo -MD -MP -MF $(DEPDIR)/liblightdm_gobject_0_la-user.Tpo -c -o liblightdm_gobject_0_la-user.lo `test -f 'user.c' || echo '$(srcdir)/'`user.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/liblightdm_gobject_0_la-user.Tpo $(DEPDIR)/liblightdm_gobject_0_la-user.Plo
+liblightdm_gobject_1_la-power.lo: power.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(liblightdm_gobject_1_la_CFLAGS) $(CFLAGS) -MT liblightdm_gobject_1_la-power.lo -MD -MP -MF $(DEPDIR)/liblightdm_gobject_1_la-power.Tpo -c -o liblightdm_gobject_1_la-power.lo `test -f 'power.c' || echo '$(srcdir)/'`power.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/liblightdm_gobject_1_la-power.Tpo $(DEPDIR)/liblightdm_gobject_1_la-power.Plo
 @am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='user.c' object='liblightdm_gobject_0_la-user.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='power.c' object='liblightdm_gobject_1_la-power.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(liblightdm_gobject_0_la_CFLAGS) $(CFLAGS) -c -o liblightdm_gobject_0_la-user.lo `test -f 'user.c' || echo '$(srcdir)/'`user.c
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(liblightdm_gobject_1_la_CFLAGS) $(CFLAGS) -c -o liblightdm_gobject_1_la-power.lo `test -f 'power.c' || echo '$(srcdir)/'`power.c
+
+liblightdm_gobject_1_la-session.lo: session.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(liblightdm_gobject_1_la_CFLAGS) $(CFLAGS) -MT liblightdm_gobject_1_la-session.lo -MD -MP -MF $(DEPDIR)/liblightdm_gobject_1_la-session.Tpo -c -o liblightdm_gobject_1_la-session.lo `test -f 'session.c' || echo '$(srcdir)/'`session.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/liblightdm_gobject_1_la-session.Tpo $(DEPDIR)/liblightdm_gobject_1_la-session.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='session.c' object='liblightdm_gobject_1_la-session.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(liblightdm_gobject_1_la_CFLAGS) $(CFLAGS) -c -o liblightdm_gobject_1_la-session.lo `test -f 'session.c' || echo '$(srcdir)/'`session.c
+
+liblightdm_gobject_1_la-user.lo: user.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(liblightdm_gobject_1_la_CFLAGS) $(CFLAGS) -MT liblightdm_gobject_1_la-user.lo -MD -MP -MF $(DEPDIR)/liblightdm_gobject_1_la-user.Tpo -c -o liblightdm_gobject_1_la-user.lo `test -f 'user.c' || echo '$(srcdir)/'`user.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/liblightdm_gobject_1_la-user.Tpo $(DEPDIR)/liblightdm_gobject_1_la-user.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='user.c' object='liblightdm_gobject_1_la-user.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(liblightdm_gobject_1_la_CFLAGS) $(CFLAGS) -c -o liblightdm_gobject_1_la-user.lo `test -f 'user.c' || echo '$(srcdir)/'`user.c
 
 mostlyclean-libtool:
 	-rm -f *.lo
@@ -614,76 +605,46 @@ uninstall-typelibDATA:
 	test -n "$$files" || exit 0; \
 	echo " ( cd '$(DESTDIR)$(typelibdir)' && rm -f" $$files ")"; \
 	cd "$(DESTDIR)$(typelibdir)" && rm -f $$files
-
-# This directory's subdirectories are mostly independent; you can cd
-# into them and run `make' without going through this Makefile.
-# To change the values of `make' variables: instead of editing Makefiles,
-# (1) if the variable is set in `config.status', edit `config.status'
-#     (which will cause the Makefiles to be regenerated when you run `make');
-# (2) otherwise, pass the desired values on the `make' command line.
-$(RECURSIVE_TARGETS):
-	@fail= failcom='exit 1'; \
-	for f in x $$MAKEFLAGS; do \
-	  case $$f in \
-	    *=* | --[!k]*);; \
-	    *k*) failcom='fail=yes';; \
-	  esac; \
-	done; \
-	dot_seen=no; \
-	target=`echo $@ | sed s/-recursive//`; \
-	list='$(SUBDIRS)'; for subdir in $$list; do \
-	  echo "Making $$target in $$subdir"; \
-	  if test "$$subdir" = "."; then \
-	    dot_seen=yes; \
-	    local_target="$$target-am"; \
-	  else \
-	    local_target="$$target"; \
-	  fi; \
-	  ($(am__cd) $$subdir && $(MAKE) $(AM_MAKEFLAGS) $$local_target) \
-	  || eval $$failcom; \
-	done; \
-	if test "$$dot_seen" = "no"; then \
-	  $(MAKE) $(AM_MAKEFLAGS) "$$target-am" || exit 1; \
-	fi; test -z "$$fail"
-
-$(RECURSIVE_CLEAN_TARGETS):
-	@fail= failcom='exit 1'; \
-	for f in x $$MAKEFLAGS; do \
-	  case $$f in \
-	    *=* | --[!k]*);; \
-	    *k*) failcom='fail=yes';; \
-	  esac; \
-	done; \
-	dot_seen=no; \
-	case "$@" in \
-	  distclean-* | maintainer-clean-*) list='$(DIST_SUBDIRS)' ;; \
-	  *) list='$(SUBDIRS)' ;; \
-	esac; \
-	rev=''; for subdir in $$list; do \
-	  if test "$$subdir" = "."; then :; else \
-	    rev="$$subdir $$rev"; \
-	  fi; \
-	done; \
-	rev="$$rev ."; \
-	target=`echo $@ | sed s/-recursive//`; \
-	for subdir in $$rev; do \
-	  echo "Making $$target in $$subdir"; \
-	  if test "$$subdir" = "."; then \
-	    local_target="$$target-am"; \
-	  else \
-	    local_target="$$target"; \
-	  fi; \
-	  ($(am__cd) $$subdir && $(MAKE) $(AM_MAKEFLAGS) $$local_target) \
-	  || eval $$failcom; \
-	done && test -z "$$fail"
-tags-recursive:
-	list='$(SUBDIRS)'; for subdir in $$list; do \
-	  test "$$subdir" = . || ($(am__cd) $$subdir && $(MAKE) $(AM_MAKEFLAGS) tags); \
+install-liblightdm_gobject_1includeHEADERS: $(liblightdm_gobject_1include_HEADERS)
+	@$(NORMAL_INSTALL)
+	test -z "$(liblightdm_gobject_1includedir)" || $(MKDIR_P) "$(DESTDIR)$(liblightdm_gobject_1includedir)"
+	@list='$(liblightdm_gobject_1include_HEADERS)'; test -n "$(liblightdm_gobject_1includedir)" || list=; \
+	for p in $$list; do \
+	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+	  echo "$$d$$p"; \
+	done | $(am__base_list) | \
+	while read files; do \
+	  echo " $(INSTALL_HEADER) $$files '$(DESTDIR)$(liblightdm_gobject_1includedir)'"; \
+	  $(INSTALL_HEADER) $$files "$(DESTDIR)$(liblightdm_gobject_1includedir)" || exit $$?; \
 	done
-ctags-recursive:
-	list='$(SUBDIRS)'; for subdir in $$list; do \
-	  test "$$subdir" = . || ($(am__cd) $$subdir && $(MAKE) $(AM_MAKEFLAGS) ctags); \
+
+uninstall-liblightdm_gobject_1includeHEADERS:
+	@$(NORMAL_UNINSTALL)
+	@list='$(liblightdm_gobject_1include_HEADERS)'; test -n "$(liblightdm_gobject_1includedir)" || list=; \
+	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
+	test -n "$$files" || exit 0; \
+	echo " ( cd '$(DESTDIR)$(liblightdm_gobject_1includedir)' && rm -f" $$files ")"; \
+	cd "$(DESTDIR)$(liblightdm_gobject_1includedir)" && rm -f $$files
+install-mainheaderHEADERS: $(mainheader_HEADERS)
+	@$(NORMAL_INSTALL)
+	test -z "$(mainheaderdir)" || $(MKDIR_P) "$(DESTDIR)$(mainheaderdir)"
+	@list='$(mainheader_HEADERS)'; test -n "$(mainheaderdir)" || list=; \
+	for p in $$list; do \
+	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+	  echo "$$d$$p"; \
+	done | $(am__base_list) | \
+	while read files; do \
+	  echo " $(INSTALL_HEADER) $$files '$(DESTDIR)$(mainheaderdir)'"; \
+	  $(INSTALL_HEADER) $$files "$(DESTDIR)$(mainheaderdir)" || exit $$?; \
 	done
+
+uninstall-mainheaderHEADERS:
+	@$(NORMAL_UNINSTALL)
+	@list='$(mainheader_HEADERS)'; test -n "$(mainheaderdir)" || list=; \
+	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
+	test -n "$$files" || exit 0; \
+	echo " ( cd '$(DESTDIR)$(mainheaderdir)' && rm -f" $$files ")"; \
+	cd "$(DESTDIR)$(mainheaderdir)" && rm -f $$files
 
 ID: $(HEADERS) $(SOURCES) $(LISP) $(TAGS_FILES)
 	list='$(SOURCES) $(HEADERS) $(LISP) $(TAGS_FILES)'; \
@@ -695,23 +656,10 @@ ID: $(HEADERS) $(SOURCES) $(LISP) $(TAGS_FILES)
 	mkid -fID $$unique
 tags: TAGS
 
-TAGS: tags-recursive $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) \
+TAGS:  $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) \
 		$(TAGS_FILES) $(LISP)
 	set x; \
 	here=`pwd`; \
-	if ($(ETAGS) --etags-include --version) >/dev/null 2>&1; then \
-	  include_option=--etags-include; \
-	  empty_fix=.; \
-	else \
-	  include_option=--include; \
-	  empty_fix=; \
-	fi; \
-	list='$(SUBDIRS)'; for subdir in $$list; do \
-	  if test "$$subdir" = .; then :; else \
-	    test ! -f $$subdir/TAGS || \
-	      set "$$@" "$$include_option=$$here/$$subdir/TAGS"; \
-	  fi; \
-	done; \
 	list='$(SOURCES) $(HEADERS)  $(LISP) $(TAGS_FILES)'; \
 	unique=`for i in $$list; do \
 	    if test -f "$$i"; then echo $$i; else echo $(srcdir)/$$i; fi; \
@@ -730,7 +678,7 @@ TAGS: tags-recursive $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) \
 	  fi; \
 	fi
 ctags: CTAGS
-CTAGS: ctags-recursive $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) \
+CTAGS:  $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) \
 		$(TAGS_FILES) $(LISP)
 	list='$(SOURCES) $(HEADERS)  $(LISP) $(TAGS_FILES)'; \
 	unique=`for i in $$list; do \
@@ -780,51 +728,22 @@ distdir: $(DISTFILES)
 	    || exit 1; \
 	  fi; \
 	done
-	@list='$(DIST_SUBDIRS)'; for subdir in $$list; do \
-	  if test "$$subdir" = .; then :; else \
-	    test -d "$(distdir)/$$subdir" \
-	    || $(MKDIR_P) "$(distdir)/$$subdir" \
-	    || exit 1; \
-	  fi; \
-	done
-	@list='$(DIST_SUBDIRS)'; for subdir in $$list; do \
-	  if test "$$subdir" = .; then :; else \
-	    dir1=$$subdir; dir2="$(distdir)/$$subdir"; \
-	    $(am__relativize); \
-	    new_distdir=$$reldir; \
-	    dir1=$$subdir; dir2="$(top_distdir)"; \
-	    $(am__relativize); \
-	    new_top_distdir=$$reldir; \
-	    echo " (cd $$subdir && $(MAKE) $(AM_MAKEFLAGS) top_distdir="$$new_top_distdir" distdir="$$new_distdir" \\"; \
-	    echo "     am__remove_distdir=: am__skip_length_check=: am__skip_mode_fix=: distdir)"; \
-	    ($(am__cd) $$subdir && \
-	      $(MAKE) $(AM_MAKEFLAGS) \
-	        top_distdir="$$new_top_distdir" \
-	        distdir="$$new_distdir" \
-		am__remove_distdir=: \
-		am__skip_length_check=: \
-		am__skip_mode_fix=: \
-	        distdir) \
-	      || exit 1; \
-	  fi; \
-	done
 check-am: all-am
-check: check-recursive
-all-am: Makefile $(LTLIBRARIES) $(DATA)
-installdirs: installdirs-recursive
-installdirs-am:
-	for dir in "$(DESTDIR)$(libdir)" "$(DESTDIR)$(vapidir)" "$(DESTDIR)$(girdir)" "$(DESTDIR)$(pkgconfigdir)" "$(DESTDIR)$(typelibdir)"; do \
+check: check-am
+all-am: Makefile $(LTLIBRARIES) $(DATA) $(HEADERS)
+installdirs:
+	for dir in "$(DESTDIR)$(libdir)" "$(DESTDIR)$(vapidir)" "$(DESTDIR)$(girdir)" "$(DESTDIR)$(pkgconfigdir)" "$(DESTDIR)$(typelibdir)" "$(DESTDIR)$(liblightdm_gobject_1includedir)" "$(DESTDIR)$(mainheaderdir)"; do \
 	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
 	done
-install: install-recursive
-install-exec: install-exec-recursive
-install-data: install-data-recursive
-uninstall: uninstall-recursive
+install: install-am
+install-exec: install-exec-am
+install-data: install-data-am
+uninstall: uninstall-am
 
 install-am: all-am
 	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
 
-installcheck: installcheck-recursive
+installcheck: installcheck-am
 install-strip:
 	$(MAKE) $(AM_MAKEFLAGS) INSTALL_PROGRAM="$(INSTALL_STRIP_PROGRAM)" \
 	  install_sh_PROGRAM="$(INSTALL_STRIP_PROGRAM)" INSTALL_STRIP_FLAG=-s \
@@ -843,106 +762,111 @@ distclean-generic:
 maintainer-clean-generic:
 	@echo "This command is intended for maintainers to use"
 	@echo "it deletes files that may require special tools to rebuild."
-clean: clean-recursive
+clean: clean-am
 
 clean-am: clean-generic clean-libLTLIBRARIES clean-libtool \
 	mostlyclean-am
 
-distclean: distclean-recursive
+distclean: distclean-am
 	-rm -rf ./$(DEPDIR)
 	-rm -f Makefile
 distclean-am: clean-am distclean-compile distclean-generic \
 	distclean-tags
 
-dvi: dvi-recursive
+dvi: dvi-am
 
 dvi-am:
 
-html: html-recursive
+html: html-am
 
 html-am:
 
-info: info-recursive
+info: info-am
 
 info-am:
 
 install-data-am: install-dist_vapiDATA install-girDATA \
-	install-pkgconfigDATA install-typelibDATA
+	install-liblightdm_gobject_1includeHEADERS \
+	install-mainheaderHEADERS install-pkgconfigDATA \
+	install-typelibDATA
 
-install-dvi: install-dvi-recursive
+install-dvi: install-dvi-am
 
 install-dvi-am:
 
 install-exec-am: install-libLTLIBRARIES
 
-install-html: install-html-recursive
+install-html: install-html-am
 
 install-html-am:
 
-install-info: install-info-recursive
+install-info: install-info-am
 
 install-info-am:
 
 install-man:
 
-install-pdf: install-pdf-recursive
+install-pdf: install-pdf-am
 
 install-pdf-am:
 
-install-ps: install-ps-recursive
+install-ps: install-ps-am
 
 install-ps-am:
 
 installcheck-am:
 
-maintainer-clean: maintainer-clean-recursive
+maintainer-clean: maintainer-clean-am
 	-rm -rf ./$(DEPDIR)
 	-rm -f Makefile
 maintainer-clean-am: distclean-am maintainer-clean-generic
 
-mostlyclean: mostlyclean-recursive
+mostlyclean: mostlyclean-am
 
 mostlyclean-am: mostlyclean-compile mostlyclean-generic \
 	mostlyclean-libtool
 
-pdf: pdf-recursive
+pdf: pdf-am
 
 pdf-am:
 
-ps: ps-recursive
+ps: ps-am
 
 ps-am:
 
 uninstall-am: uninstall-dist_vapiDATA uninstall-girDATA \
-	uninstall-libLTLIBRARIES uninstall-pkgconfigDATA \
+	uninstall-libLTLIBRARIES \
+	uninstall-liblightdm_gobject_1includeHEADERS \
+	uninstall-mainheaderHEADERS uninstall-pkgconfigDATA \
 	uninstall-typelibDATA
 
-.MAKE: $(RECURSIVE_CLEAN_TARGETS) $(RECURSIVE_TARGETS) ctags-recursive \
-	install-am install-strip tags-recursive
+.MAKE: install-am install-strip
 
-.PHONY: $(RECURSIVE_CLEAN_TARGETS) $(RECURSIVE_TARGETS) CTAGS GTAGS \
-	all all-am check check-am clean clean-generic \
-	clean-libLTLIBRARIES clean-libtool ctags ctags-recursive \
-	distclean distclean-compile distclean-generic \
-	distclean-libtool distclean-tags distdir dvi dvi-am html \
-	html-am info info-am install install-am install-data \
-	install-data-am install-dist_vapiDATA install-dvi \
-	install-dvi-am install-exec install-exec-am install-girDATA \
-	install-html install-html-am install-info install-info-am \
-	install-libLTLIBRARIES install-man install-pdf install-pdf-am \
-	install-pkgconfigDATA install-ps install-ps-am install-strip \
-	install-typelibDATA installcheck installcheck-am installdirs \
-	installdirs-am maintainer-clean maintainer-clean-generic \
+.PHONY: CTAGS GTAGS all all-am check check-am clean clean-generic \
+	clean-libLTLIBRARIES clean-libtool ctags distclean \
+	distclean-compile distclean-generic distclean-libtool \
+	distclean-tags distdir dvi dvi-am html html-am info info-am \
+	install install-am install-data install-data-am \
+	install-dist_vapiDATA install-dvi install-dvi-am install-exec \
+	install-exec-am install-girDATA install-html install-html-am \
+	install-info install-info-am install-libLTLIBRARIES \
+	install-liblightdm_gobject_1includeHEADERS \
+	install-mainheaderHEADERS install-man install-pdf \
+	install-pdf-am install-pkgconfigDATA install-ps install-ps-am \
+	install-strip install-typelibDATA installcheck installcheck-am \
+	installdirs maintainer-clean maintainer-clean-generic \
 	mostlyclean mostlyclean-compile mostlyclean-generic \
-	mostlyclean-libtool pdf pdf-am ps ps-am tags tags-recursive \
-	uninstall uninstall-am uninstall-dist_vapiDATA \
-	uninstall-girDATA uninstall-libLTLIBRARIES \
-	uninstall-pkgconfigDATA uninstall-typelibDATA
+	mostlyclean-libtool pdf pdf-am ps ps-am tags uninstall \
+	uninstall-am uninstall-dist_vapiDATA uninstall-girDATA \
+	uninstall-libLTLIBRARIES \
+	uninstall-liblightdm_gobject_1includeHEADERS \
+	uninstall-mainheaderHEADERS uninstall-pkgconfigDATA \
+	uninstall-typelibDATA
 
 
 @HAVE_INTROSPECTION_TRUE@-include $(INTROSPECTION_MAKEFILE)
 
-@HAVE_INTROSPECTION_TRUE@LightDM-0.gir: liblightdm-gobject-0.la
+@HAVE_INTROSPECTION_TRUE@LightDM-1.gir: liblightdm-gobject-1.la
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

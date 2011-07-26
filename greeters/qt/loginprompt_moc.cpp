@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'loginprompt.h'
 **
-** Created: Wed Jul 13 11:10:42 2011
+** Created: Tue Jul 26 19:00:59 2011
 **      by: The Qt Meta Object Compiler version 62 (Qt 4.7.3)
 **
 ** WARNING! All changes made in this file will be lost!
@@ -35,17 +35,17 @@ static const uint qt_meta_data_LoginPrompt[] = {
 
  // slots: signature, parameters, type, tag, flags
       28,   12,   12,   12, 0x08,
-      59,   51,   12,   12, 0x08,
-      98,   90,   12,   12, 0x08,
+      51,   12,   12,   12, 0x08,
+      87,   78,   12,   12, 0x08,
 
        0        // eod
 };
 
 static const char qt_meta_stringdata_LoginPrompt[] = {
     "LoginPrompt\0\0startSession()\0"
-    "onLoginButtonClicked()\0success\0"
-    "onAuthenticationComplete(bool)\0message\0"
-    "prompt(QString)\0"
+    "onLoginButtonClicked()\0"
+    "onAuthenticationComplete()\0message,\0"
+    "prompt(QString,QLightDM::PromptType)\0"
 };
 
 const QMetaObject LoginPrompt::staticMetaObject = {
@@ -79,8 +79,8 @@ int LoginPrompt::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
         switch (_id) {
         case 0: startSession(); break;
         case 1: onLoginButtonClicked(); break;
-        case 2: onAuthenticationComplete((*reinterpret_cast< bool(*)>(_a[1]))); break;
-        case 3: prompt((*reinterpret_cast< const QString(*)>(_a[1]))); break;
+        case 2: onAuthenticationComplete(); break;
+        case 3: prompt((*reinterpret_cast< const QString(*)>(_a[1])),(*reinterpret_cast< QLightDM::PromptType(*)>(_a[2]))); break;
         default: ;
         }
         _id -= 4;

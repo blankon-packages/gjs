@@ -9,46 +9,48 @@
  * license.
  */
 
-#ifndef _LDM_SESSION_H_
-#define _LDM_SESSION_H_
+#ifndef _LIGHTDM_SESSION_H_
+#define _LIGHTDM_SESSION_H_
 
 #include <glib-object.h>
 
 G_BEGIN_DECLS
 
-#define LDM_TYPE_SESSION            (ldm_session_get_type())
-#define LDM_SESSION(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), LDM_TYPE_SESSION, LdmSession));
-#define LDM_SESSION_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass), LDM_TYPE_SESSION, LdmSessionClass))
-#define LDM_IS_SESSION(obj)         (G_TYPE_CHECK_INSTANCE_TYPE ((obj), LDM_TYPE_SESSION))
-#define LDM_IS_SESSION_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), LDM_TYPE_SESSION))
-#define LDM_SESSION_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj), LDM_TYPE_SESSION, LdmSessionClass))
+#define LIGHTDM_TYPE_SESSION            (lightdm_session_get_type())
+#define LIGHTDM_SESSION(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), LIGHTDM_TYPE_SESSION, LightDMSession));
+#define LIGHTDM_SESSION_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass), LIGHTDM_TYPE_SESSION, LightDMSessionClass))
+#define LIGHTDM_IS_SESSION(obj)         (G_TYPE_CHECK_INSTANCE_TYPE ((obj), LIGHTDM_TYPE_SESSION))
+#define LIGHTDM_IS_SESSION_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), LIGHTDM_TYPE_SESSION))
+#define LIGHTDM_SESSION_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj), LIGHTDM_TYPE_SESSION, LightDMSessionClass))
 
-typedef struct _LdmSession        LdmSession;
-typedef struct _LdmSessionClass   LdmSessionClass;
-typedef struct _LdmSessionPrivate LdmSessionPrivate;
-
-struct _LdmSession
+typedef struct
 {
-    GObject            parent_instance;
-    /*<private>*/
-    LdmSessionPrivate *priv;
-};
+    GObject parent_instance;
+} LightDMSession;
 
-struct _LdmSessionClass
+typedef struct
 {
     GObjectClass parent_class;
-};
 
-GType ldm_session_get_type (void);
+	/* Reserved */
+	void (*reserved1) (void);
+	void (*reserved2) (void);
+	void (*reserved3) (void);
+	void (*reserved4) (void);
+	void (*reserved5) (void);
+	void (*reserved6) (void);
+} LightDMSessionClass;
 
-LdmSession *ldm_session_new (const gchar *key, const gchar *name, const gchar *comment);
+GType lightdm_session_get_type (void);
 
-const gchar *ldm_session_get_key (LdmSession *session);
+GList *lightdm_get_sessions (void);
 
-const gchar *ldm_session_get_name (LdmSession *session);
+const gchar *lightdm_session_get_key (LightDMSession *session);
 
-const gchar *ldm_session_get_comment (LdmSession *session);
+const gchar *lightdm_session_get_name (LightDMSession *session);
+
+const gchar *lightdm_session_get_comment (LightDMSession *session);
 
 G_END_DECLS
 
-#endif /* _LDM_SESSION_H_ */
+#endif /* _LIGHTDM_SESSION_H_ */

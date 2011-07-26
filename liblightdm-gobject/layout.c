@@ -9,6 +9,8 @@
  * license.
  */
 
+#include <libxklavier/xklavier.h>
+
 #include "lightdm/layout.h"
 
 enum {
@@ -18,104 +20,178 @@ enum {
     PROP_DESCRIPTION
 };
 
-struct _LdmLayoutPrivate
+typedef struct
 {
     gchar *name;
     gchar *short_description;
     gchar *description;
-};
+} LightDMLayoutPrivate;
 
-G_DEFINE_TYPE (LdmLayout, ldm_layout, G_TYPE_OBJECT);
+G_DEFINE_TYPE (LightDMLayout, lightdm_layout, G_TYPE_OBJECT);
 
-/**
- * ldm_layout_new:
- * 
- * Create a new layout.
- * @name: The layout name
- * @short_description: Short description for the layout
- * @description: Long description for the layout
- * 
- * Return value: the new #LdmLayout
- **/
-LdmLayout *
-ldm_layout_new (const gchar *name, const gchar *short_description, const gchar *description)
+#define GET_PRIVATE(obj) G_TYPE_INSTANCE_GET_PRIVATE ((obj), LIGHTDM_TYPE_LAYOUT, LightDMLayoutPrivate)
+
+static gboolean have_layouts = FALSE;
+static Display *display = NULL;
+static XklEngine *xkl_engine = NULL;
+static XklConfigRec *xkl_config = NULL;
+static GList *layouts = NULL;
+
+static void
+layout_cb (XklConfigRegistry *config,
+           const XklConfigItem *item,
+           gpointer data)
 {
-    return g_object_new (LDM_TYPE_LAYOUT, "name", name, "short-description", short_description, "description", description, NULL);
+    LightDMLayout *layout;
+
+    layout = g_object_new (LIGHTDM_TYPE_LAYOUT, "name", item->name, "short-description", item->short_description, "description", item->description, NULL);
+    layouts = g_list_append (layouts, layout);
 }
 
 /**
- * ldm_layout_get_name:
- * @layout: A #LdmLayout
+ * lightdm_get_layouts:
+ *
+ * Get a list of keyboard layouts to present to the user.
+ *
+ * Return value: (element-type LightDMLayout) (transfer none): A list of #LightDMLayout that should be presented to the user.
+ **/
+GList *
+lightdm_get_layouts (void)
+{
+    XklConfigRegistry *registry;
+
+    if (have_layouts)
+        return layouts;
+
+    display = XOpenDisplay (NULL);
+    xkl_engine = xkl_engine_get_instance (display);
+    xkl_config = xkl_config_rec_new ();
+    if (!xkl_config_rec_get_from_server (xkl_config, xkl_engine))
+        g_warning ("Failed to get Xkl configuration from server");
+
+    registry = xkl_config_registry_get_instance (xkl_engine);
+    xkl_config_registry_load (registry, FALSE);
+    xkl_config_registry_foreach_layout (registry, layout_cb, NULL);
+    g_object_unref (registry);
+
+    have_layouts = TRUE;
+
+    return layouts;
+}
+
+/**
+ * lightdm_set_layout:
+ * @layout: The layout to use
+ *
+ * Set the layout for this session.
+ **/
+void
+lightdm_set_layout (LightDMLayout *layout)
+{
+    XklConfigRec *config;
+
+    g_return_if_fail (layout != NULL);
+
+    g_debug ("Setting keyboard layout to %s", lightdm_layout_get_name (layout));
+
+    config = xkl_config_rec_new ();
+    config->layouts = g_malloc (sizeof (gchar *) * 2);
+    config->model = g_strdup (xkl_config->model);
+    config->layouts[0] = g_strdup (lightdm_layout_get_name (layout));
+    config->layouts[1] = NULL;
+    if (!xkl_config_rec_activate (config, xkl_engine))
+        g_warning ("Failed to activate XKL config");
+    g_object_unref (config);
+}
+
+/**
+ * lightdm_get_layout:
+ *
+ * Get the current keyboard layout.
+ *
+ * Return value: (transfer none): The currently active layout for this user.
+ **/
+LightDMLayout *
+lightdm_get_layout (void)
+{
+    lightdm_get_layouts ();
+    if (layouts)
+        return (LightDMLayout *) g_list_first (layouts);
+    else
+        return NULL;
+}
+
+/**
+ * lightdm_layout_get_name:
+ * @layout: A #LightDMLayout
  * 
  * Get the name of a layout.
  * 
  * Return value: The name of the layout
  **/
 const gchar *
-ldm_layout_get_name (LdmLayout *layout)
+lightdm_layout_get_name (LightDMLayout *layout)
 {
-    g_return_val_if_fail (LDM_IS_LAYOUT (layout), NULL);
-    return layout->priv->name;
+    g_return_val_if_fail (LIGHTDM_IS_LAYOUT (layout), NULL);
+    return GET_PRIVATE (layout)->name;
 }
 
 /**
- * ldm_layout_get_short_description:
- * @layout: A #LdmLayout
+ * lightdm_layout_get_short_description:
+ * @layout: A #LightDMLayout
  * 
  * Get the short description of a layout.
  *
  * Return value: A short description of the layout
  **/
 const gchar *
-ldm_layout_get_short_description (LdmLayout *layout)
+lightdm_layout_get_short_description (LightDMLayout *layout)
 {
-    g_return_val_if_fail (LDM_IS_LAYOUT (layout), NULL);
-    return layout->priv->short_description;
+    g_return_val_if_fail (LIGHTDM_IS_LAYOUT (layout), NULL);
+    return GET_PRIVATE (layout)->short_description;
 }
 
 /**
- * ldm_layout_get_description:
- * @layout: A #LdmLayout
+ * lightdm_layout_get_description:
+ * @layout: A #LightDMLayout
  * 
  * Get the long description of a layout.
  * 
  * Return value: A long description of the layout
  **/
 const gchar *
-ldm_layout_get_description (LdmLayout *layout)
+lightdm_layout_get_description (LightDMLayout *layout)
 {
-    g_return_val_if_fail (LDM_IS_LAYOUT (layout), NULL);
-    return layout->priv->description;
+    g_return_val_if_fail (LIGHTDM_IS_LAYOUT (layout), NULL);
+    return GET_PRIVATE (layout)->description;
 }
 
 static void
-ldm_layout_init (LdmLayout *layout)
+lightdm_layout_init (LightDMLayout *layout)
 {
-    layout->priv = G_TYPE_INSTANCE_GET_PRIVATE (layout, LDM_TYPE_LAYOUT, LdmLayoutPrivate);
 }
 
 static void
-ldm_layout_set_property (GObject      *object,
+lightdm_layout_set_property (GObject      *object,
                          guint         prop_id,
                          const GValue *value,
                          GParamSpec   *pspec)
 {
-    LdmLayout *self;
-
-    self = LDM_LAYOUT (object);
+    LightDMLayout *self = LIGHTDM_LAYOUT (object);
+    LightDMLayoutPrivate *priv = GET_PRIVATE (self);
 
     switch (prop_id) {
     case PROP_NAME:
-        g_free (self->priv->name);
-        self->priv->name = g_strdup (g_value_get_string (value));
+        g_free (priv->name);
+        priv->name = g_strdup (g_value_get_string (value));
         break;
     case PROP_SHORT_DESCRIPTION:
-        g_free (self->priv->short_description);
-        self->priv->short_description = g_strdup (g_value_get_string (value));
+        g_free (priv->short_description);
+        priv->short_description = g_strdup (g_value_get_string (value));
         break;
     case PROP_DESCRIPTION:
-        g_free (self->priv->description);
-        self->priv->description = g_strdup (g_value_get_string (value));
+        g_free (priv->description);
+        priv->description = g_strdup (g_value_get_string (value));
         break;
     default:
         G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -124,24 +200,24 @@ ldm_layout_set_property (GObject      *object,
 }
 
 static void
-ldm_layout_get_property (GObject    *object,
+lightdm_layout_get_property (GObject    *object,
                          guint       prop_id,
                          GValue     *value,
                          GParamSpec *pspec)
 {
-    LdmLayout *self;
+    LightDMLayout *self;
 
-    self = LDM_LAYOUT (object);
+    self = LIGHTDM_LAYOUT (object);
 
     switch (prop_id) {
     case PROP_NAME:
-        g_value_set_string (value, ldm_layout_get_name (self));
+        g_value_set_string (value, lightdm_layout_get_name (self));
         break;
     case PROP_SHORT_DESCRIPTION:
-        g_value_set_string (value, ldm_layout_get_short_description (self));
+        g_value_set_string (value, lightdm_layout_get_short_description (self));
         break;
     case PROP_DESCRIPTION:
-        g_value_set_string (value, ldm_layout_get_description (self));
+        g_value_set_string (value, lightdm_layout_get_description (self));
         break;
     default:
         G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -150,14 +226,14 @@ ldm_layout_get_property (GObject    *object,
 }
 
 static void
-ldm_layout_class_init (LdmLayoutClass *klass)
+lightdm_layout_class_init (LightDMLayoutClass *klass)
 {
     GObjectClass *object_class = G_OBJECT_CLASS (klass);
   
-    g_type_class_add_private (klass, sizeof (LdmLayoutPrivate));
+    g_type_class_add_private (klass, sizeof (LightDMLayoutPrivate));
 
-    object_class->set_property = ldm_layout_set_property;
-    object_class->get_property = ldm_layout_get_property;
+    object_class->set_property = lightdm_layout_set_property;
+    object_class->get_property = lightdm_layout_get_property;
 
     g_object_class_install_property(object_class,
                                     PROP_NAME,
