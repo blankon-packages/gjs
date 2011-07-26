@@ -33,7 +33,7 @@ Depends: ${misc:Depends},
          libpam-modules,
          adduser
 Recommends: xserver-xorg,
-            lightdm-greeter
+            lightdm-gtk-greeter | lightdm-greeter
 Conflicts: liblightdm-gobject-0,
            liblightdm-qt-0
 Provides: x-display-manager
@@ -49,7 +49,7 @@ Architecture: any
 Depends: ${misc:Depends},
          ${shlibs:Depends}
 Recommends: lightdm
-Provides: lightdm-greeter
+Provides: lightdm-greeter, lightdm-greeter-example-gtk
 Description: LightDM GTK+ Greeter
  A LightDM greeter that uses the GTK+ toolkit.
 

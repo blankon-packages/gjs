@@ -1,3 +1,12 @@
+lightdm (0.9.2-0ubuntu2) oneiric; urgency=low
+
+  * debian/control: 
+    - recommends the preferred greeter before a virtual one
+    - let the new gtk greeter provide the old example named one for easier
+      upgrade
+
+ -- Sebastien Bacher <seb128@ubuntu.com>  Tue, 26 Jul 2011 21:38:25 +0200
+
 lightdm (0.9.2-0ubuntu1) oneiric; urgency=low
 
   * New upstream release
