@@ -34,8 +34,8 @@ Depends: ${misc:Depends},
          adduser
 Recommends: xserver-xorg,
             lightdm-gtk-greeter | lightdm-greeter
-Conflicts: liblightdm-gobject-0,
-           liblightdm-qt-0
+Conflicts: liblightdm-gobject-0-0,
+           liblightdm-qt-0-0
 Provides: x-display-manager
 Description: Display Manager
  LightDM is a X display manager that:

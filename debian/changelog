@@ -1,3 +1,11 @@
+lightdm (0.9.2-0ubuntu3) oneiric; urgency=low
+
+  * Fix lightdm to conflict liblightdm-gobject-0-0 and liblightdm-qt-0-0,
+    so that old greeters are removed on upgrade
+    - update debian/control
+
+ -- Chris Coulson <chris.coulson@canonical.com>  Tue, 26 Jul 2011 23:26:49 +0100
+
 lightdm (0.9.2-0ubuntu2) oneiric; urgency=low
 
   * debian/control: 
