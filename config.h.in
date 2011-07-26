@@ -1,19 +1,10 @@
 /* config.h.in.  Generated from configure.ac by autoheader.  */
 
-/* Default greeter theme */
-#undef DEFAULT_GREETER_THEME
-
-/* Default PAM service to use for automatic logins */
-#undef DEFAULT_PAM_AUTOLOGIN_SERVICE
-
-/* Default PAM service to use */
-#undef DEFAULT_PAM_SERVICE
-
-/* Default X session */
-#undef DEFAULT_XSESSION
-
 /* Gettext package */
 #undef GETTEXT_PACKAGE
+
+/* Greeter session */
+#undef GREETER_SESSION
 
 /* User to run greeter as */
 #undef GREETER_USER
@@ -82,11 +73,8 @@
 /* Define to 1 if you have the ANSI C header files. */
 #undef STDC_HEADERS
 
+/* User session */
+#undef USER_SESSION
+
 /* Version number of package */
 #undef VERSION
-
-/* X server binary name */
-#undef XSERVER_BINARY
-
-/* X session directory */
-#undef XSESSIONS_DIR

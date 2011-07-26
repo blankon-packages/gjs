@@ -12,10 +12,10 @@
 #include "loginprompt.h"
 #include "ui_loginprompt.h"
 
-#include <QLightDM/Greeter>
 #include <QLightDM/User>
 #include <QLightDM/Language>
-#include <QLightDM/UsersModel>
+#include <QLightDM/User>
+#include <QLightDM/System>
 
 #include <QtCore/QDebug>
 #include <QtGui/QListWidgetItem>
@@ -28,14 +28,13 @@ LoginPrompt::LoginPrompt(QLightDM::Greeter *greeter, QWidget *parent) :
     ui->setupUi(this);
     ui->feedbackLabel->setText(QString());
     
-    ui->hostnameLabel->setText(m_greeter->hostname());
+    ui->hostnameLabel->setText(QLightDM::hostname());
     
-    QLightDM::UsersModel *usersModel = new QLightDM::UsersModel(greeter->config(), this);
-    ui->userListView->setModel(usersModel);
+    ui->userListView->setModel(QLightDM::users());
 
     connect(ui->loginButton, SIGNAL(released()), SLOT(onLoginButtonClicked()));
-    connect(m_greeter, SIGNAL(authenticationComplete(bool)), SLOT(onAuthenticationComplete(bool)));
-    connect(m_greeter, SIGNAL(showPrompt(QString)), SLOT(prompt(QString)));
+    connect(m_greeter, SIGNAL(authenticationComplete()), SLOT(onAuthenticationComplete()));
+    connect(m_greeter, SIGNAL(showPrompt(QString, QLightDM::PromptType)), SLOT(prompt(QString, QLightDM::PromptType)));
 }
 
 LoginPrompt::~LoginPrompt()
@@ -43,26 +42,25 @@ LoginPrompt::~LoginPrompt()
     delete ui;
 }
 
-
 void LoginPrompt::onLoginButtonClicked()
 {
     ui->feedbackLabel->setText(QString());
     QModelIndex currentIndex = ui->userListView->currentIndex();
     if (currentIndex.isValid()) {
-        m_greeter->login(currentIndex.data(QLightDM::UsersModel::NameRole).toString());
+        m_greeter->authenticate(currentIndex.data(QLightDM::UsersModel::NameRole).toString());
     }
 }
 
-void LoginPrompt::onAuthenticationComplete(bool success)
+void LoginPrompt::onAuthenticationComplete()
 {
-    if (success) {
+    if (m_greeter->isAuthenticated()) {
         emit startSession();
     } else {
-        ui->feedbackLabel->setText("Sorry, you suck. Try again.");
+        ui->feedbackLabel->setText("Incorrect password, please try again");
     }
 }
 
-void LoginPrompt::prompt(const QString &message) {
-    qDebug() << message;
+void LoginPrompt::prompt(const QString &text, QLightDM::PromptType type) {
+    qDebug() << text;
     m_greeter->respond(ui->password->text());
 }

@@ -38,6 +38,30 @@ extern void ldm_marshal_BOOLEAN__STRING (GClosure     *closure,
                                          gpointer      invocation_hint,
                                          gpointer      marshal_data);
 
+/* BOOLEAN:VOID (./ldm-marshal.list:5) */
+extern void ldm_marshal_BOOLEAN__VOID (GClosure     *closure,
+                                       GValue       *return_value,
+                                       guint         n_param_values,
+                                       const GValue *param_values,
+                                       gpointer      invocation_hint,
+                                       gpointer      marshal_data);
+
+/* OBJECT:STRING (./ldm-marshal.list:6) */
+extern void ldm_marshal_OBJECT__STRING (GClosure     *closure,
+                                        GValue       *return_value,
+                                        guint         n_param_values,
+                                        const GValue *param_values,
+                                        gpointer      invocation_hint,
+                                        gpointer      marshal_data);
+
+/* STRING:VOID (./ldm-marshal.list:7) */
+extern void ldm_marshal_STRING__VOID (GClosure     *closure,
+                                      GValue       *return_value,
+                                      guint         n_param_values,
+                                      const GValue *param_values,
+                                      gpointer      invocation_hint,
+                                      gpointer      marshal_data);
+
 G_END_DECLS
 
 #endif /* __ldm_marshal_MARSHAL_H__ */

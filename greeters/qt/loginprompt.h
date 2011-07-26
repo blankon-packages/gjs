@@ -14,6 +14,7 @@
 #define LOGINPROMPT_H
 
 #include <QWidget>
+#include <QLightDM/Greeter>
 
 namespace Ui {
     class Widget;
@@ -36,8 +37,8 @@ signals:
     
 private slots:
     void onLoginButtonClicked();
-    void onAuthenticationComplete(bool success);
-    void prompt(const QString &message);
+    void onAuthenticationComplete();
+    void prompt(const QString &message, QLightDM::PromptType);
 
 private:
     QLightDM::Greeter *m_greeter;

@@ -229,30 +229,30 @@ ldm_marshal_BOOLEAN__STRING (GClosure     *closure,
   g_value_set_boolean (return_value, v_return);
 }
 
-/* VOID:STRING,INT (./ldm-marshal.list:5) */
-extern void ldm_marshal_VOID__STRING_INT (GClosure     *closure,
-                                          GValue       *return_value,
-                                          guint         n_param_values,
-                                          const GValue *param_values,
-                                          gpointer      invocation_hint,
-                                          gpointer      marshal_data);
+/* BOOLEAN:VOID (./ldm-marshal.list:5) */
+extern void ldm_marshal_BOOLEAN__VOID (GClosure     *closure,
+                                       GValue       *return_value,
+                                       guint         n_param_values,
+                                       const GValue *param_values,
+                                       gpointer      invocation_hint,
+                                       gpointer      marshal_data);
 void
-ldm_marshal_VOID__STRING_INT (GClosure     *closure,
-                              GValue       *return_value G_GNUC_UNUSED,
-                              guint         n_param_values,
-                              const GValue *param_values,
-                              gpointer      invocation_hint G_GNUC_UNUSED,
-                              gpointer      marshal_data)
+ldm_marshal_BOOLEAN__VOID (GClosure     *closure,
+                           GValue       *return_value G_GNUC_UNUSED,
+                           guint         n_param_values,
+                           const GValue *param_values,
+                           gpointer      invocation_hint G_GNUC_UNUSED,
+                           gpointer      marshal_data)
 {
-  typedef void (*GMarshalFunc_VOID__STRING_INT) (gpointer     data1,
-                                                 gpointer     arg_1,
-                                                 gint         arg_2,
-                                                 gpointer     data2);
-  register GMarshalFunc_VOID__STRING_INT callback;
+  typedef gboolean (*GMarshalFunc_BOOLEAN__VOID) (gpointer     data1,
+                                                  gpointer     data2);
+  register GMarshalFunc_BOOLEAN__VOID callback;
   register GCClosure *cc = (GCClosure*) closure;
   register gpointer data1, data2;
+  gboolean v_return;
 
-  g_return_if_fail (n_param_values == 3);
+  g_return_if_fail (return_value != NULL);
+  g_return_if_fail (n_param_values == 1);
 
   if (G_CCLOSURE_SWAP_DATA (closure))
     {
@@ -264,12 +264,100 @@ ldm_marshal_VOID__STRING_INT (GClosure     *closure,
       data1 = g_value_peek_pointer (param_values + 0);
       data2 = closure->data;
     }
-  callback = (GMarshalFunc_VOID__STRING_INT) (marshal_data ? marshal_data : cc->callback);
+  callback = (GMarshalFunc_BOOLEAN__VOID) (marshal_data ? marshal_data : cc->callback);
 
-  callback (data1,
-            g_marshal_value_peek_string (param_values + 1),
-            g_marshal_value_peek_int (param_values + 2),
-            data2);
+  v_return = callback (data1,
+                       data2);
+
+  g_value_set_boolean (return_value, v_return);
+}
+
+/* OBJECT:STRING (./ldm-marshal.list:6) */
+extern void ldm_marshal_OBJECT__STRING (GClosure     *closure,
+                                        GValue       *return_value,
+                                        guint         n_param_values,
+                                        const GValue *param_values,
+                                        gpointer      invocation_hint,
+                                        gpointer      marshal_data);
+void
+ldm_marshal_OBJECT__STRING (GClosure     *closure,
+                            GValue       *return_value G_GNUC_UNUSED,
+                            guint         n_param_values,
+                            const GValue *param_values,
+                            gpointer      invocation_hint G_GNUC_UNUSED,
+                            gpointer      marshal_data)
+{
+  typedef GObject* (*GMarshalFunc_OBJECT__STRING) (gpointer     data1,
+                                                   gpointer     arg_1,
+                                                   gpointer     data2);
+  register GMarshalFunc_OBJECT__STRING callback;
+  register GCClosure *cc = (GCClosure*) closure;
+  register gpointer data1, data2;
+  GObject* v_return;
+
+  g_return_if_fail (return_value != NULL);
+  g_return_if_fail (n_param_values == 2);
+
+  if (G_CCLOSURE_SWAP_DATA (closure))
+    {
+      data1 = closure->data;
+      data2 = g_value_peek_pointer (param_values + 0);
+    }
+  else
+    {
+      data1 = g_value_peek_pointer (param_values + 0);
+      data2 = closure->data;
+    }
+  callback = (GMarshalFunc_OBJECT__STRING) (marshal_data ? marshal_data : cc->callback);
+
+  v_return = callback (data1,
+                       g_marshal_value_peek_string (param_values + 1),
+                       data2);
+
+  g_value_take_object (return_value, v_return);
+}
+
+/* STRING:VOID (./ldm-marshal.list:7) */
+extern void ldm_marshal_STRING__VOID (GClosure     *closure,
+                                      GValue       *return_value,
+                                      guint         n_param_values,
+                                      const GValue *param_values,
+                                      gpointer      invocation_hint,
+                                      gpointer      marshal_data);
+void
+ldm_marshal_STRING__VOID (GClosure     *closure,
+                          GValue       *return_value G_GNUC_UNUSED,
+                          guint         n_param_values,
+                          const GValue *param_values,
+                          gpointer      invocation_hint G_GNUC_UNUSED,
+                          gpointer      marshal_data)
+{
+  typedef gchar* (*GMarshalFunc_STRING__VOID) (gpointer     data1,
+                                               gpointer     data2);
+  register GMarshalFunc_STRING__VOID callback;
+  register GCClosure *cc = (GCClosure*) closure;
+  register gpointer data1, data2;
+  gchar* v_return;
+
+  g_return_if_fail (return_value != NULL);
+  g_return_if_fail (n_param_values == 1);
+
+  if (G_CCLOSURE_SWAP_DATA (closure))
+    {
+      data1 = closure->data;
+      data2 = g_value_peek_pointer (param_values + 0);
+    }
+  else
+    {
+      data1 = g_value_peek_pointer (param_values + 0);
+      data2 = closure->data;
+    }
+  callback = (GMarshalFunc_STRING__VOID) (marshal_data ? marshal_data : cc->callback);
+
+  v_return = callback (data1,
+                       data2);
+
+  g_value_take_string (return_value, v_return);
 }
 
 G_END_DECLS

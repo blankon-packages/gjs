@@ -34,8 +34,8 @@ Greeter::Greeter() :
     background->setPixmap(QPixmap("/usr/share/wallpapers/Horos/contents/images/1920x1200.png"));
 
     m_greeter = new QLightDM::Greeter(this);
-    m_greeter->connectToServer();
-    connect(m_greeter, SIGNAL(quit()), this, SLOT(close()));
+    if (!m_greeter->connectSync())
+        close();
 
     m_prompt = new LoginPrompt(m_greeter, this);
     m_prompt->move(this->width()/2 - m_prompt->width()/2, this->height()/2 - m_prompt->height()/2);
@@ -47,11 +47,10 @@ Greeter::Greeter() :
     m_panel->setAutoFillBackground(true);
 }
 
-
 Greeter::~Greeter()
 {
 }
 
-void Greeter::onStartSession() {
-    m_greeter->startSession(m_panel->session());
+bool Greeter::onStartSession() {
+    return m_greeter->startSessionSync(m_panel->session());
 }

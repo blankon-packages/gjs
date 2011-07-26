@@ -9,19 +9,17 @@
  * license.
  */
 
+#include <config.h>
+
 #include <stdlib.h>
 #include <string.h>
+#include <errno.h>
 
 #include "greeter.h"
-#include "configuration.h"
 #include "ldm-marshal.h"
-#include "greeter-protocol.h"
-#include "guest-account.h"
-
-/* Length of time in milliseconds to wait for a greeter to quit */
-#define GREETER_QUIT_TIMEOUT 1000
 
 enum {
+    START_AUTHENTICATION,
     START_SESSION,
     LAST_SIGNAL
 };
@@ -29,33 +27,18 @@ static guint signals[LAST_SIGNAL] = { 0 };
 
 struct GreeterPrivate
 {
-    /* The number of greeters before this one */
-    guint count;
-
-    /* TRUE if the greeter has connected to the daemon pipe */
-    gboolean connected;
-
-    /* Pipe to communicate to greeter */
-    int pipe[2];
+    /* Session running on */
+    Session *session;
 
     /* Buffer for data read from greeter */
     guint8 *read_buffer;
     gsize n_read;
-
-    /* Theme for greeter to use */
-    gchar *theme;
+  
+    /* Hints for the greeter */
+    GHashTable *hints;
 
     /* Default session to use */   
     gchar *default_session;
-
-    /* Default user to log in as, or NULL for no default */
-    gchar *default_user;
-
-    /* Time in seconds to wait until logging in as default user */
-    gint autologin_timeout;
-
-    /* Timeout for greeter to respond to quit request */
-    guint quit_timeout;
 
     /* Sequence number of current PAM session */
     guint32 authentication_sequence_number;
@@ -63,61 +46,59 @@ struct GreeterPrivate
     /* PAM session being constructed by the greeter */
     PAMSession *pam_session;
 
+    /* TRUE if can log into guest accounts */
+    gboolean allow_guest;
+
     /* TRUE if logging into guest session */
-    gboolean using_guest_account;
+    gboolean guest_account_authenticated;
+
+    /* Communication channels to communicate with */
+    GIOChannel *to_greeter_channel;
+    GIOChannel *from_greeter_channel;
 };
 
-G_DEFINE_TYPE (Greeter, greeter, SESSION_TYPE);
+G_DEFINE_TYPE (Greeter, greeter, G_TYPE_OBJECT);
+
+/* Messages from the greeter to the server */
+typedef enum
+{
+    GREETER_MESSAGE_CONNECT = 0,
+    GREETER_MESSAGE_AUTHENTICATE,
+    GREETER_MESSAGE_AUTHENTICATE_AS_GUEST,
+    GREETER_MESSAGE_CONTINUE_AUTHENTICATION,
+    GREETER_MESSAGE_START_SESSION,
+    GREETER_MESSAGE_CANCEL_AUTHENTICATION
+} GreeterMessage;
+
+/* Messages from the server to the greeter */
+typedef enum
+{
+    SERVER_MESSAGE_CONNECTED = 0,
+    SERVER_MESSAGE_PROMPT_AUTHENTICATION,
+    SERVER_MESSAGE_END_AUTHENTICATION,
+    SERVER_MESSAGE_SESSION_RESULT
+} ServerMessage;
 
 Greeter *
-greeter_new (const gchar *theme, guint count)
+greeter_new (Session *session)
 {
     Greeter *greeter = g_object_new (GREETER_TYPE, NULL);
 
-    greeter->priv->theme = g_strdup (theme);
-    greeter->priv->count = count;
+    greeter->priv->session = g_object_ref (session);
 
     return greeter;
 }
 
 void
-greeter_set_default_user (Greeter *greeter, const gchar *username, gint timeout)
+greeter_set_allow_guest (Greeter *greeter, gboolean allow_guest)
 {
-    g_return_if_fail (greeter != NULL);
-
-    g_free (greeter->priv->default_user);
-    greeter->priv->default_user = g_strdup (username);
-    greeter->priv->autologin_timeout = timeout;
-}
-
-const gchar *
-greeter_get_theme (Greeter *greeter)
-{
-    g_return_val_if_fail (greeter != NULL, NULL);
-    return greeter->priv->theme;
+    greeter->priv->allow_guest = allow_guest;
 }
 
 void
-greeter_set_default_session (Greeter *greeter, const gchar *session)
+greeter_set_hint (Greeter *greeter, const gchar *name, const gchar *value)
 {
-    g_return_if_fail (greeter != NULL);
-
-    g_free (greeter->priv->default_session);
-    greeter->priv->default_session = g_strdup (session);
-}
-
-const gchar *
-greeter_get_default_session (Greeter *greeter)
-{
-    g_return_val_if_fail (greeter != NULL, NULL);
-    return greeter->priv->default_session;
-}
-
-PAMSession *
-greeter_get_pam_session (Greeter *greeter)
-{
-    g_return_val_if_fail (greeter != NULL, NULL);
-    return greeter->priv->pam_session;
+    g_hash_table_insert (greeter->priv->hints, g_strdup (name), g_strdup (value));
 }
 
 static guint32
@@ -130,14 +111,15 @@ int_length ()
 #define MAX_MESSAGE_LENGTH 1024
 
 static void
-write_message (Greeter *greeter, guint8 *message, gint message_length)
+write_message (Greeter *greeter, guint8 *message, gsize message_length)
 {
     GError *error = NULL;
-    g_debug ("Wrote %d bytes to greeter", message_length);
-    if (g_io_channel_write_chars (child_process_get_to_child_channel (CHILD_PROCESS (greeter)), (gchar *) message, message_length, NULL, &error) != G_IO_STATUS_NORMAL)
+    if (g_io_channel_write_chars (greeter->priv->to_greeter_channel, (gchar *) message, message_length, NULL, &error) != G_IO_STATUS_NORMAL)
         g_warning ("Error writing to greeter: %s", error->message);
+    else
+        g_debug ("Wrote %zi bytes to greeter", message_length);
     g_clear_error (&error);
-    g_io_channel_flush (child_process_get_to_child_channel (CHILD_PROCESS (greeter)), NULL);
+    g_io_channel_flush (greeter->priv->to_greeter_channel, NULL);
 }
 
 static void
@@ -155,12 +137,20 @@ write_int (guint8 *buffer, gint buffer_length, guint32 value, gsize *offset)
 static void
 write_string (guint8 *buffer, gint buffer_length, const gchar *value, gsize *offset)
 {
-    gint length = strlen (value);
+    gint length;
+  
+    if (value)
+        length = strlen (value);
+    else
+        length = 0;
     write_int (buffer, buffer_length, length, offset);
     if (*offset + length >= buffer_length)
         return;
-    memcpy (buffer + *offset, value, length);
-    *offset += length;
+    if (length > 0)
+    {
+        memcpy (buffer + *offset, value, length);
+        *offset += length;
+    }
 }
 
 static void
@@ -173,36 +163,37 @@ write_header (guint8 *buffer, gint buffer_length, guint32 id, guint32 length, gs
 static guint32
 string_length (const gchar *value)
 {
-    return int_length () + strlen (value);
+    if (value == NULL)
+        return int_length ();
+    else
+        return int_length () + strlen (value);
 }
 
 static void
-handle_connect (Greeter *greeter)
+handle_connect (Greeter *greeter, const gchar *version)
 {
-    gchar *theme_dir, *theme;
     guint8 message[MAX_MESSAGE_LENGTH];
     gsize offset = 0;
+    guint32 length;
+    GHashTableIter iter;
+    gpointer key, value;
 
-    if (!greeter->priv->connected)
+    g_debug ("Greeter connected version=%s", version);
+
+    length = string_length (VERSION);
+    g_hash_table_iter_init (&iter, greeter->priv->hints);
+    while (g_hash_table_iter_next (&iter, &key, &value))
+        length += string_length (key) + string_length (value);
+
+    write_header (message, MAX_MESSAGE_LENGTH, SERVER_MESSAGE_CONNECTED, length, &offset);
+    write_string (message, MAX_MESSAGE_LENGTH, VERSION, &offset);
+    g_hash_table_iter_init (&iter, greeter->priv->hints);
+    while (g_hash_table_iter_next (&iter, &key, &value))
     {
-        greeter->priv->connected = TRUE;
-        g_debug ("Greeter connected");
+        write_string (message, MAX_MESSAGE_LENGTH, key, &offset);
+        write_string (message, MAX_MESSAGE_LENGTH, value, &offset);
     }
-
-    theme_dir = config_get_string (config_get_instance (), "LightDM", "theme-directory");  
-    theme = g_build_filename (theme_dir, greeter->priv->theme, "index.theme", NULL);
-    g_free (theme_dir);
-
-    write_header (message, MAX_MESSAGE_LENGTH, GREETER_MESSAGE_CONNECTED, string_length (theme) + string_length (greeter->priv->default_session) + string_length (greeter->priv->default_user ? greeter->priv->default_user : "") + int_length () + int_length () + int_length (), &offset);
-    write_string (message, MAX_MESSAGE_LENGTH, theme, &offset);
-    write_string (message, MAX_MESSAGE_LENGTH, greeter->priv->default_session, &offset);
-    write_string (message, MAX_MESSAGE_LENGTH, greeter->priv->default_user ? greeter->priv->default_user : "", &offset);
-    write_int (message, MAX_MESSAGE_LENGTH, greeter->priv->autologin_timeout, &offset);
-    write_int (message, MAX_MESSAGE_LENGTH, guest_account_get_is_enabled (), &offset);
-    write_int (message, MAX_MESSAGE_LENGTH, greeter->priv->count, &offset);
     write_message (greeter, message, offset);
-
-    g_free (theme);
 }
 
 static void
@@ -215,10 +206,13 @@ pam_messages_cb (PAMSession *session, int num_msg, const struct pam_message **ms
 
     /* Respond to d-bus query with messages */
     g_debug ("Prompt greeter with %d message(s)", num_msg);
-    size = int_length ();
+    size = int_length () + string_length (pam_session_get_username (session)) + int_length ();
     for (i = 0; i < num_msg; i++)
         size += int_length () + string_length (msg[i]->msg);
-    write_header (message, MAX_MESSAGE_LENGTH, GREETER_MESSAGE_PROMPT_AUTHENTICATION, size, &offset);
+  
+    write_header (message, MAX_MESSAGE_LENGTH, SERVER_MESSAGE_PROMPT_AUTHENTICATION, size, &offset);
+    write_int (message, MAX_MESSAGE_LENGTH, greeter->priv->authentication_sequence_number, &offset);
+    write_string (message, MAX_MESSAGE_LENGTH, pam_session_get_username (session), &offset);
     write_int (message, MAX_MESSAGE_LENGTH, num_msg, &offset);
     for (i = 0; i < num_msg; i++)
     {
@@ -229,13 +223,14 @@ pam_messages_cb (PAMSession *session, int num_msg, const struct pam_message **ms
 }
 
 static void
-send_end_authentication (Greeter *greeter, guint32 sequence_number, int result)
+send_end_authentication (Greeter *greeter, guint32 sequence_number, const gchar *username, int result)
 {
     guint8 message[MAX_MESSAGE_LENGTH];
     gsize offset = 0;
 
-    write_header (message, MAX_MESSAGE_LENGTH, GREETER_MESSAGE_END_AUTHENTICATION, int_length () + int_length (), &offset);
+    write_header (message, MAX_MESSAGE_LENGTH, SERVER_MESSAGE_END_AUTHENTICATION, int_length () + string_length (username) + int_length (), &offset);
     write_int (message, MAX_MESSAGE_LENGTH, sequence_number, &offset);
+    write_string (message, MAX_MESSAGE_LENGTH, username, &offset);
     write_int (message, MAX_MESSAGE_LENGTH, result, &offset);
     write_message (greeter, message, offset); 
 }
@@ -243,69 +238,54 @@ send_end_authentication (Greeter *greeter, guint32 sequence_number, int result)
 static void
 authentication_result_cb (PAMSession *session, int result, Greeter *greeter)
 {
-    g_debug ("Authenticate result for user %s: %s", pam_session_get_username (greeter->priv->pam_session), pam_session_strerror (greeter->priv->pam_session, result));
+    g_debug ("Authenticate result for user %s: %s", pam_session_get_username (session), pam_session_strerror (session, result));
 
     if (result == PAM_SUCCESS)
-    {
         g_debug ("User %s authorized", pam_session_get_username (session));
-        //run_script ("PostLogin");
-        pam_session_authorize (session);
-    }
 
-    send_end_authentication (greeter, greeter->priv->authentication_sequence_number, result);
+    send_end_authentication (greeter, greeter->priv->authentication_sequence_number, pam_session_get_username (session), result);
 }
 
 static void
 reset_session (Greeter *greeter)
 {
-    if (greeter->priv->pam_session == NULL)
-        return;
-
-    g_signal_handlers_disconnect_matched (greeter->priv->pam_session, G_SIGNAL_MATCH_DATA, 0, 0, NULL, NULL, greeter);
-    pam_session_end (greeter->priv->pam_session);
-    g_object_unref (greeter->priv->pam_session);
-
-    if (greeter->priv->using_guest_account)
-        guest_account_unref ();
-    greeter->priv->using_guest_account = FALSE;
-}
-
-static void
-start_authentication (Greeter *greeter, guint32 sequence_number, PAMSession *session)
-{
-    GError *error = NULL;
-
-    // FIXME
-    //if (greeter->priv->user_session)
-    //    return;
-
-    greeter->priv->pam_session = session;
-    greeter->priv->authentication_sequence_number = sequence_number;
-
-    g_signal_connect (G_OBJECT (greeter->priv->pam_session), "got-messages", G_CALLBACK (pam_messages_cb), greeter);
-    g_signal_connect (G_OBJECT (greeter->priv->pam_session), "authentication-result", G_CALLBACK (authentication_result_cb), greeter);
-
-    if (!pam_session_start (greeter->priv->pam_session, &error))
+    if (greeter->priv->pam_session)
     {
-        g_warning ("Failed to start authentication: %s", error->message);
-        send_end_authentication (greeter, sequence_number, PAM_SYSTEM_ERR);
+        g_signal_handlers_disconnect_matched (greeter->priv->pam_session, G_SIGNAL_MATCH_DATA, 0, 0, NULL, NULL, greeter);
+        pam_session_cancel (greeter->priv->pam_session);
+        g_object_unref (greeter->priv->pam_session);
+        greeter->priv->pam_session = NULL;
     }
+
+    greeter->priv->guest_account_authenticated = FALSE;
 }
 
 static void
 handle_login (Greeter *greeter, guint32 sequence_number, const gchar *username)
 {
+    GError *error = NULL;
+
     if (username[0] == '\0')
     {
         g_debug ("Greeter start authentication");
         username = NULL;
     }
     else
-        g_debug ("Greeter start authentication for %s", username);        
+        g_debug ("Greeter start authentication for %s", username);
 
     reset_session (greeter);
-    greeter->priv->using_guest_account = FALSE;
-    start_authentication (greeter, sequence_number, pam_session_new ("lightdm"/*FIXMEgreeter->priv->pam_service*/, username));
+
+    greeter->priv->authentication_sequence_number = sequence_number;
+    g_signal_emit (greeter, signals[START_AUTHENTICATION], 0, username, &greeter->priv->pam_session);
+    g_signal_connect (G_OBJECT (greeter->priv->pam_session), "got-messages", G_CALLBACK (pam_messages_cb), greeter);
+    g_signal_connect (G_OBJECT (greeter->priv->pam_session), "authentication-result", G_CALLBACK (authentication_result_cb), greeter);
+
+    if (!pam_session_authenticate (greeter->priv->pam_session, &error))
+    {
+        g_warning ("Failed to start authentication: %s", error->message);
+        send_end_authentication (greeter, sequence_number, "", PAM_SYSTEM_ERR);
+    }
+    g_clear_error (&error);
 }
 
 static void
@@ -315,22 +295,15 @@ handle_login_as_guest (Greeter *greeter, guint32 sequence_number)
 
     reset_session (greeter);
 
-    if (!guest_account_get_is_enabled ())
+    if (!greeter->priv->allow_guest)
     {
         g_debug ("Guest account is disabled");
-        send_end_authentication (greeter, sequence_number, PAM_USER_UNKNOWN);
+        send_end_authentication (greeter, sequence_number, "", PAM_USER_UNKNOWN);
         return;
     }
 
-    if (!guest_account_ref ())
-    {
-        g_debug ("Unable to create guest account");
-        send_end_authentication (greeter, sequence_number, PAM_USER_UNKNOWN);
-        return;
-    }
-    greeter->priv->using_guest_account = TRUE;
-
-    start_authentication (greeter, sequence_number, pam_session_new ("lightdm-autologin"/*FIXMEgreeter->priv->pam_service*/, guest_account_get_username ()));
+    greeter->priv->guest_account_authenticated = TRUE;  
+    send_end_authentication (greeter, sequence_number, "", PAM_SUCCESS);
 }
 
 static void
@@ -341,11 +314,7 @@ handle_continue_authentication (Greeter *greeter, gchar **secrets)
     struct pam_response *response;
     int i, j, n_secrets = 0;
 
-    /* Not connected */
-    if (!greeter->priv->connected)
-        return;
-
-    /* Not in authorization */
+    /* Not in authentication */
     if (greeter->priv->pam_session == NULL)
         return;
 
@@ -361,7 +330,7 @@ handle_continue_authentication (Greeter *greeter, gchar **secrets)
     }
     if (g_strv_length (secrets) != n_secrets)
     {
-        pam_session_end (greeter->priv->pam_session);
+        pam_session_cancel (greeter->priv->pam_session);
         return;
     }
 
@@ -385,11 +354,7 @@ handle_continue_authentication (Greeter *greeter, gchar **secrets)
 static void
 handle_cancel_authentication (Greeter *greeter)
 {
-    /* Not connected */
-    if (!greeter->priv->connected)
-        return;
-
-    /* Not in authorization */
+    /* Not in authentication */
     if (greeter->priv->pam_session == NULL)
         return;
 
@@ -398,44 +363,36 @@ handle_cancel_authentication (Greeter *greeter)
     pam_session_cancel (greeter->priv->pam_session);
 }
 
-static gboolean
-quit_greeter_cb (gpointer data)
-{
-    Greeter *greeter = data;
-    g_warning ("Greeter did not quit, sending kill signal");
-    session_stop (SESSION (greeter));
-    greeter->priv->quit_timeout = 0;
-    return TRUE;
-}
-
-void
-greeter_quit (Greeter *greeter)
-{
-    guint8 message[MAX_MESSAGE_LENGTH];
-    gsize offset = 0;
-
-    g_return_if_fail (greeter != NULL);
-
-    write_header (message, MAX_MESSAGE_LENGTH, GREETER_MESSAGE_QUIT, 0, &offset);
-    write_message (greeter, message, offset);
-
-    if (greeter->priv->quit_timeout)
-        g_source_remove (greeter->priv->quit_timeout);
-    greeter->priv->quit_timeout = g_timeout_add (GREETER_QUIT_TIMEOUT, quit_greeter_cb, greeter);
-}
-
 static void
-handle_start_session (Greeter *greeter, gchar *session)
+handle_start_session (Greeter *greeter, const gchar *session)
 {
-    /*if (greeter->priv->user_session != NULL)
+    gboolean result;
+
+    if (strcmp (session, "") == 0)
+        session = NULL;
+
+    if (session)
+        g_debug ("Start session %s", session);
+    else
+        g_debug ("Start default session");
+
+    if (greeter->priv->guest_account_authenticated || pam_session_get_is_authenticated (greeter->priv->pam_session))
+        g_signal_emit (greeter, signals[START_SESSION], 0, session, &result);
+    else
     {
-        g_warning ("Ignoring request to log in when already logged in");
-        return;
-    }*/
+        g_debug ("Ignoring start session request, user is not authorized");
+        result = FALSE;
+    }
 
-    g_debug ("Greeter start session %s", session);
+    if (!result)
+    {
+        guint8 message[MAX_MESSAGE_LENGTH];
+        gsize offset = 0;
 
-    g_signal_emit (greeter, signals[START_SESSION], 0, session);
+        write_header (message, MAX_MESSAGE_LENGTH, SERVER_MESSAGE_SESSION_RESULT, int_length (), &offset);
+        write_int (message, MAX_MESSAGE_LENGTH, 1, &offset);
+        write_message (greeter, message, offset);
+    }
 }
 
 static guint32
@@ -475,16 +432,23 @@ read_string (Greeter *greeter, gsize *offset)
     return value;
 }
 
-static void
-got_data_cb (Greeter *greeter)
+static gboolean
+read_cb (GIOChannel *source, GIOCondition condition, gpointer data)
 {
+    Greeter *greeter = data;
     gsize n_to_read, n_read, offset;
     GIOStatus status;
     int id, n_secrets, i;
     guint32 sequence_number;
-    gchar *username, *session_name;
+    gchar *version, *username, *session_name;
     gchar **secrets;
     GError *error = NULL;
+
+    if (condition == G_IO_HUP)
+    {
+        g_debug ("Greeter closed communication channel");
+        return FALSE;
+    }
   
     n_to_read = HEADER_SIZE;
     if (greeter->priv->n_read >= HEADER_SIZE)
@@ -493,7 +457,7 @@ got_data_cb (Greeter *greeter)
         n_to_read += read_int (greeter, &offset);
     }
 
-    status = g_io_channel_read_chars (child_process_get_from_child_channel (CHILD_PROCESS (greeter)),
+    status = g_io_channel_read_chars (greeter->priv->from_greeter_channel,
                                       (gchar *) greeter->priv->read_buffer + greeter->priv->n_read,
                                       n_to_read - greeter->priv->n_read,
                                       &n_read,
@@ -502,7 +466,7 @@ got_data_cb (Greeter *greeter)
         g_warning ("Error reading from greeter: %s", error->message);
     g_clear_error (&error);
     if (status != G_IO_STATUS_NORMAL)
-        return;
+        return TRUE;
 
     g_debug ("Read %zi bytes from greeter", n_read);
     /*for (i = 0; i < n_read; i++)
@@ -511,7 +475,7 @@ got_data_cb (Greeter *greeter)
 
     greeter->priv->n_read += n_read;
     if (greeter->priv->n_read != n_to_read)
-        return;
+        return TRUE;
 
     /* If have header, rerun for content */
     if (greeter->priv->n_read == HEADER_SIZE)
@@ -520,8 +484,8 @@ got_data_cb (Greeter *greeter)
         if (n_to_read > 0)
         {
             greeter->priv->read_buffer = g_realloc (greeter->priv->read_buffer, HEADER_SIZE + n_to_read);
-            got_data_cb (greeter);
-            return;
+            read_cb (source, condition, greeter);
+            return TRUE;
         }
     }
   
@@ -531,15 +495,17 @@ got_data_cb (Greeter *greeter)
     switch (id)
     {
     case GREETER_MESSAGE_CONNECT:
-        handle_connect (greeter);
+        version = read_string (greeter, &offset);
+        handle_connect (greeter, version);
+        g_free (version);
         break;
-    case GREETER_MESSAGE_LOGIN:
+    case GREETER_MESSAGE_AUTHENTICATE:
         sequence_number = read_int (greeter, &offset);
         username = read_string (greeter, &offset);
         handle_login (greeter, sequence_number, username);
         g_free (username);
         break;
-    case GREETER_MESSAGE_LOGIN_AS_GUEST:
+    case GREETER_MESSAGE_AUTHENTICATE_AS_GUEST:
         sequence_number = read_int (greeter, &offset);
         handle_login_as_guest (greeter, sequence_number);
         break;
@@ -566,39 +532,81 @@ got_data_cb (Greeter *greeter)
     }
 
     greeter->priv->n_read = 0;
+
+    return TRUE;
 }
 
-static void
-end_session (Greeter *greeter, gboolean clean_exit)
-{  
-    if (greeter->priv->quit_timeout)
+gboolean
+greeter_start (Greeter *greeter)
+{
+    int to_greeter_pipe[2], from_greeter_pipe[2];
+    gint fd;
+    gchar *value;
+
+    if (pipe (to_greeter_pipe) != 0 || 
+        pipe (from_greeter_pipe) != 0)
     {
-        g_source_remove (greeter->priv->quit_timeout);
-        greeter->priv->quit_timeout = 0;
+        g_warning ("Failed to create pipes: %s", strerror (errno));            
+        return FALSE;
     }
 
-    /*if (!clean_exit)
-        g_warning ("Greeter failed");
-    else if (!greeter_connected)
-        g_warning ("Greeter quit before connecting");
-    else if (!display->priv->user_session)
-        g_warning ("Greeter quit before session started");
-    else
-        return;*/
+    greeter->priv->to_greeter_channel = g_io_channel_unix_new (to_greeter_pipe[1]);
+    g_io_channel_set_encoding (greeter->priv->to_greeter_channel, NULL, NULL);
+    greeter->priv->from_greeter_channel = g_io_channel_unix_new (from_greeter_pipe[0]);
+    g_io_channel_set_encoding (greeter->priv->from_greeter_channel, NULL, NULL);
+    g_io_channel_set_buffered (greeter->priv->from_greeter_channel, FALSE);
+    g_io_add_watch (greeter->priv->from_greeter_channel, G_IO_IN | G_IO_HUP, read_cb, greeter);
 
-    // FIXME: Issue with greeter, don't want to start a new one, report error to user
+    fd = from_greeter_pipe[1];
+    value = g_strdup_printf ("%d", fd);
+    process_set_env (PROCESS (greeter->priv->session), "LIGHTDM_TO_SERVER_FD", value);
+    g_free (value);
+
+    fd = to_greeter_pipe[0];
+    value = g_strdup_printf ("%d", fd);
+    process_set_env (PROCESS (greeter->priv->session), "LIGHTDM_FROM_SERVER_FD", value);
+    g_free (value);
+
+    return TRUE;
 }
 
-static void
-session_exited_cb (Greeter *greeter, gint status)
+gboolean
+greeter_get_guest_authenticated (Greeter *greeter)
 {
-    end_session (greeter, status == 0);
+    g_return_val_if_fail (greeter != NULL, FALSE);
+    return greeter->priv->guest_account_authenticated;
 }
 
-static void
-session_terminated_cb (Greeter *greeter, gint signum)
+PAMSession *
+greeter_get_pam_session (Greeter *greeter)
 {
-    end_session (greeter, FALSE);
+    g_return_val_if_fail (greeter != NULL, NULL);
+    return greeter->priv->pam_session;
+}
+
+void
+greeter_quit (Greeter *greeter)
+{
+    guint8 message[MAX_MESSAGE_LENGTH];
+    gsize offset = 0;
+
+    g_return_if_fail (greeter != NULL);
+
+    write_header (message, MAX_MESSAGE_LENGTH, SERVER_MESSAGE_SESSION_RESULT, int_length (), &offset);
+    write_int (message, MAX_MESSAGE_LENGTH, 0, &offset);
+    write_message (greeter, message, offset);
+}
+
+static PAMSession *
+greeter_real_start_authentication (Greeter *greeter, const gchar *username)
+{
+    return NULL;
+}
+
+static gboolean
+greeter_real_start_session (Greeter *greeter, const gchar *session, gboolean is_guest)
+{
+    return FALSE;
 }
 
 static void
@@ -606,9 +614,7 @@ greeter_init (Greeter *greeter)
 {
     greeter->priv = G_TYPE_INSTANCE_GET_PRIVATE (greeter, GREETER_TYPE, GreeterPrivate);
     greeter->priv->read_buffer = g_malloc (HEADER_SIZE);
-    g_signal_connect (G_OBJECT (greeter), "got-data", G_CALLBACK (got_data_cb), NULL);
-    g_signal_connect (G_OBJECT (greeter), "exited", G_CALLBACK (session_exited_cb), NULL);
-    g_signal_connect (G_OBJECT (greeter), "terminated", G_CALLBACK (session_terminated_cb), NULL);
+    greeter->priv->hints = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
 }
 
 static void
@@ -618,12 +624,19 @@ greeter_finalize (GObject *object)
 
     self = GREETER (object);
 
+    g_object_unref (self->priv->session);
     g_free (self->priv->read_buffer);
-    g_free (self->priv->theme);
-    g_free (self->priv->default_session);
-    g_free (self->priv->default_user);
-    if (self->priv->using_guest_account)
-        guest_account_unref ();
+    g_hash_table_unref (self->priv->hints);
+    if (self->priv->pam_session)
+    {
+        g_signal_handlers_disconnect_matched (self->priv->pam_session, G_SIGNAL_MATCH_DATA, 0, 0, NULL, NULL, self);
+        pam_session_cancel (self->priv->pam_session);
+        g_object_unref (self->priv->pam_session);
+    }
+    if (self->priv->to_greeter_channel)
+        g_io_channel_unref (self->priv->to_greeter_channel);
+    if (self->priv->from_greeter_channel)
+        g_io_channel_unref (self->priv->from_greeter_channel);
 
     G_OBJECT_CLASS (greeter_parent_class)->finalize (object);
 }
@@ -633,6 +646,8 @@ greeter_class_init (GreeterClass *klass)
 {
     GObjectClass *object_class = G_OBJECT_CLASS (klass);
 
+    klass->start_authentication = greeter_real_start_authentication;
+    klass->start_session = greeter_real_start_session;
     object_class->finalize = greeter_finalize;
 
     signals[START_SESSION] =
@@ -640,9 +655,20 @@ greeter_class_init (GreeterClass *klass)
                       G_TYPE_FROM_CLASS (klass),
                       G_SIGNAL_RUN_LAST,
                       G_STRUCT_OFFSET (GreeterClass, start_session),
-                      NULL, NULL,
-                      g_cclosure_marshal_VOID__STRING,
-                      G_TYPE_NONE, 1, G_TYPE_STRING);
+                      g_signal_accumulator_true_handled,
+                      NULL,
+                      ldm_marshal_BOOLEAN__STRING,
+                      G_TYPE_BOOLEAN, 1, G_TYPE_STRING);
+
+    signals[START_AUTHENTICATION] =
+        g_signal_new ("start-authentication",
+                      G_TYPE_FROM_CLASS (klass),
+                      G_SIGNAL_RUN_LAST,
+                      G_STRUCT_OFFSET (GreeterClass, start_authentication),
+                      g_signal_accumulator_first_wins,
+                      NULL,
+                      ldm_marshal_OBJECT__STRING,
+                      PAM_SESSION_TYPE, 1, G_TYPE_STRING);
 
     g_type_class_add_private (klass, sizeof (GreeterPrivate));
 }

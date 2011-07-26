@@ -36,7 +36,6 @@ typedef struct
     void (*got_messages)(PAMSession *pam_session, int num_msg, const struct pam_message **msg);
     void (*authentication_result)(PAMSession *pam_session, int result);
     void (*started)(PAMSession *pam_session);
-    void (*ended)(PAMSession *pam_session);
 } PAMSessionClass;
 
 GType pam_session_get_type (void);
@@ -47,11 +46,13 @@ void pam_session_set_use_passwd_file (gchar *passwd_file);
 
 PAMSession *pam_session_new (const gchar *service, const gchar *username);
 
+gboolean pam_session_authenticate (PAMSession *session, GError **error);
+
+gboolean pam_session_get_is_authenticated (PAMSession *session);
+
+gboolean pam_session_open (PAMSession *session);
+
 gboolean pam_session_get_in_session (PAMSession *session);
-
-void pam_session_authorize (PAMSession *session);
-
-gboolean pam_session_start (PAMSession *session, GError **error);
 
 const gchar *pam_session_strerror (PAMSession *session, int error);
 
@@ -69,8 +70,7 @@ const gchar *pam_session_getenv (PAMSession *session, const gchar *name);
 
 gchar **pam_session_get_envlist(PAMSession *session);
 
-// FIXME: Do in unref
-void pam_session_end (PAMSession *session);
+void pam_session_close (PAMSession *session);
 
 G_END_DECLS
 

@@ -35,31 +35,38 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
-libexec_PROGRAMS = lightdm-example-gtk-greeter$(EXEEXT)
+sbin_PROGRAMS = lightdm-gtk-greeter$(EXEEXT)
 subdir = greeters/gtk
-DIST_COMMON = $(dist_ui_DATA) $(srcdir)/Makefile.am \
+DIST_COMMON = $(dist_config_DATA) $(dist_greeterdata_DATA) \
+	$(dist_icon_DATA) $(dist_xgreeters_DATA) $(srcdir)/Makefile.am \
 	$(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
-am__aclocal_m4_deps = $(top_srcdir)/configure.ac
+am__aclocal_m4_deps = $(top_srcdir)/m4/gtk-doc.m4 \
+	$(top_srcdir)/m4/intltool.m4 $(top_srcdir)/m4/introspection.m4 \
+	$(top_srcdir)/m4/libtool.m4 $(top_srcdir)/m4/ltoptions.m4 \
+	$(top_srcdir)/m4/ltsugar.m4 $(top_srcdir)/m4/ltversion.m4 \
+	$(top_srcdir)/m4/lt~obsolete.m4 $(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 mkinstalldirs = $(install_sh) -d
 CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
-am__installdirs = "$(DESTDIR)$(libexecdir)" "$(DESTDIR)$(uidir)"
-PROGRAMS = $(libexec_PROGRAMS)
-am_lightdm_example_gtk_greeter_OBJECTS = lightdm_example_gtk_greeter-lightdm-example-gtk-greeter.$(OBJEXT)
-lightdm_example_gtk_greeter_OBJECTS =  \
-	$(am_lightdm_example_gtk_greeter_OBJECTS)
+am__installdirs = "$(DESTDIR)$(sbindir)" "$(DESTDIR)$(configdir)" \
+	"$(DESTDIR)$(greeterdatadir)" "$(DESTDIR)$(icondir)" \
+	"$(DESTDIR)$(xgreetersdir)"
+PROGRAMS = $(sbin_PROGRAMS)
+am_lightdm_gtk_greeter_OBJECTS =  \
+	lightdm_gtk_greeter-lightdm-gtk-greeter.$(OBJEXT)
+lightdm_gtk_greeter_OBJECTS = $(am_lightdm_gtk_greeter_OBJECTS)
 am__DEPENDENCIES_1 =
-lightdm_example_gtk_greeter_DEPENDENCIES = $(am__DEPENDENCIES_1)
+lightdm_gtk_greeter_DEPENDENCIES = $(am__DEPENDENCIES_1)
 AM_V_lt = $(am__v_lt_$(V))
 am__v_lt_ = $(am__v_lt_$(AM_DEFAULT_VERBOSITY))
 am__v_lt_0 = --silent
-lightdm_example_gtk_greeter_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
+lightdm_gtk_greeter_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
-	$(lightdm_example_gtk_greeter_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
+	$(lightdm_gtk_greeter_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
@@ -87,8 +94,8 @@ am__v_CCLD_0 = @echo "  CCLD  " $@;
 AM_V_GEN = $(am__v_GEN_$(V))
 am__v_GEN_ = $(am__v_GEN_$(AM_DEFAULT_VERBOSITY))
 am__v_GEN_0 = @echo "  GEN   " $@;
-SOURCES = $(lightdm_example_gtk_greeter_SOURCES)
-DIST_SOURCES = $(lightdm_example_gtk_greeter_SOURCES)
+SOURCES = $(lightdm_gtk_greeter_SOURCES)
+DIST_SOURCES = $(lightdm_gtk_greeter_SOURCES)
 am__vpath_adj_setup = srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`;
 am__vpath_adj = case $$p in \
     $(srcdir)/*) f=`echo "$$p" | sed "s|^$$srcdirstrip/||"`;; \
@@ -110,7 +117,8 @@ am__nobase_list = $(am__nobase_strip_setup); \
 am__base_list = \
   sed '$$!N;$$!N;$$!N;$$!N;$$!N;$$!N;$$!N;s/\n/ /g' | \
   sed '$$!N;$$!N;$$!N;$$!N;s/\n/ /g'
-DATA = $(dist_ui_DATA)
+DATA = $(dist_config_DATA) $(dist_greeterdata_DATA) $(dist_icon_DATA) \
+	$(dist_xgreeters_DATA)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
@@ -123,7 +131,6 @@ AUTOCONF = @AUTOCONF@
 AUTOHEADER = @AUTOHEADER@
 AUTOMAKE = @AUTOMAKE@
 AWK = @AWK@
-CACHE_DIR = @CACHE_DIR@
 CC = @CC@
 CCDEPMODE = @CCDEPMODE@
 CFLAGS = @CFLAGS@
@@ -136,12 +143,6 @@ CXXFLAGS = @CXXFLAGS@
 CYGPATH_W = @CYGPATH_W@
 DATADIRNAME = @DATADIRNAME@
 DBUSBINDINGTOOL = @DBUSBINDINGTOOL@
-DBUS_SYS_DIR = @DBUS_SYS_DIR@
-DEFAULT_CONFIG_FILE = @DEFAULT_CONFIG_FILE@
-DEFAULT_GREETER_THEME = @DEFAULT_GREETER_THEME@
-DEFAULT_PAM_AUTOLOGIN_SERVICE = @DEFAULT_PAM_AUTOLOGIN_SERVICE@
-DEFAULT_PAM_SERVICE = @DEFAULT_PAM_SERVICE@
-DEFAULT_XSESSION = @DEFAULT_XSESSION@
 DEFS = @DEFS@
 DEPDIR = @DEPDIR@
 DLLTOOL = @DLLTOOL@
@@ -153,15 +154,18 @@ ECHO_T = @ECHO_T@
 EGREP = @EGREP@
 EXEEXT = @EXEEXT@
 FGREP = @FGREP@
+GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
 GIO_CFLAGS = @GIO_CFLAGS@
 GIO_LIBS = @GIO_LIBS@
+GIO_UNIX_CFLAGS = @GIO_UNIX_CFLAGS@
+GIO_UNIX_LIBS = @GIO_UNIX_LIBS@
 GLIB_CFLAGS = @GLIB_CFLAGS@
 GLIB_GENMARSHAL = @GLIB_GENMARSHAL@
 GLIB_LIBS = @GLIB_LIBS@
 GMSGFMT = @GMSGFMT@
 GOBJECT_CFLAGS = @GOBJECT_CFLAGS@
 GOBJECT_LIBS = @GOBJECT_LIBS@
-GREETER_THEME_DIR = @GREETER_THEME_DIR@
+GREETER_SESSION = @GREETER_SESSION@
 GREETER_USER = @GREETER_USER@
 GREP = @GREP@
 GTKDOC_CHECK = @GTKDOC_CHECK@
@@ -195,14 +199,13 @@ LIBOBJS = @LIBOBJS@
 LIBS = @LIBS@
 LIBTOOL = @LIBTOOL@
 LIGHTDM_CFLAGS = @LIGHTDM_CFLAGS@
-LIGHTDM_EXAMPLE_GTK_GREETER_CFLAGS = @LIGHTDM_EXAMPLE_GTK_GREETER_CFLAGS@
-LIGHTDM_EXAMPLE_GTK_GREETER_LIBS = @LIGHTDM_EXAMPLE_GTK_GREETER_LIBS@
-LIGHTDM_EXAMPLE_QT_GREETER_CFLAGS = @LIGHTDM_EXAMPLE_QT_GREETER_CFLAGS@
-LIGHTDM_EXAMPLE_QT_GREETER_LIBS = @LIGHTDM_EXAMPLE_QT_GREETER_LIBS@
+LIGHTDM_GTK_GREETER_CFLAGS = @LIGHTDM_GTK_GREETER_CFLAGS@
+LIGHTDM_GTK_GREETER_LIBS = @LIGHTDM_GTK_GREETER_LIBS@
 LIGHTDM_LIBS = @LIGHTDM_LIBS@
+LIGHTDM_QT_GREETER_CFLAGS = @LIGHTDM_QT_GREETER_CFLAGS@
+LIGHTDM_QT_GREETER_LIBS = @LIGHTDM_QT_GREETER_LIBS@
 LIPO = @LIPO@
 LN_S = @LN_S@
-LOG_DIR = @LOG_DIR@
 LTLIBOBJS = @LTLIBOBJS@
 MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
@@ -232,17 +235,14 @@ SED = @SED@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
 STRIP = @STRIP@
+USER_SESSION = @USER_SESSION@
 USE_NLS = @USE_NLS@
-VALAC = @VALAC@
 VALA_API_GEN = @VALA_API_GEN@
 VERSION = @VERSION@
 WARN_CFLAGS = @WARN_CFLAGS@
-XAUTH_DIR = @XAUTH_DIR@
 XCB_CFLAGS = @XCB_CFLAGS@
 XCB_LIBS = @XCB_LIBS@
 XGETTEXT = @XGETTEXT@
-XSERVER_BINARY = @XSERVER_BINARY@
-XSESSIONS_DIR = @XSESSIONS_DIR@
 abs_builddir = @abs_builddir@
 abs_srcdir = @abs_srcdir@
 abs_top_builddir = @abs_top_builddir@
@@ -296,21 +296,28 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-uidir = $(datadir)/lightdm-example-gtk-greeter
-dist_ui_DATA = greeter.ui
-lightdm_example_gtk_greeter_SOURCES = \
-	lightdm-example-gtk-greeter.c
+greeterdatadir = $(datadir)/lightdm-gtk-greeter
+dist_greeterdata_DATA = greeter.ui
+xgreetersdir = $(datadir)/xgreeters
+dist_xgreeters_DATA = lightdm-gtk-greeter.desktop
+icondir = $(greeterdatadir)/hicolor/scalable/apps
+dist_icon_DATA = accessibility.svg system-shutdown.svg
+configdir = $(sysconfdir)/lightdm
+dist_config_DATA = lightdm-gtk-greeter.conf
+lightdm_gtk_greeter_SOURCES = \
+	lightdm-gtk-greeter.c
 
-lightdm_example_gtk_greeter_CFLAGS = \
-	-DUI_DIR=\""$(uidir)"\" \
+lightdm_gtk_greeter_CFLAGS = \
+	-DGREETER_DATA_DIR=\""$(greeterdatadir)"\" \
+	-DCONFIG_FILE=\""$(configdir)/lightdm-gtk-greeter.conf"\" \
 	-I$(top_srcdir)/liblightdm-gobject \
-	$(LIGHTDM_EXAMPLE_GTK_GREETER_CFLAGS) \
+	$(LIGHTDM_GTK_GREETER_CFLAGS) \
 	$(WARN_CFLAGS)
 
-lightdm_example_gtk_greeter_LDADD = \
+lightdm_gtk_greeter_LDADD = \
 	-L$(top_builddir)/liblightdm-gobject \
-	-llightdm-gobject-0 \
-	$(LIGHTDM_EXAMPLE_GTK_GREETER_LIBS)
+	-llightdm-gobject-1 \
+	$(LIGHTDM_GTK_GREETER_LIBS)
 
 DISTCLEANFILES = \
 	Makefile.in
@@ -349,10 +356,10 @@ $(top_srcdir)/configure: @MAINTAINER_MODE_TRUE@ $(am__configure_deps)
 $(ACLOCAL_M4): @MAINTAINER_MODE_TRUE@ $(am__aclocal_m4_deps)
 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
 $(am__aclocal_m4_deps):
-install-libexecPROGRAMS: $(libexec_PROGRAMS)
+install-sbinPROGRAMS: $(sbin_PROGRAMS)
 	@$(NORMAL_INSTALL)
-	test -z "$(libexecdir)" || $(MKDIR_P) "$(DESTDIR)$(libexecdir)"
-	@list='$(libexec_PROGRAMS)'; test -n "$(libexecdir)" || list=; \
+	test -z "$(sbindir)" || $(MKDIR_P) "$(DESTDIR)$(sbindir)"
+	@list='$(sbin_PROGRAMS)'; test -n "$(sbindir)" || list=; \
 	for p in $$list; do echo "$$p $$p"; done | \
 	sed 's/$(EXEEXT)$$//' | \
 	while read p p1; do if test -f $$p || test -f $$p1; \
@@ -369,32 +376,32 @@ install-libexecPROGRAMS: $(libexec_PROGRAMS)
 	while read type dir files; do \
 	    if test "$$dir" = .; then dir=; else dir=/$$dir; fi; \
 	    test -z "$$files" || { \
-	    echo " $(INSTALL_PROGRAM_ENV) $(LIBTOOL) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=install $(INSTALL_PROGRAM) $$files '$(DESTDIR)$(libexecdir)$$dir'"; \
-	    $(INSTALL_PROGRAM_ENV) $(LIBTOOL) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=install $(INSTALL_PROGRAM) $$files "$(DESTDIR)$(libexecdir)$$dir" || exit $$?; \
+	    echo " $(INSTALL_PROGRAM_ENV) $(LIBTOOL) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=install $(INSTALL_PROGRAM) $$files '$(DESTDIR)$(sbindir)$$dir'"; \
+	    $(INSTALL_PROGRAM_ENV) $(LIBTOOL) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=install $(INSTALL_PROGRAM) $$files "$(DESTDIR)$(sbindir)$$dir" || exit $$?; \
 	    } \
 	; done
 
-uninstall-libexecPROGRAMS:
+uninstall-sbinPROGRAMS:
 	@$(NORMAL_UNINSTALL)
-	@list='$(libexec_PROGRAMS)'; test -n "$(libexecdir)" || list=; \
+	@list='$(sbin_PROGRAMS)'; test -n "$(sbindir)" || list=; \
 	files=`for p in $$list; do echo "$$p"; done | \
 	  sed -e 'h;s,^.*/,,;s/$(EXEEXT)$$//;$(transform)' \
 	      -e 's/$$/$(EXEEXT)/' `; \
 	test -n "$$list" || exit 0; \
-	echo " ( cd '$(DESTDIR)$(libexecdir)' && rm -f" $$files ")"; \
-	cd "$(DESTDIR)$(libexecdir)" && rm -f $$files
+	echo " ( cd '$(DESTDIR)$(sbindir)' && rm -f" $$files ")"; \
+	cd "$(DESTDIR)$(sbindir)" && rm -f $$files
 
-clean-libexecPROGRAMS:
-	@list='$(libexec_PROGRAMS)'; test -n "$$list" || exit 0; \
+clean-sbinPROGRAMS:
+	@list='$(sbin_PROGRAMS)'; test -n "$$list" || exit 0; \
 	echo " rm -f" $$list; \
 	rm -f $$list || exit $$?; \
 	test -n "$(EXEEXT)" || exit 0; \
 	list=`for p in $$list; do echo "$$p"; done | sed 's/$(EXEEXT)$$//'`; \
 	echo " rm -f" $$list; \
 	rm -f $$list
-lightdm-example-gtk-greeter$(EXEEXT): $(lightdm_example_gtk_greeter_OBJECTS) $(lightdm_example_gtk_greeter_DEPENDENCIES) 
-	@rm -f lightdm-example-gtk-greeter$(EXEEXT)
-	$(AM_V_CCLD)$(lightdm_example_gtk_greeter_LINK) $(lightdm_example_gtk_greeter_OBJECTS) $(lightdm_example_gtk_greeter_LDADD) $(LIBS)
+lightdm-gtk-greeter$(EXEEXT): $(lightdm_gtk_greeter_OBJECTS) $(lightdm_gtk_greeter_DEPENDENCIES) 
+	@rm -f lightdm-gtk-greeter$(EXEEXT)
+	$(AM_V_CCLD)$(lightdm_gtk_greeter_LINK) $(lightdm_gtk_greeter_OBJECTS) $(lightdm_gtk_greeter_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -402,7 +409,7 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lightdm_example_gtk_greeter-lightdm-example-gtk-greeter.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lightdm_gtk_greeter-lightdm-gtk-greeter.Po@am__quote@
 
 .c.o:
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
@@ -428,47 +435,107 @@ distclean-compile:
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LTCOMPILE) -c -o $@ $<
 
-lightdm_example_gtk_greeter-lightdm-example-gtk-greeter.o: lightdm-example-gtk-greeter.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(lightdm_example_gtk_greeter_CFLAGS) $(CFLAGS) -MT lightdm_example_gtk_greeter-lightdm-example-gtk-greeter.o -MD -MP -MF $(DEPDIR)/lightdm_example_gtk_greeter-lightdm-example-gtk-greeter.Tpo -c -o lightdm_example_gtk_greeter-lightdm-example-gtk-greeter.o `test -f 'lightdm-example-gtk-greeter.c' || echo '$(srcdir)/'`lightdm-example-gtk-greeter.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/lightdm_example_gtk_greeter-lightdm-example-gtk-greeter.Tpo $(DEPDIR)/lightdm_example_gtk_greeter-lightdm-example-gtk-greeter.Po
+lightdm_gtk_greeter-lightdm-gtk-greeter.o: lightdm-gtk-greeter.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(lightdm_gtk_greeter_CFLAGS) $(CFLAGS) -MT lightdm_gtk_greeter-lightdm-gtk-greeter.o -MD -MP -MF $(DEPDIR)/lightdm_gtk_greeter-lightdm-gtk-greeter.Tpo -c -o lightdm_gtk_greeter-lightdm-gtk-greeter.o `test -f 'lightdm-gtk-greeter.c' || echo '$(srcdir)/'`lightdm-gtk-greeter.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/lightdm_gtk_greeter-lightdm-gtk-greeter.Tpo $(DEPDIR)/lightdm_gtk_greeter-lightdm-gtk-greeter.Po
 @am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='lightdm-example-gtk-greeter.c' object='lightdm_example_gtk_greeter-lightdm-example-gtk-greeter.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='lightdm-gtk-greeter.c' object='lightdm_gtk_greeter-lightdm-gtk-greeter.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(lightdm_example_gtk_greeter_CFLAGS) $(CFLAGS) -c -o lightdm_example_gtk_greeter-lightdm-example-gtk-greeter.o `test -f 'lightdm-example-gtk-greeter.c' || echo '$(srcdir)/'`lightdm-example-gtk-greeter.c
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(lightdm_gtk_greeter_CFLAGS) $(CFLAGS) -c -o lightdm_gtk_greeter-lightdm-gtk-greeter.o `test -f 'lightdm-gtk-greeter.c' || echo '$(srcdir)/'`lightdm-gtk-greeter.c
 
-lightdm_example_gtk_greeter-lightdm-example-gtk-greeter.obj: lightdm-example-gtk-greeter.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(lightdm_example_gtk_greeter_CFLAGS) $(CFLAGS) -MT lightdm_example_gtk_greeter-lightdm-example-gtk-greeter.obj -MD -MP -MF $(DEPDIR)/lightdm_example_gtk_greeter-lightdm-example-gtk-greeter.Tpo -c -o lightdm_example_gtk_greeter-lightdm-example-gtk-greeter.obj `if test -f 'lightdm-example-gtk-greeter.c'; then $(CYGPATH_W) 'lightdm-example-gtk-greeter.c'; else $(CYGPATH_W) '$(srcdir)/lightdm-example-gtk-greeter.c'; fi`
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/lightdm_example_gtk_greeter-lightdm-example-gtk-greeter.Tpo $(DEPDIR)/lightdm_example_gtk_greeter-lightdm-example-gtk-greeter.Po
+lightdm_gtk_greeter-lightdm-gtk-greeter.obj: lightdm-gtk-greeter.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(lightdm_gtk_greeter_CFLAGS) $(CFLAGS) -MT lightdm_gtk_greeter-lightdm-gtk-greeter.obj -MD -MP -MF $(DEPDIR)/lightdm_gtk_greeter-lightdm-gtk-greeter.Tpo -c -o lightdm_gtk_greeter-lightdm-gtk-greeter.obj `if test -f 'lightdm-gtk-greeter.c'; then $(CYGPATH_W) 'lightdm-gtk-greeter.c'; else $(CYGPATH_W) '$(srcdir)/lightdm-gtk-greeter.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/lightdm_gtk_greeter-lightdm-gtk-greeter.Tpo $(DEPDIR)/lightdm_gtk_greeter-lightdm-gtk-greeter.Po
 @am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='lightdm-example-gtk-greeter.c' object='lightdm_example_gtk_greeter-lightdm-example-gtk-greeter.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='lightdm-gtk-greeter.c' object='lightdm_gtk_greeter-lightdm-gtk-greeter.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(lightdm_example_gtk_greeter_CFLAGS) $(CFLAGS) -c -o lightdm_example_gtk_greeter-lightdm-example-gtk-greeter.obj `if test -f 'lightdm-example-gtk-greeter.c'; then $(CYGPATH_W) 'lightdm-example-gtk-greeter.c'; else $(CYGPATH_W) '$(srcdir)/lightdm-example-gtk-greeter.c'; fi`
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(lightdm_gtk_greeter_CFLAGS) $(CFLAGS) -c -o lightdm_gtk_greeter-lightdm-gtk-greeter.obj `if test -f 'lightdm-gtk-greeter.c'; then $(CYGPATH_W) 'lightdm-gtk-greeter.c'; else $(CYGPATH_W) '$(srcdir)/lightdm-gtk-greeter.c'; fi`
 
 mostlyclean-libtool:
 	-rm -f *.lo
 
 clean-libtool:
 	-rm -rf .libs _libs
-install-dist_uiDATA: $(dist_ui_DATA)
+install-dist_configDATA: $(dist_config_DATA)
 	@$(NORMAL_INSTALL)
-	test -z "$(uidir)" || $(MKDIR_P) "$(DESTDIR)$(uidir)"
-	@list='$(dist_ui_DATA)'; test -n "$(uidir)" || list=; \
+	test -z "$(configdir)" || $(MKDIR_P) "$(DESTDIR)$(configdir)"
+	@list='$(dist_config_DATA)'; test -n "$(configdir)" || list=; \
 	for p in $$list; do \
 	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
 	  echo "$$d$$p"; \
 	done | $(am__base_list) | \
 	while read files; do \
-	  echo " $(INSTALL_DATA) $$files '$(DESTDIR)$(uidir)'"; \
-	  $(INSTALL_DATA) $$files "$(DESTDIR)$(uidir)" || exit $$?; \
+	  echo " $(INSTALL_DATA) $$files '$(DESTDIR)$(configdir)'"; \
+	  $(INSTALL_DATA) $$files "$(DESTDIR)$(configdir)" || exit $$?; \
 	done
 
-uninstall-dist_uiDATA:
+uninstall-dist_configDATA:
 	@$(NORMAL_UNINSTALL)
-	@list='$(dist_ui_DATA)'; test -n "$(uidir)" || list=; \
+	@list='$(dist_config_DATA)'; test -n "$(configdir)" || list=; \
 	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
 	test -n "$$files" || exit 0; \
-	echo " ( cd '$(DESTDIR)$(uidir)' && rm -f" $$files ")"; \
-	cd "$(DESTDIR)$(uidir)" && rm -f $$files
+	echo " ( cd '$(DESTDIR)$(configdir)' && rm -f" $$files ")"; \
+	cd "$(DESTDIR)$(configdir)" && rm -f $$files
+install-dist_greeterdataDATA: $(dist_greeterdata_DATA)
+	@$(NORMAL_INSTALL)
+	test -z "$(greeterdatadir)" || $(MKDIR_P) "$(DESTDIR)$(greeterdatadir)"
+	@list='$(dist_greeterdata_DATA)'; test -n "$(greeterdatadir)" || list=; \
+	for p in $$list; do \
+	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+	  echo "$$d$$p"; \
+	done | $(am__base_list) | \
+	while read files; do \
+	  echo " $(INSTALL_DATA) $$files '$(DESTDIR)$(greeterdatadir)'"; \
+	  $(INSTALL_DATA) $$files "$(DESTDIR)$(greeterdatadir)" || exit $$?; \
+	done
+
+uninstall-dist_greeterdataDATA:
+	@$(NORMAL_UNINSTALL)
+	@list='$(dist_greeterdata_DATA)'; test -n "$(greeterdatadir)" || list=; \
+	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
+	test -n "$$files" || exit 0; \
+	echo " ( cd '$(DESTDIR)$(greeterdatadir)' && rm -f" $$files ")"; \
+	cd "$(DESTDIR)$(greeterdatadir)" && rm -f $$files
+install-dist_iconDATA: $(dist_icon_DATA)
+	@$(NORMAL_INSTALL)
+	test -z "$(icondir)" || $(MKDIR_P) "$(DESTDIR)$(icondir)"
+	@list='$(dist_icon_DATA)'; test -n "$(icondir)" || list=; \
+	for p in $$list; do \
+	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+	  echo "$$d$$p"; \
+	done | $(am__base_list) | \
+	while read files; do \
+	  echo " $(INSTALL_DATA) $$files '$(DESTDIR)$(icondir)'"; \
+	  $(INSTALL_DATA) $$files "$(DESTDIR)$(icondir)" || exit $$?; \
+	done
+
+uninstall-dist_iconDATA:
+	@$(NORMAL_UNINSTALL)
+	@list='$(dist_icon_DATA)'; test -n "$(icondir)" || list=; \
+	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
+	test -n "$$files" || exit 0; \
+	echo " ( cd '$(DESTDIR)$(icondir)' && rm -f" $$files ")"; \
+	cd "$(DESTDIR)$(icondir)" && rm -f $$files
+install-dist_xgreetersDATA: $(dist_xgreeters_DATA)
+	@$(NORMAL_INSTALL)
+	test -z "$(xgreetersdir)" || $(MKDIR_P) "$(DESTDIR)$(xgreetersdir)"
+	@list='$(dist_xgreeters_DATA)'; test -n "$(xgreetersdir)" || list=; \
+	for p in $$list; do \
+	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+	  echo "$$d$$p"; \
+	done | $(am__base_list) | \
+	while read files; do \
+	  echo " $(INSTALL_DATA) $$files '$(DESTDIR)$(xgreetersdir)'"; \
+	  $(INSTALL_DATA) $$files "$(DESTDIR)$(xgreetersdir)" || exit $$?; \
+	done
+
+uninstall-dist_xgreetersDATA:
+	@$(NORMAL_UNINSTALL)
+	@list='$(dist_xgreeters_DATA)'; test -n "$(xgreetersdir)" || list=; \
+	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
+	test -n "$$files" || exit 0; \
+	echo " ( cd '$(DESTDIR)$(xgreetersdir)' && rm -f" $$files ")"; \
+	cd "$(DESTDIR)$(xgreetersdir)" && rm -f $$files
 
 ID: $(HEADERS) $(SOURCES) $(LISP) $(TAGS_FILES)
 	list='$(SOURCES) $(HEADERS) $(LISP) $(TAGS_FILES)'; \
@@ -556,7 +623,7 @@ check-am: all-am
 check: check-am
 all-am: Makefile $(PROGRAMS) $(DATA)
 installdirs:
-	for dir in "$(DESTDIR)$(libexecdir)" "$(DESTDIR)$(uidir)"; do \
+	for dir in "$(DESTDIR)$(sbindir)" "$(DESTDIR)$(configdir)" "$(DESTDIR)$(greeterdatadir)" "$(DESTDIR)$(icondir)" "$(DESTDIR)$(xgreetersdir)"; do \
 	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
 	done
 install: install-am
@@ -587,7 +654,7 @@ maintainer-clean-generic:
 	@echo "it deletes files that may require special tools to rebuild."
 clean: clean-am
 
-clean-am: clean-generic clean-libexecPROGRAMS clean-libtool \
+clean-am: clean-generic clean-libtool clean-sbinPROGRAMS \
 	mostlyclean-am
 
 distclean: distclean-am
@@ -608,13 +675,14 @@ info: info-am
 
 info-am:
 
-install-data-am: install-dist_uiDATA
+install-data-am: install-dist_configDATA install-dist_greeterdataDATA \
+	install-dist_iconDATA install-dist_xgreetersDATA
 
 install-dvi: install-dvi-am
 
 install-dvi-am:
 
-install-exec-am: install-libexecPROGRAMS
+install-exec-am: install-sbinPROGRAMS
 
 install-html: install-html-am
 
@@ -654,24 +722,29 @@ ps: ps-am
 
 ps-am:
 
-uninstall-am: uninstall-dist_uiDATA uninstall-libexecPROGRAMS
+uninstall-am: uninstall-dist_configDATA uninstall-dist_greeterdataDATA \
+	uninstall-dist_iconDATA uninstall-dist_xgreetersDATA \
+	uninstall-sbinPROGRAMS
 
 .MAKE: install-am install-strip
 
 .PHONY: CTAGS GTAGS all all-am check check-am clean clean-generic \
-	clean-libexecPROGRAMS clean-libtool ctags distclean \
+	clean-libtool clean-sbinPROGRAMS ctags distclean \
 	distclean-compile distclean-generic distclean-libtool \
 	distclean-tags distdir dvi dvi-am html html-am info info-am \
 	install install-am install-data install-data-am \
-	install-dist_uiDATA install-dvi install-dvi-am install-exec \
-	install-exec-am install-html install-html-am install-info \
-	install-info-am install-libexecPROGRAMS install-man \
+	install-dist_configDATA install-dist_greeterdataDATA \
+	install-dist_iconDATA install-dist_xgreetersDATA install-dvi \
+	install-dvi-am install-exec install-exec-am install-html \
+	install-html-am install-info install-info-am install-man \
 	install-pdf install-pdf-am install-ps install-ps-am \
-	install-strip installcheck installcheck-am installdirs \
-	maintainer-clean maintainer-clean-generic mostlyclean \
-	mostlyclean-compile mostlyclean-generic mostlyclean-libtool \
-	pdf pdf-am ps ps-am tags uninstall uninstall-am \
-	uninstall-dist_uiDATA uninstall-libexecPROGRAMS
+	install-sbinPROGRAMS install-strip installcheck \
+	installcheck-am installdirs maintainer-clean \
+	maintainer-clean-generic mostlyclean mostlyclean-compile \
+	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
+	tags uninstall uninstall-am uninstall-dist_configDATA \
+	uninstall-dist_greeterdataDATA uninstall-dist_iconDATA \
+	uninstall-dist_xgreetersDATA uninstall-sbinPROGRAMS
 
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.

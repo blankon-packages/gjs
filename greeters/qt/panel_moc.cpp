@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'panel.h'
 **
-** Created: Tue Jul 12 17:27:27 2011
+** Created: Tue Jul 26 19:00:59 2011
 **      by: The Qt Meta Object Compiler version 62 (Qt 4.7.3)
 **
 ** WARNING! All changes made in this file will be lost!
@@ -23,18 +23,25 @@ static const uint qt_meta_data_Panel[] = {
        5,       // revision
        0,       // classname
        0,    0, // classinfo
-       0,    0, // methods
+       4,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
        0,       // flags
        0,       // signalCount
 
+ // slots: signature, parameters, type, tag, flags
+       7,    6,    6,    6, 0x08,
+      18,    6,    6,    6, 0x08,
+      28,    6,    6,    6, 0x08,
+      38,    6,    6,    6, 0x08,
+
        0        // eod
 };
 
 static const char qt_meta_stringdata_Panel[] = {
-    "Panel\0"
+    "Panel\0\0shutdown()\0restart()\0suspend()\0"
+    "hibernate()\0"
 };
 
 const QMetaObject Panel::staticMetaObject = {
@@ -64,6 +71,16 @@ int Panel::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     _id = QWidget::qt_metacall(_c, _id, _a);
     if (_id < 0)
         return _id;
+    if (_c == QMetaObject::InvokeMetaMethod) {
+        switch (_id) {
+        case 0: shutdown(); break;
+        case 1: restart(); break;
+        case 2: suspend(); break;
+        case 3: hibernate(); break;
+        default: ;
+        }
+        _id -= 4;
+    }
     return _id;
 }
 QT_END_MOC_NAMESPACE
