@@ -31,9 +31,9 @@ Depends: ${misc:Depends},
          ${shlibs:Depends},
          libpam-runtime (>= 0.76-14),
          libpam-modules,
-         adduser
-Recommends: xserver-xorg,
-            lightdm-gtk-greeter | lightdm-greeter
+         adduser,
+         lightdm-gtk-greeter | lightdm-greeter
+Recommends: xserver-xorg
 Conflicts: liblightdm-gobject-0-0,
            liblightdm-qt-0-0
 Provides: x-display-manager
