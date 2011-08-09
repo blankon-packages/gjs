@@ -132,6 +132,7 @@ void
 seat_set_active_display (Seat *seat, Display *display)
 {
     g_return_if_fail (seat != NULL);
+    display_unlock (display);
     SEAT_GET_CLASS (seat)->set_active_display (seat, display);
 }
 
@@ -180,9 +181,9 @@ switch_to_user (Seat *seat, const gchar *username)
 }
 
 static gboolean
-display_switch_to_user_cb (Display *display, const gchar *username, Seat *seat)
+display_switch_to_user_cb (Display *display, User *user, Seat *seat)
 {
-    return switch_to_user (seat, username);
+    return switch_to_user (seat, user_get_name (user));
 }
 
 static gboolean
@@ -192,7 +193,7 @@ display_switch_to_guest_cb (Display *display, Seat *seat)
     if (!seat->priv->guest_username)
         return FALSE;
 
-    return display_switch_to_user_cb (display, seat->priv->guest_username, seat);
+    return switch_to_user (seat, seat->priv->guest_username);
 }
 
 static const gchar *

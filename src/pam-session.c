@@ -31,6 +31,9 @@ struct PAMSessionPrivate
     gchar *service;
 
     /* User being authenticated */
+    User *user;
+  
+    /* Username when using passwd module */
     gchar *username;
 
     /* Authentication thread */
@@ -90,11 +93,11 @@ pam_session_new (const gchar *service, const gchar *username)
     self->priv->username = g_strdup (username);
 
     if (!passwd_file)
-    {
-        result = pam_start (self->priv->service, self->priv->username, &conversation, &self->priv->pam_handle);
+    {      
+        result = pam_start (self->priv->service, username, &conversation, &self->priv->pam_handle);
         g_debug ("pam_start(\"%s\", \"%s\") -> (%p, %d)",
                  self->priv->service,
-                 self->priv->username,
+                 username,
                  self->priv->pam_handle,
                  result);
     }
@@ -328,7 +331,12 @@ pam_session_authenticate (PAMSession *session, GError **error)
             password = get_password (session->priv->username);
             /* Always succeed with autologin, or no password on account otherwise prompt for a password */
             if (strcmp (session->priv->service, "lightdm-autologin") == 0 || g_strcmp0 (password, "") == 0)
-                report_result (session, PAM_SUCCESS);
+            {
+                if (password)
+                    report_result (session, PAM_SUCCESS);
+                else
+                    report_result (session, PAM_USER_UNKNOWN);
+            }
             else
                 send_message (session, PAM_PROMPT_ECHO_OFF, "Password:");
             g_free (password);
@@ -359,18 +367,27 @@ pam_session_strerror (PAMSession *session, int error)
 const gchar *
 pam_session_get_username (PAMSession *session)
 {
-    const char *username;
-
     g_return_val_if_fail (session != NULL, NULL);
 
-    if (!passwd_file && session->priv->pam_handle)
+    if (!session->priv->username && !passwd_file)
     {
-        g_free (session->priv->username);
+        const char *username;
         pam_get_item (session->priv->pam_handle, PAM_USER, (const void **) &username);
         session->priv->username = g_strdup (username);
     }
 
     return session->priv->username;
+}
+
+User *
+pam_session_get_user (PAMSession *session)
+{
+    g_return_val_if_fail (session != NULL, NULL);
+
+    if (!session->priv->user && pam_session_get_username (session))
+        session->priv->user = user_get_by_name (pam_session_get_username (session));
+
+    return session->priv->user;
 }
 
 const struct pam_message **
@@ -394,8 +411,6 @@ pam_session_respond (PAMSession *session, struct pam_response *response)
 
     if (passwd_file)
     {
-        gchar *password;
-
         if (session->priv->messages)
         {
             int i;
@@ -414,27 +429,18 @@ pam_session_respond (PAMSession *session, struct pam_response *response)
         if (session->priv->username == NULL)
         {
             session->priv->username = g_strdup (response->resp);
-            password = get_password (session->priv->username);
-            if (g_strcmp0 (password, "") == 0)
+            if (g_strcmp0 (get_password (response->resp), "") == 0)
                 report_result (session, PAM_SUCCESS);
             else
                 send_message (session, PAM_PROMPT_ECHO_OFF, "Password:");
         }
         else
         {
-            User *user;
-
-            user = user_get_by_name (session->priv->username);
-            password = get_password (session->priv->username);
-            if (user && g_strcmp0 (response->resp, password) == 0)
+            if (g_strcmp0 (response->resp, get_password (session->priv->username)) == 0)
                 report_result (session, PAM_SUCCESS);
             else
                 report_result (session, PAM_AUTH_ERR);
-
-            if (user)
-                g_object_unref (user);
         }
-        g_free (password);
         g_free (response->resp);
         g_free (response);
     }
@@ -535,8 +541,10 @@ pam_session_finalize (GObject *object)
 
     self = PAM_SESSION (object);
 
-    g_free (self->priv->service);  
+    g_free (self->priv->service);
     g_free (self->priv->username);
+    if (self->priv->user)
+        g_object_unref (self->priv->user);
     if (self->priv->pam_handle)
         pam_end (self->priv->pam_handle, PAM_SUCCESS);
 
