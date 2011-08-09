@@ -1,2 +1,2 @@
 version=3
-http://people.ubuntu.com/~robert-ancell/lightdm/releases/lightdm-(.*)\.tar\.gz
+http://people.ubuntu.com/~robert-ancell/lightdm/releases/lightdm-([0-9.]+)\.tar\.gz

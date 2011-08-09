@@ -1,3 +1,37 @@
+lightdm (0.9.3-0ubuntu1) oneiric; urgency=low
+
+  [ Sebastien Bacher ]
+  * New upstream version
+  * debian/control:
+    - build-depends on dh-translations
+    - build with the current vala
+    - demote the greeter depends back to a recommend, lightdm can be use to
+      connect to remote displays and doesn't need a local greeter
+    - lightdm depends on dbus (lp: #822824)
+    - liblightdm-gobject recommends accountsservice (lp: #822863)
+  * debian/liblightdm-gobject-1-0.symbols:
+    - track library symbols
+  * debian/lightdm.install:
+    - ship the translations
+  * debian/lightdm.preinst:
+    - fix missing dh token
+  * debian/rules:
+    - reorder rules to work with new dh versions
+    - stop the build if the liblightdm-gobject symbols are outdated
+    - use dh-translations to generate the translations template
+  * debian/source_lightdm.py:
+    - get bug informations for apport, thanks Pedro Villavicencio (lp: #819954)
+
+  [ Didier Roche ]
+  * debian/watch:
+    - fix debian/watch to get lightdm
+  * debian/patches/01_transition_gnome_ubuntu_desktop.patch:
+    - transition so that gnome.desktop is now move to ubuntu.desktop as the main
+      session. We need that for transitionning to the next step (post LTS) where
+      gnome-shell.desktop will be renamed to gnome.desktop
+
+ -- Sebastien Bacher <seb128@ubuntu.com>  Tue, 09 Aug 2011 18:21:07 +0200
+
 lightdm (0.9.2-0ubuntu4) oneiric; urgency=low
 
   * debian/control: depends on the greeters rather than recommends, seems some

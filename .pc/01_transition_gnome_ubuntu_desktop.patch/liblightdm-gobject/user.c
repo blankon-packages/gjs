@@ -1081,12 +1081,6 @@ load_dmrc (LightDMUser *user)
     priv->language = g_key_file_get_string (priv->dmrc_file, "Desktop", "Language", NULL);
     priv->layout = g_key_file_get_string (priv->dmrc_file, "Desktop", "Layout", NULL);
     priv->session = g_key_file_get_string (priv->dmrc_file, "Desktop", "Session", NULL);
-
-    if (g_strcmp0 (priv->session, "gnome") == 0)
-    {
-        g_free(priv->session);
-        priv->session = g_strdup ("ubuntu");
-    }
 }
 
 /**

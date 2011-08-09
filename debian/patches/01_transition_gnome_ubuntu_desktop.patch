@@ -1,0 +1,18 @@
+=== modified file 'liblightdm-gobject/user.c'
+Index: ubuntu/liblightdm-gobject/user.c
+===================================================================
+--- ubuntu.orig/liblightdm-gobject/user.c	2011-08-09 15:46:31.588195339 +0200
++++ ubuntu/liblightdm-gobject/user.c	2011-08-09 15:46:34.372209141 +0200
+@@ -883,6 +883,12 @@
+     priv->language = g_key_file_get_string (priv->dmrc_file, "Desktop", "Language", NULL);
+     priv->layout = g_key_file_get_string (priv->dmrc_file, "Desktop", "Layout", NULL);
+     priv->session = g_key_file_get_string (priv->dmrc_file, "Desktop", "Session", NULL);
++
++    if (g_strcmp0 (priv->session, "gnome") == 0)
++    {
++        g_free(priv->session);
++        priv->session = g_strdup ("ubuntu");
++    }
+ }
+ 
+ /**

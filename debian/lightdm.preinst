@@ -8,3 +8,6 @@ if dpkg-maintscript-helper supports mv_conffile; then
     /etc/lightdm/lightdm.conf \
     0.3.7-0ubuntu2 -- "$@"
 fi    
+
+#DEBHELPER#
+

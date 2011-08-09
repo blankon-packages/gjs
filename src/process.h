@@ -21,6 +21,7 @@ G_BEGIN_DECLS
 #define PROCESS_TYPE (process_get_type())
 #define PROCESS_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), PROCESS_TYPE, ProcessClass))
 #define PROCESS(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), PROCESS_TYPE, Process))
+#define PROCESS_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), PROCESS_TYPE, ProcessClass))
 
 typedef struct ProcessPrivate ProcessPrivate;
 
@@ -52,6 +53,8 @@ void process_set_log_file (Process *process, const gchar *log_file);
 const gchar *process_get_log_file (Process *process);
 
 void process_set_env (Process *process, const gchar *name, const gchar *value);
+
+const gchar *process_get_env (Process *process, const gchar *name);
 
 gboolean process_start (Process *process,
                               User *user,
