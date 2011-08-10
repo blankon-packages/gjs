@@ -1,6 +1,7 @@
 usr/sbin/lightdm
 usr/share/man
 usr/share/locale
+usr/lib/lightdm
 etc/dbus-1/
 etc/lightdm/users.conf
 etc/lightdm/lightdm.conf usr/share/doc/lightdm/

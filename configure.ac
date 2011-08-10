@@ -1,6 +1,6 @@
 dnl Process this file with autoconf to produce a configure script.
 
-AC_INIT(lightdm, 0.9.3)
+AC_INIT(lightdm, 0.9.4)
 AC_CONFIG_MACRO_DIR(m4)
 AC_CONFIG_HEADER(config.h)
 AM_INIT_AUTOMAKE
@@ -195,6 +195,7 @@ po/Makefile.in
 src/Makefile
 tests/Makefile
 tests/src/Makefile
+utils/Makefile
 ])
 AC_OUTPUT
 

@@ -1,3 +1,21 @@
+lightdm (0.9.3-0ubuntu2) oneiric; urgency=low
+
+  * Backport mterry's changes to the gdmflexiserver functionnality
+  * debian/control: default to the unity greeter (lp: #809710)
+  * debian/lightdm.install: install the new files
+
+  [ Didier Roche ]
+  * Cherry-pick from upstream:
+    - lightdm-set-defaults enables tweaking the default session and chosen
+      greeter for lightdm. This is useful for derivatives waiting to not ship
+      the whole configuration file of lightdm
+    - refreshed translations
+  * debian/rules:
+    - set "ubuntu" as the default session (unable to login for people who don't
+      have a .dmrc, sorry for the kittens…)
+
+ -- Sebastien Bacher <seb128@ubuntu.com>  Wed, 10 Aug 2011 18:34:03 +0200
+
 lightdm (0.9.3-0ubuntu1) oneiric; urgency=low
 
   [ Sebastien Bacher ]
