@@ -33,7 +33,6 @@ Depends: ${misc:Depends},
          adduser,
          dbus
 Recommends: xserver-xorg,
-            unity-greeter,
             unity-greeter | lightdm-greeter
 Conflicts: liblightdm-gobject-0-0,
            liblightdm-qt-0-0

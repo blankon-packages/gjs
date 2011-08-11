@@ -1,3 +1,9 @@
+lightdm (0.9.3-0ubuntu3) oneiric; urgency=low
+
+  * debian/control: stop forcing the unity-greeter recommends (lp: #824299)
+
+ -- Sebastien Bacher <seb128@ubuntu.com>  Thu, 11 Aug 2011 23:21:51 +0200
+
 lightdm (0.9.3-0ubuntu2) oneiric; urgency=low
 
   * Backport mterry's changes to the gdmflexiserver functionnality
