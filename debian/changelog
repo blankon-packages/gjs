@@ -1,3 +1,10 @@
+lightdm (0.9.3-0ubuntu5) oneiric; urgency=low
+
+  * Backport potfiles.in fix from trunk
+  * debian/lightdm.install: install dm-tool (seat management utility)
+
+ -- Sebastien Bacher <seb128@ubuntu.com>  Thu, 18 Aug 2011 15:59:45 +0200
+
 lightdm (0.9.3-0ubuntu4) oneiric; urgency=low
 
   * Updated to current trunk, that's a candidate version version for the next
