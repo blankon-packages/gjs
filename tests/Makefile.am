@@ -64,8 +64,6 @@ endif
 #	test-xserver-fail-start
 #	test-greeter-xserver-crash
 
-TESTS =
-
 EXTRA_DIST = \
 	$(TESTS) \
 	data/xgreeters/test-gobject-greeter.desktop \

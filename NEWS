@@ -3,6 +3,20 @@ Overview of changes in lightdm 0.9.4
     * lightdm-set-defaults enables tweaking the default session and chosen
       greeter for lightdm. This is useful for derivatives waiting to not ship
       the whole configuration file of lightdm
+    * Fix crash in GTK+ greeter when a user is added
+    * Move xsessions-directory and xgreeters-directory from [SeatDefaults] to
+      [LightDM].  This is a configuration break, but making it on the assumption
+      that these settings are not likely to have been overridden.
+    * Fix fallback from org.freedesktop.Accounts to passwd format
+    * Fix duplicate user entries being shown when using passwd file
+    * Add AddSeat D-Bus method for adding dynamic seats
+    * Added a dm-tool program that allows user switching and adding seats
+    * Allow remote X servers, e.g. launched using dm-tool add-nested-seat
+    * Fix bug where sessions were started when the greeter quit and the user
+      hadn't been authorized.
+    * Fix bug where sessions used the seat bus name
+    * Don't allow autologin-username to be set to empty
+    * Fix bug where PAM session was not opened before writing to home directory
 
 Overview of changes in lightdm 0.9.3
 

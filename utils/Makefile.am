@@ -1,20 +1,28 @@
-AM_CPPFLAGS = \
+bin_PROGRAMS = dm-tool
+libexec_PROGRAMS = lightdm-set-defaults
+dist_pkglibexec_SCRIPTS = gdmflexiserver
+
+dm_tool_SOURCES = \
+	dm-tool.c
+
+dm_tool_CFLAGS = \
 	$(LIGHTDM_CFLAGS) \
 	-DCONFIG_DIR=\"$(sysconfdir)/lightdm\" \
-	-DLOCALE_DIR=\"$(datadir)/locale\"	\
-	$(NULL)
+	-DLOCALE_DIR=\"$(datadir)/locale\"
 
-libexec_PROGRAMS = \
-	lightdm-set-defaults \
-	$(NULL)
+dm_tool_LDADD = \
+	$(LIGHTDM_LIBS)
 
-lightdm_set_defaults_SOURCES =	\
-	lightdm-set-defaults.c	\
-	$(NULL)
+lightdm_set_defaults_SOURCES = \
+	lightdm-set-defaults.c
 
-lightdm_set_defaults_LDADD =	\
-	$(LIGHTDM_LIBS)	\
-	$(NULL)
+lightdm_set_defaults_CFLAGS = \
+	$(LIGHTDM_CFLAGS) \
+	-DCONFIG_DIR=\"$(sysconfdir)/lightdm\" \
+	-DLOCALE_DIR=\"$(datadir)/locale\"
+
+lightdm_set_defaults_LDADD = \
+	$(LIGHTDM_LIBS)
 
 DISTCLEANFILES = \
     Makefile.in

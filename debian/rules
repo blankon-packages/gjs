@@ -3,7 +3,7 @@
 LDFLAGS+=-Wl,--as-needed
 
 %:
-	dh $@ --with autoreconf,translations
+	dh $@ --with quilt,autoreconf,translations
 
 # NOTE: Using GNOME for now, but we still need a proper configuration system
 # See https://launchpad.net/bugs/799754

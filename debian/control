@@ -6,7 +6,7 @@ Uploaders: Julien Lavergne <gilir@ubuntu.com>
 Standards-Version: 3.9.2
 Build-Depends: debhelper (>= 7.0.50~),
                intltool (>= 0.35.0),
-               valac,
+               quilt,
                libglib2.0-dev,
                libpam0g-dev,
                libxdmcp-dev,

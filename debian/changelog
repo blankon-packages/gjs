@@ -1,3 +1,26 @@
+lightdm (0.9.3-0ubuntu4) oneiric; urgency=low
+
+  * Updated to current trunk, that's a candidate version version for the next
+    update, it fixes those issues:
+    - login doesn't work for ecryptfs users (lp: #823775, #824594)
+    - "lightdm-gtk-greeter segfaults in get_user_iter when adding a new user"
+    (lp: #822470)
+    - fix fallback from org.freedesktop.Accounts to passwd format (lp: #817835)
+    - empty autologin-user should not be passed to pam (lp: #817581)
+  * debian/control.in:
+    - build-depends on quilt, it's needed with source v1
+    - don't build-depends on valac, vala is not used in the current version
+  * debian/lightdm.install:
+    - install the manpages as well
+  * debian/lightdm.manpages:
+    - dropped, it's installed by the upstream make install
+  * debian/rules:
+    - use the quilt rule
+  * debian/source/format:
+    - use source v1, it works better with vcs workflows
+
+ -- Sebastien Bacher <seb128@ubuntu.com>  Thu, 18 Aug 2011 15:29:42 +0200
+
 lightdm (0.9.3-0ubuntu3) oneiric; urgency=low
 
   * debian/control: stop forcing the unity-greeter recommends (lp: #824299)

@@ -1,7 +1,5 @@
 sbin_PROGRAMS = lightdm
 
-dist_pkglibexec_SCRIPTS = gdmflexiserver
-
 ldm-marshal.c: ldm-marshal.list
 	@GLIB_GENMARSHAL@ --prefix=ldm_marshal $(srcdir)/ldm-marshal.list --header --body > ldm-marshal.c
 
@@ -38,6 +36,8 @@ lightdm_SOURCES = \
 	seat-xdmcp-session.h \
 	seat-xlocal.c \
 	seat-xlocal.h \
+	seat-xremote.c \
+	seat-xremote.h \
 	session.c \
 	session.h \
 	user.c \
