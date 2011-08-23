@@ -1,3 +1,10 @@
+lightdm (0.9.3-0ubuntu6) oneiric; urgency=low
+
+  * Backport r1065 to use account service instead of .dmrc (lp: #823718), 
+    should fix the session not being correct remembered (lp: #818201)
+
+ -- Sebastien Bacher <seb128@ubuntu.com>  Tue, 23 Aug 2011 16:21:59 +0200
+
 lightdm (0.9.3-0ubuntu5) oneiric; urgency=low
 
   * Backport potfiles.in fix from trunk
