@@ -1,3 +1,12 @@
+lightdm (0.9.3-0ubuntu7) oneiric; urgency=low
+
+  * debian/install, debian/lightdm-greeter-session,
+    debian/patches/03_launch_dbus.patch:
+    - Add patch and wrapper script to launch dbus for the greeter so that
+      we can safely kill it when the greeter ends.
+
+ -- Michael Terry <mterry@ubuntu.com>  Wed, 24 Aug 2011 15:34:07 -0400
+
 lightdm (0.9.3-0ubuntu6) oneiric; urgency=low
 
   * Backport r1065 to use account service instead of .dmrc (lp: #823718), 

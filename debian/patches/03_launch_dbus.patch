@@ -1,0 +1,17 @@
+=== modified file 'src/display.c'
+--- a/src/display.c       2011-08-23 01:59:52 +0000
++++ b/src/display.c       2011-08-24 19:06:54 +0000
+@@ -460,6 +460,12 @@
+             g_free (wrapper);
+         }
+     }
++    else if (is_greeter)
++    {
++        gchar *t = command;
++        command = g_strdup_printf ("/usr/lib/lightdm/lightdm-greeter-session '%s'", command);
++        g_free (t);
++    }
+ 
+     session = DISPLAY_GET_CLASS (display)->create_session (display);
+     g_return_val_if_fail (session != NULL, NULL);
+
