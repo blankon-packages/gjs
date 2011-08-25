@@ -1,3 +1,12 @@
+lightdm (0.9.3-0ubuntu8) oneiric; urgency=low
+
+  * debian/patches/series:
+    - Add patch from last commit to actually apply.  Ahem.
+  * debian/rules:
+    - Make greeter wrapper executable
+
+ -- Michael Terry <mterry@ubuntu.com>  Thu, 25 Aug 2011 16:20:00 -0400
+
 lightdm (0.9.3-0ubuntu7) oneiric; urgency=low
 
   * debian/install, debian/lightdm-greeter-session,
