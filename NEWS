@@ -1,6 +1,14 @@
 Overview of changes in lightdm 0.9.5
 
     * Use accounts service in the daemon if it is available
+    * Correctly load seat type in multi seat configuration
+    * Add display-setup, session-setup and session-cleanup scripting hooks
+    * Fix cancel button in GTK greeter
+    * Fix line through GTK greeter menu items
+    * Exit daemon if a seat fails which has exit-on-failure set to true
+    * Add HasGuestAccount property to seat D-Bus interface
+    * Fix XDMCP authorization
+    * Update man file
 
 Overview of changes in lightdm 0.9.4
 
@@ -21,6 +29,7 @@ Overview of changes in lightdm 0.9.4
     * Fix bug where sessions used the seat bus name
     * Don't allow autologin-username to be set to empty
     * Fix bug where PAM session was not opened before writing to home directory
+    * Fix crash when failing to write X authority
 
 Overview of changes in lightdm 0.9.3
 

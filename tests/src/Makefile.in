@@ -41,7 +41,11 @@ noinst_PROGRAMS = test-runner$(EXEEXT) test-xserver$(EXEEXT) \
 subdir = tests/src
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
-am__aclocal_m4_deps = $(top_srcdir)/configure.ac
+am__aclocal_m4_deps = $(top_srcdir)/m4/gtk-doc.m4 \
+	$(top_srcdir)/m4/intltool.m4 $(top_srcdir)/m4/introspection.m4 \
+	$(top_srcdir)/m4/libtool.m4 $(top_srcdir)/m4/ltoptions.m4 \
+	$(top_srcdir)/m4/ltsugar.m4 $(top_srcdir)/m4/ltversion.m4 \
+	$(top_srcdir)/m4/lt~obsolete.m4 $(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 mkinstalldirs = $(install_sh) -d
@@ -84,7 +88,8 @@ am_test_qt_greeter_OBJECTS =  \
 	test_qt_greeter-test-qt-greeter.$(OBJEXT) \
 	test_qt_greeter-test-qt-greeter_moc.$(OBJEXT) status.$(OBJEXT)
 test_qt_greeter_OBJECTS = $(am_test_qt_greeter_OBJECTS)
-test_qt_greeter_DEPENDENCIES = $(am__DEPENDENCIES_1)
+test_qt_greeter_DEPENDENCIES = $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1)
 test_qt_greeter_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CXXLD) \
 	$(test_qt_greeter_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) \
@@ -278,7 +283,6 @@ SHELL = @SHELL@
 STRIP = @STRIP@
 USER_SESSION = @USER_SESSION@
 USE_NLS = @USE_NLS@
-VALA_API_GEN = @VALA_API_GEN@
 VERSION = @VERSION@
 WARN_CFLAGS = @WARN_CFLAGS@
 XCB_CFLAGS = @XCB_CFLAGS@
@@ -388,12 +392,14 @@ test_guest_account_LDADD = \
 test_qt_greeter_SOURCES = test-qt-greeter.cpp test-qt-greeter.h test-qt-greeter_moc.cpp status.c status.h
 test_qt_greeter_CXXFLAGS = \
 	-I$(top_srcdir)/liblightdm-qt \
-	$(LIGHTDM_QT_GREETER_CFLAGS)
+	$(LIGHTDM_QT_GREETER_CFLAGS) \
+	$(XCB_CFLAGS)
 
 test_qt_greeter_LDADD = \
 	-L$(top_builddir)/liblightdm-qt \
 	-llightdm-qt-1 \
-	$(LIGHTDM_QT_GREETER_LIBS)
+	$(LIGHTDM_QT_GREETER_LIBS) \
+	$(XCB_LIBS)
 
 test_session_SOURCES = test-session.c status.c status.h
 test_session_CFLAGS = \

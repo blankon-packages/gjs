@@ -1,7 +1,9 @@
 === modified file 'src/display.c'
---- a/src/display.c       2011-08-23 01:59:52 +0000
-+++ b/src/display.c       2011-08-24 19:06:54 +0000
-@@ -460,6 +460,12 @@
+Index: lightdm/src/display.c
+===================================================================
+--- lightdm.orig/src/display.c	2011-09-07 15:17:37.463555000 +1000
++++ lightdm/src/display.c	2011-09-07 16:14:19.369289500 +1000
+@@ -461,6 +461,12 @@
              g_free (wrapper);
          }
      }
@@ -14,4 +16,3 @@
  
      session = DISPLAY_GET_CLASS (display)->create_session (display);
      g_return_val_if_fail (session != NULL, NULL);
-

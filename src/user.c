@@ -40,6 +40,12 @@ struct UserPrivate
 
     /* Shell */
     gchar *shell;
+
+    /* Language */
+    gchar *language;
+
+    /* X session */
+    gchar *xsession;
 };
 
 G_DEFINE_TYPE (User, user, G_TYPE_OBJECT);
@@ -63,14 +69,15 @@ call_method (GDBusProxy *proxy, const gchar *method, GVariant *args,
                                      -1,
                                      NULL,
                                      &error);
-
-    if (!answer) {
+    if (error)
         g_warning ("Could not call %s: %s", method, error->message);
-        g_error_free (error);
-        return FALSE;
-    }
+    g_clear_error (&error);
 
-    if (!g_variant_is_of_type (answer, G_VARIANT_TYPE (expected))) {
+    if (!answer)
+        return FALSE;
+
+    if (!g_variant_is_of_type (answer, G_VARIANT_TYPE (expected)))
+    {
         g_warning ("Unexpected response from %s: %s",
                    method, g_variant_get_type_string (answer));
         g_variant_unref (answer);
@@ -81,6 +88,7 @@ call_method (GDBusProxy *proxy, const gchar *method, GVariant *args,
         *result = answer;
     else
         g_variant_unref (answer);
+
     return TRUE;
 }
 
@@ -144,13 +152,13 @@ get_string_from_dmrc (const gchar *username, const gchar *group,
 static GDBusProxy *
 get_accounts_proxy_for_user (const gchar *user)
 {
-    g_return_val_if_fail (user != NULL, NULL);
-
     GDBusProxy *proxy;
     GError *error = NULL;
     GVariant *result;
     gboolean success;
     gchar *user_path = NULL;
+
+    g_return_val_if_fail (user != NULL, NULL);  
 
     proxy = g_dbus_proxy_new_for_bus_sync (G_BUS_TYPE_SYSTEM,
                                            G_DBUS_PROXY_FLAGS_NONE,
@@ -159,12 +167,12 @@ get_accounts_proxy_for_user (const gchar *user)
                                            "/org/freedesktop/Accounts",
                                            "org.freedesktop.Accounts",
                                            NULL, &error);
-
-    if (!proxy) {
+    if (error)
         g_warning ("Could not get accounts proxy: %s", error->message);
-        g_error_free (error);
+    g_clear_error (&error);
+
+    if (!proxy)
         return NULL;
-    }
 
     success = call_method (proxy, "FindUserByName", g_variant_new ("(s)", user),
                            "(o)", &result);
@@ -186,13 +194,10 @@ get_accounts_proxy_for_user (const gchar *user)
                                            user_path,
                                            "org.freedesktop.Accounts.User",
                                            NULL, &error);
-    g_free (user_path);
-
-    if (!proxy) {
+    if (error)
         g_warning ("Could not get accounts user proxy: %s", error->message);
-        g_error_free (error);
-        return NULL;
-    }
+    g_clear_error (&error);
+    g_free (user_path);
 
     return proxy;
 }
@@ -235,7 +240,8 @@ load_passwd_file ()
     gint i;
     GError *error = NULL;
 
-    if (!g_file_get_contents (passwd_file, &data, NULL, &error))
+    g_file_get_contents (passwd_file, &data, NULL, &error);
+    if (error)
         g_warning ("Error loading passwd file: %s", error->message);
     g_clear_error (&error);
 
@@ -394,37 +400,73 @@ user_get_shell (User *user)
 }
 
 void
-user_set_session (User *user, const gchar *session)
+user_set_language (User *user, const gchar *language)
 {
     g_return_if_fail (user != NULL);
 
-    call_method (user->priv->proxy, "SetXSession",
-                 g_variant_new ("(s)", session), "()", NULL);
-
-    save_string_to_dmrc (user->priv->name, "Desktop", "Session", session);
+    call_method (user->priv->proxy, "SetLanguage", g_variant_new ("(s)", language), "()", NULL);
+    save_string_to_dmrc (user->priv->name, "Desktop", "Language", language);
 }
 
-gchar *
-user_get_session (User *user)
+const gchar *
+user_get_language (User *user)
 {
+    GVariant *result;
+
     g_return_val_if_fail (user != NULL, NULL);
 
-    GVariant *result;
-    gchar *session;
+    g_free (user->priv->language);
 
-    if (!get_property (user->priv->proxy, "XSession",
-                       "s", &result))
-        return get_string_from_dmrc (user->priv->name, "Desktop", "Session");
+    if (get_property (user->priv->proxy, "Language", "s", &result))
+    {
+        g_variant_get (result, "s", &user->priv->language);
+        g_variant_unref (result);
+    }
+    else
+        user->priv->language = get_string_from_dmrc (user->priv->name, "Desktop", "Language");
 
-    g_variant_get (result, "s", &session);
-    g_variant_unref (result);
-
-    if (g_strcmp0 (session, "") == 0) {
-        g_free (session);
-        return NULL;
+    if (g_strcmp0 (user->priv->language, "") == 0)
+    {
+        g_free (user->priv->language);
+        user->priv->language = NULL;
     }
 
-    return session;
+    return user->priv->language;
+}
+
+void
+user_set_xsession (User *user, const gchar *xsession)
+{
+    g_return_if_fail (user != NULL);
+
+    call_method (user->priv->proxy, "SetXSession", g_variant_new ("(s)", xsession), "()", NULL);
+    save_string_to_dmrc (user->priv->name, "Desktop", "Session", xsession);
+}
+
+const gchar *
+user_get_xsession (User *user)
+{
+    GVariant *result;
+
+    g_return_val_if_fail (user != NULL, NULL);
+
+    g_free (user->priv->xsession);
+
+    if (get_property (user->priv->proxy, "XSession", "s", &result))
+    {
+        g_variant_get (result, "s", &user->priv->xsession);
+        g_variant_unref (result);
+    }
+    else
+        user->priv->xsession = get_string_from_dmrc (user->priv->name, "Desktop", "Session");
+
+    if (g_strcmp0 (user->priv->xsession, "") == 0)
+    {
+        g_free (user->priv->xsession);
+        user->priv->xsession = NULL;
+    }
+
+    return user->priv->xsession;
 }
 
 static void

@@ -15,7 +15,6 @@
 
 @SET_MAKE@
 
-
 VPATH = @srcdir@
 pkgdatadir = $(datadir)/@PACKAGE@
 pkgincludedir = $(includedir)/@PACKAGE@
@@ -37,30 +36,34 @@ build_triplet = @build@
 host_triplet = @host@
 sbin_PROGRAMS = lightdm$(EXEEXT)
 subdir = src
-DIST_COMMON = $(dist_pkglibexec_SCRIPTS) $(srcdir)/Makefile.am \
-	$(srcdir)/Makefile.in
+DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
-am__aclocal_m4_deps = $(top_srcdir)/configure.ac
+am__aclocal_m4_deps = $(top_srcdir)/m4/gtk-doc.m4 \
+	$(top_srcdir)/m4/intltool.m4 $(top_srcdir)/m4/introspection.m4 \
+	$(top_srcdir)/m4/libtool.m4 $(top_srcdir)/m4/ltoptions.m4 \
+	$(top_srcdir)/m4/ltsugar.m4 $(top_srcdir)/m4/ltversion.m4 \
+	$(top_srcdir)/m4/lt~obsolete.m4 $(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 mkinstalldirs = $(install_sh) -d
 CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
-am__installdirs = "$(DESTDIR)$(sbindir)" "$(DESTDIR)$(pkglibexecdir)"
+am__installdirs = "$(DESTDIR)$(sbindir)"
 PROGRAMS = $(sbin_PROGRAMS)
 am_lightdm_OBJECTS = lightdm-configuration.$(OBJEXT) \
-	lightdm-display.$(OBJEXT) lightdm-display-manager.$(OBJEXT) \
+	lightdm-console-kit.$(OBJEXT) lightdm-display.$(OBJEXT) \
+	lightdm-display-manager.$(OBJEXT) \
 	lightdm-display-server.$(OBJEXT) lightdm-dmrc.$(OBJEXT) \
 	lightdm-greeter.$(OBJEXT) lightdm-guest-account.$(OBJEXT) \
 	lightdm-lightdm.$(OBJEXT) lightdm-ldm-marshal.$(OBJEXT) \
 	lightdm-pam-session.$(OBJEXT) lightdm-plymouth.$(OBJEXT) \
 	lightdm-process.$(OBJEXT) lightdm-seat.$(OBJEXT) \
 	lightdm-seat-xdmcp-session.$(OBJEXT) \
-	lightdm-seat-xlocal.$(OBJEXT) lightdm-session.$(OBJEXT) \
-	lightdm-user.$(OBJEXT) lightdm-vt.$(OBJEXT) \
-	lightdm-xauthority.$(OBJEXT) lightdm-xdisplay.$(OBJEXT) \
-	lightdm-xdmcp-protocol.$(OBJEXT) \
+	lightdm-seat-xlocal.$(OBJEXT) lightdm-seat-xremote.$(OBJEXT) \
+	lightdm-session.$(OBJEXT) lightdm-user.$(OBJEXT) \
+	lightdm-vt.$(OBJEXT) lightdm-xauthority.$(OBJEXT) \
+	lightdm-xdisplay.$(OBJEXT) lightdm-xdmcp-protocol.$(OBJEXT) \
 	lightdm-xdmcp-server.$(OBJEXT) lightdm-xdmcp-session.$(OBJEXT) \
 	lightdm-xserver-local.$(OBJEXT) \
 	lightdm-xserver-remote.$(OBJEXT) lightdm-xserver.$(OBJEXT) \
@@ -74,28 +77,6 @@ am__v_lt_0 = --silent
 lightdm_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(lightdm_CFLAGS) \
 	$(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
-am__vpath_adj_setup = srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`;
-am__vpath_adj = case $$p in \
-    $(srcdir)/*) f=`echo "$$p" | sed "s|^$$srcdirstrip/||"`;; \
-    *) f=$$p;; \
-  esac;
-am__strip_dir = f=`echo $$p | sed -e 's|^.*/||'`;
-am__install_max = 40
-am__nobase_strip_setup = \
-  srcdirstrip=`echo "$(srcdir)" | sed 's/[].[^$$\\*|]/\\\\&/g'`
-am__nobase_strip = \
-  for p in $$list; do echo "$$p"; done | sed -e "s|$$srcdirstrip/||"
-am__nobase_list = $(am__nobase_strip_setup); \
-  for p in $$list; do echo "$$p $$p"; done | \
-  sed "s| $$srcdirstrip/| |;"' / .*\//!s/ .*/ ./; s,\( .*\)/[^/]*$$,\1,' | \
-  $(AWK) 'BEGIN { files["."] = "" } { files[$$2] = files[$$2] " " $$1; \
-    if (++n[$$2] == $(am__install_max)) \
-      { print $$2, files[$$2]; n[$$2] = 0; files[$$2] = "" } } \
-    END { for (dir in files) print dir, files[dir] }'
-am__base_list = \
-  sed '$$!N;$$!N;$$!N;$$!N;$$!N;$$!N;$$!N;s/\n/ /g' | \
-  sed '$$!N;$$!N;$$!N;$$!N;s/\n/ /g'
-SCRIPTS = $(dist_pkglibexec_SCRIPTS)
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
@@ -242,7 +223,6 @@ SHELL = @SHELL@
 STRIP = @STRIP@
 USER_SESSION = @USER_SESSION@
 USE_NLS = @USE_NLS@
-VALA_API_GEN = @VALA_API_GEN@
 VERSION = @VERSION@
 WARN_CFLAGS = @WARN_CFLAGS@
 XCB_CFLAGS = @XCB_CFLAGS@
@@ -301,10 +281,11 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-dist_pkglibexec_SCRIPTS = gdmflexiserver
 lightdm_SOURCES = \
 	configuration.c \
 	configuration.h \
+	console-kit.c \
+	console-kit.h \
 	display.c \
 	display.h \
 	display-manager.c \
@@ -332,6 +313,8 @@ lightdm_SOURCES = \
 	seat-xdmcp-session.h \
 	seat-xlocal.c \
 	seat-xlocal.h \
+	seat-xremote.c \
+	seat-xremote.h \
 	session.c \
 	session.h \
 	user.c \
@@ -467,40 +450,6 @@ clean-sbinPROGRAMS:
 lightdm$(EXEEXT): $(lightdm_OBJECTS) $(lightdm_DEPENDENCIES) 
 	@rm -f lightdm$(EXEEXT)
 	$(AM_V_CCLD)$(lightdm_LINK) $(lightdm_OBJECTS) $(lightdm_LDADD) $(LIBS)
-install-dist_pkglibexecSCRIPTS: $(dist_pkglibexec_SCRIPTS)
-	@$(NORMAL_INSTALL)
-	test -z "$(pkglibexecdir)" || $(MKDIR_P) "$(DESTDIR)$(pkglibexecdir)"
-	@list='$(dist_pkglibexec_SCRIPTS)'; test -n "$(pkglibexecdir)" || list=; \
-	for p in $$list; do \
-	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
-	  if test -f "$$d$$p"; then echo "$$d$$p"; echo "$$p"; else :; fi; \
-	done | \
-	sed -e 'p;s,.*/,,;n' \
-	    -e 'h;s|.*|.|' \
-	    -e 'p;x;s,.*/,,;$(transform)' | sed 'N;N;N;s,\n, ,g' | \
-	$(AWK) 'BEGIN { files["."] = ""; dirs["."] = 1; } \
-	  { d=$$3; if (dirs[d] != 1) { print "d", d; dirs[d] = 1 } \
-	    if ($$2 == $$4) { files[d] = files[d] " " $$1; \
-	      if (++n[d] == $(am__install_max)) { \
-		print "f", d, files[d]; n[d] = 0; files[d] = "" } } \
-	    else { print "f", d "/" $$4, $$1 } } \
-	  END { for (d in files) print "f", d, files[d] }' | \
-	while read type dir files; do \
-	     if test "$$dir" = .; then dir=; else dir=/$$dir; fi; \
-	     test -z "$$files" || { \
-	       echo " $(INSTALL_SCRIPT) $$files '$(DESTDIR)$(pkglibexecdir)$$dir'"; \
-	       $(INSTALL_SCRIPT) $$files "$(DESTDIR)$(pkglibexecdir)$$dir" || exit $$?; \
-	     } \
-	; done
-
-uninstall-dist_pkglibexecSCRIPTS:
-	@$(NORMAL_UNINSTALL)
-	@list='$(dist_pkglibexec_SCRIPTS)'; test -n "$(pkglibexecdir)" || exit 0; \
-	files=`for p in $$list; do echo "$$p"; done | \
-	       sed -e 's,.*/,,;$(transform)'`; \
-	test -n "$$list" || exit 0; \
-	echo " ( cd '$(DESTDIR)$(pkglibexecdir)' && rm -f" $$files ")"; \
-	cd "$(DESTDIR)$(pkglibexecdir)" && rm -f $$files
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -509,6 +458,7 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lightdm-configuration.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lightdm-console-kit.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lightdm-display-manager.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lightdm-display-server.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lightdm-display.Po@am__quote@
@@ -522,6 +472,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lightdm-process.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lightdm-seat-xdmcp-session.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lightdm-seat-xlocal.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lightdm-seat-xremote.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lightdm-seat.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lightdm-session.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lightdm-user.Po@am__quote@
@@ -575,6 +526,22 @@ lightdm-configuration.obj: configuration.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='configuration.c' object='lightdm-configuration.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(lightdm_CFLAGS) $(CFLAGS) -c -o lightdm-configuration.obj `if test -f 'configuration.c'; then $(CYGPATH_W) 'configuration.c'; else $(CYGPATH_W) '$(srcdir)/configuration.c'; fi`
+
+lightdm-console-kit.o: console-kit.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(lightdm_CFLAGS) $(CFLAGS) -MT lightdm-console-kit.o -MD -MP -MF $(DEPDIR)/lightdm-console-kit.Tpo -c -o lightdm-console-kit.o `test -f 'console-kit.c' || echo '$(srcdir)/'`console-kit.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/lightdm-console-kit.Tpo $(DEPDIR)/lightdm-console-kit.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='console-kit.c' object='lightdm-console-kit.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(lightdm_CFLAGS) $(CFLAGS) -c -o lightdm-console-kit.o `test -f 'console-kit.c' || echo '$(srcdir)/'`console-kit.c
+
+lightdm-console-kit.obj: console-kit.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(lightdm_CFLAGS) $(CFLAGS) -MT lightdm-console-kit.obj -MD -MP -MF $(DEPDIR)/lightdm-console-kit.Tpo -c -o lightdm-console-kit.obj `if test -f 'console-kit.c'; then $(CYGPATH_W) 'console-kit.c'; else $(CYGPATH_W) '$(srcdir)/console-kit.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/lightdm-console-kit.Tpo $(DEPDIR)/lightdm-console-kit.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='console-kit.c' object='lightdm-console-kit.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(lightdm_CFLAGS) $(CFLAGS) -c -o lightdm-console-kit.obj `if test -f 'console-kit.c'; then $(CYGPATH_W) 'console-kit.c'; else $(CYGPATH_W) '$(srcdir)/console-kit.c'; fi`
 
 lightdm-display.o: display.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(lightdm_CFLAGS) $(CFLAGS) -MT lightdm-display.o -MD -MP -MF $(DEPDIR)/lightdm-display.Tpo -c -o lightdm-display.o `test -f 'display.c' || echo '$(srcdir)/'`display.c
@@ -799,6 +766,22 @@ lightdm-seat-xlocal.obj: seat-xlocal.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='seat-xlocal.c' object='lightdm-seat-xlocal.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(lightdm_CFLAGS) $(CFLAGS) -c -o lightdm-seat-xlocal.obj `if test -f 'seat-xlocal.c'; then $(CYGPATH_W) 'seat-xlocal.c'; else $(CYGPATH_W) '$(srcdir)/seat-xlocal.c'; fi`
+
+lightdm-seat-xremote.o: seat-xremote.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(lightdm_CFLAGS) $(CFLAGS) -MT lightdm-seat-xremote.o -MD -MP -MF $(DEPDIR)/lightdm-seat-xremote.Tpo -c -o lightdm-seat-xremote.o `test -f 'seat-xremote.c' || echo '$(srcdir)/'`seat-xremote.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/lightdm-seat-xremote.Tpo $(DEPDIR)/lightdm-seat-xremote.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='seat-xremote.c' object='lightdm-seat-xremote.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(lightdm_CFLAGS) $(CFLAGS) -c -o lightdm-seat-xremote.o `test -f 'seat-xremote.c' || echo '$(srcdir)/'`seat-xremote.c
+
+lightdm-seat-xremote.obj: seat-xremote.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(lightdm_CFLAGS) $(CFLAGS) -MT lightdm-seat-xremote.obj -MD -MP -MF $(DEPDIR)/lightdm-seat-xremote.Tpo -c -o lightdm-seat-xremote.obj `if test -f 'seat-xremote.c'; then $(CYGPATH_W) 'seat-xremote.c'; else $(CYGPATH_W) '$(srcdir)/seat-xremote.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/lightdm-seat-xremote.Tpo $(DEPDIR)/lightdm-seat-xremote.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='seat-xremote.c' object='lightdm-seat-xremote.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(lightdm_CFLAGS) $(CFLAGS) -c -o lightdm-seat-xremote.obj `if test -f 'seat-xremote.c'; then $(CYGPATH_W) 'seat-xremote.c'; else $(CYGPATH_W) '$(srcdir)/seat-xremote.c'; fi`
 
 lightdm-session.o: session.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(lightdm_CFLAGS) $(CFLAGS) -MT lightdm-session.o -MD -MP -MF $(DEPDIR)/lightdm-session.Tpo -c -o lightdm-session.o `test -f 'session.c' || echo '$(srcdir)/'`session.c
@@ -1083,9 +1066,9 @@ distdir: $(DISTFILES)
 check-am: all-am
 check: $(BUILT_SOURCES)
 	$(MAKE) $(AM_MAKEFLAGS) check-am
-all-am: Makefile $(PROGRAMS) $(SCRIPTS)
+all-am: Makefile $(PROGRAMS)
 installdirs:
-	for dir in "$(DESTDIR)$(sbindir)" "$(DESTDIR)$(pkglibexecdir)"; do \
+	for dir in "$(DESTDIR)$(sbindir)"; do \
 	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
 	done
 install: $(BUILT_SOURCES)
@@ -1146,7 +1129,7 @@ install-dvi: install-dvi-am
 
 install-dvi-am:
 
-install-exec-am: install-dist_pkglibexecSCRIPTS install-sbinPROGRAMS
+install-exec-am: install-sbinPROGRAMS
 
 install-html: install-html-am
 
@@ -1186,7 +1169,7 @@ ps: ps-am
 
 ps-am:
 
-uninstall-am: uninstall-dist_pkglibexecSCRIPTS uninstall-sbinPROGRAMS
+uninstall-am: uninstall-sbinPROGRAMS
 
 .MAKE: all check install install-am install-strip
 
@@ -1194,16 +1177,15 @@ uninstall-am: uninstall-dist_pkglibexecSCRIPTS uninstall-sbinPROGRAMS
 	clean-libtool clean-sbinPROGRAMS ctags distclean \
 	distclean-compile distclean-generic distclean-libtool \
 	distclean-tags distdir dvi dvi-am html html-am info info-am \
-	install install-am install-data install-data-am \
-	install-dist_pkglibexecSCRIPTS install-dvi install-dvi-am \
-	install-exec install-exec-am install-html install-html-am \
-	install-info install-info-am install-man install-pdf \
-	install-pdf-am install-ps install-ps-am install-sbinPROGRAMS \
-	install-strip installcheck installcheck-am installdirs \
-	maintainer-clean maintainer-clean-generic mostlyclean \
-	mostlyclean-compile mostlyclean-generic mostlyclean-libtool \
-	pdf pdf-am ps ps-am tags uninstall uninstall-am \
-	uninstall-dist_pkglibexecSCRIPTS uninstall-sbinPROGRAMS
+	install install-am install-data install-data-am install-dvi \
+	install-dvi-am install-exec install-exec-am install-html \
+	install-html-am install-info install-info-am install-man \
+	install-pdf install-pdf-am install-ps install-ps-am \
+	install-sbinPROGRAMS install-strip installcheck \
+	installcheck-am installdirs maintainer-clean \
+	maintainer-clean-generic mostlyclean mostlyclean-compile \
+	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
+	tags uninstall uninstall-am uninstall-sbinPROGRAMS
 
 
 ldm-marshal.c: ldm-marshal.list

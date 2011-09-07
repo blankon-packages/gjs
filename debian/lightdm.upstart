@@ -8,29 +8,27 @@
 description	"LightDM Display Manager"
 author		"Robert Ancell <robert.ancell@canonical.com>"
 
-start on (filesystem
-          and started dbus
-          and (drm-device-added card0 PRIMARY_DEVICE_FOR_DISPLAY=1
-               or stopped udevtrigger))
-stop on runlevel [016]
+start on ((filesystem
+            and (runlevel [!06]
+            and (started dbus
+            and (drm-device-added card0 PRIMARY_DEVICE_FOR_DISPLAY=1
+            or  (graphics-device-added PRIMARY_DEVICE_FOR_DISPLAY=1
+            or   stopped udev-fallback-graphics)))))
+            or  runlevel PREVLEVEL=S)
 
-emits starting-dm
+stop on runlevel [016]
 
 script
     if [ -n "$UPSTART_EVENTS" ]
     then
 	[ ! -f /etc/X11/default-display-manager -o "$(cat /etc/X11/default-display-manager 2>/dev/null)" = "/usr/bin/lightdm" -o "$(cat /etc/X11/default-display-manager 2>/dev/null)" = "/usr/sbin/lightdm" ] || { stop; exit 0; }
 
-	# Check kernel command-line for inhibitors
-	for ARG in $(cat /proc/cmdline)
-	do
-	    case "${ARG}" in
-		text|-s|s|S|single)
-		    plymouth quit || :  # We have the ball here
-		    exit 0
-		    ;;
-	    esac
-	done
+	if [ "$RUNLEVEL" = S -o "$RUNLEVEL" = 1 ]
+	then
+	    # Single-user mode
+	    plymouth quit || :
+	    exit 0
+	fi
     fi
 
     exec lightdm

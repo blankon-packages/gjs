@@ -1,3 +1,51 @@
+lightdm (0.9.5-0ubuntu1) oneiric; urgency=low
+
+  [ Steve Langasek ]
+  * Update upstart job to use current start condition lifted from gdm,
+    and to check runlevels instead of /proc/cmdline so it's possible to
+    start lightdm after switching out of recovery mode.  LP: #803513.
+
+  [ Didier Roche ]
+  * debian/patches/01_transition_gnome_ubuntu_desktop.patch:
+    natty-oneiric session name upgrade:
+    - transition from unity-2d -> ubuntu-2d
+    - transition from gnome-2d -> gnome-fallback
+
+  [ Robert Ancell ]
+  * New upstream release:
+   [0.9.5]
+    - Use accounts service in the daemon if it is available
+    - Correctly load seat type in multi seat configuration
+    - Add display-setup, session-setup and session-cleanup scripting hooks
+    - Fix cancel button in GTK greeter (LP: #819240)
+    - Fix line through GTK greeter menu items
+    - Exit daemon if a seat fails which has exit-on-failure set to true
+    - Add HasGuestAccount property to seat D-Bus interface (LP: #835084)
+    - Fix XDMCP authorization
+    - Update man file
+    - Emit upstart events (LP: #715094)
+   [0.9.4]
+    - lightdm-set-defaults enables tweaking the default session and chosen
+      greeter for lightdm. This is useful for derivatives waiting to not ship
+      the whole configuration file of lightdm
+    - Fix crash in GTK+ greeter when a user is added
+    - Move xsessions-directory and xgreeters-directory from [SeatDefaults] to
+      [LightDM].  This is a configuration break, but making it on the assumption
+      that these settings are not likely to have been overridden.
+    - Fix fallback from org.freedesktop.Accounts to passwd format
+    - Fix duplicate user entries being shown when using passwd file
+    - Add AddSeat D-Bus method for adding dynamic seats
+    - Added a dm-tool program that allows user switching and adding seats
+    - Allow remote X servers, e.g. launched using dm-tool add-nested-seat
+    - Fix bug where sessions were started when the greeter quit and the user
+      hadn't been authorized.
+    - Fix bug where sessions used the seat bus name
+    - Don't allow autologin-username to be set to empty
+    - Fix bug where PAM session was not opened before writing to home directory
+    - Fix crash when failing to write X authority
+
+ -- Robert Ancell <robert.ancell@canonical.com>  Wed, 07 Sep 2011 16:09:53 +1000
+
 lightdm (0.9.3-0ubuntu8) oneiric; urgency=low
 
   * debian/patches/series:
