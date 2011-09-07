@@ -1,6 +1,6 @@
 dnl Process this file with autoconf to produce a configure script.
 
-AC_INIT(lightdm, 0.9.3)
+AC_INIT(lightdm, 0.9.5)
 AC_CONFIG_MACRO_DIR(m4)
 AC_CONFIG_HEADER(config.h)
 AM_INIT_AUTOMAKE
@@ -12,8 +12,6 @@ AM_MAINTAINER_MODE
 m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES(yes)])
 
 GOBJECT_INTROSPECTION_CHECK(0.9.5)
-
-AC_PATH_PROG([VALA_API_GEN], [vapigen])
 
 GNOME_COMPILE_WARNINGS(maximum)
 
@@ -195,6 +193,7 @@ po/Makefile.in
 src/Makefile
 tests/Makefile
 tests/src/Makefile
+utils/Makefile
 ])
 AC_OUTPUT
 

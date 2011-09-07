@@ -186,7 +186,7 @@ user_changed_cb (LightDMUser *user, LightDMUserList *user_list)
 }
 
 static void
-load_passwd_file (LightDMUserList *user_list)
+load_passwd_file (LightDMUserList *user_list, gboolean emit_add_signal)
 {
     LightDMUserListPrivate *priv = GET_LIST_PRIVATE (user_list);
     GKeyFile *config;
@@ -326,7 +326,8 @@ load_passwd_file (LightDMUserList *user_list)
         LightDMUser *info = link->data;
         g_debug ("User %s added", lightdm_user_get_name (info));
         g_signal_connect (info, "changed", G_CALLBACK (user_changed_cb), user_list);
-        g_signal_emit (user_list, list_signals[USER_ADDED], 0, info);
+        if (emit_add_signal)
+            g_signal_emit (user_list, list_signals[USER_ADDED], 0, info);
     }
     g_list_free (new_users);
     for (link = changed_users; link; link = link->next)
@@ -364,7 +365,7 @@ passwd_changed_cb (GFileMonitor *monitor, GFile *file, GFile *other_file, GFileM
     if (event_type == G_FILE_MONITOR_EVENT_CHANGES_DONE_HINT)
     {
         g_debug ("%s changed, reloading user list", g_file_get_path (file));
-        load_passwd_file (user_list);
+        load_passwd_file (user_list, TRUE);
     }
 }
 
@@ -667,7 +668,6 @@ static void
 update_users (LightDMUserList *user_list)
 {
     LightDMUserListPrivate *priv = GET_LIST_PRIVATE (user_list);
-    GFile *passwd_file;
     GError *error = NULL;
 
     if (priv->have_users)
@@ -685,6 +685,21 @@ update_users (LightDMUserList *user_list)
     if (!priv->accounts_service_proxy)
         g_warning ("Error contacting org.freedesktop.Accounts: %s", error->message);
     g_clear_error (&error);
+
+    /* Check if the service exists */
+    if (priv->accounts_service_proxy)
+    {
+        gchar *name;
+
+        name = g_dbus_proxy_get_name_owner (priv->accounts_service_proxy);
+        if (!name)
+        {
+            g_debug ("org.freedesktop.Accounts does not exist, falling back to passwd file");
+            g_object_unref (priv->accounts_service_proxy);
+            priv->accounts_service_proxy = NULL;
+        }
+        g_free (name);
+    }
 
     if (priv->accounts_service_proxy)
     {
@@ -737,7 +752,9 @@ update_users (LightDMUserList *user_list)
     }
     else
     {
-        load_passwd_file (user_list);
+        GFile *passwd_file;
+
+        load_passwd_file (user_list, FALSE);
 
         /* Watch for changes to user list */
         passwd_file = g_file_new_for_path (PASSWD_FILE);
@@ -1078,9 +1095,82 @@ load_dmrc (LightDMUser *user)
 
     // FIXME: Watch for changes
 
+    if (priv->language)
+        g_free (priv->language);
+    if (priv->layout)
+        g_free (priv->layout);
+    if (priv->session)
+        g_free (priv->session);
+
     priv->language = g_key_file_get_string (priv->dmrc_file, "Desktop", "Language", NULL);
     priv->layout = g_key_file_get_string (priv->dmrc_file, "Desktop", "Layout", NULL);
     priv->session = g_key_file_get_string (priv->dmrc_file, "Desktop", "Session", NULL);
+}
+
+static gchar *
+get_string_property (GDBusProxy *proxy, const gchar *property)
+{
+    GVariant *answer;
+    gchar *rv;
+
+    if (!proxy)
+        return NULL;
+
+    answer = g_dbus_proxy_get_cached_property (proxy, property);
+
+    if (!answer) {
+        g_warning ("Could not get accounts property %s", property);
+        return NULL;
+    }
+
+    if (!g_variant_is_of_type (answer, G_VARIANT_TYPE ("s"))) {
+        g_warning ("Unexpected accounts property type for %s: %s",
+                   property, g_variant_get_type_string (answer));
+        g_variant_unref (answer);
+        return NULL;
+    }
+
+    g_variant_get (answer, "s", &rv);
+
+    g_variant_unref (answer);
+    return rv;
+}
+
+static gboolean
+load_accounts_service (LightDMUser *user)
+{
+    LightDMUserPrivate *priv = GET_USER_PRIVATE (user);
+    LightDMUserListPrivate *list_priv = GET_LIST_PRIVATE (priv->user_list);
+
+    /* First, find AccountObject proxy */
+    UserAccountObject *account = NULL;
+    GList *iter;
+    for (iter = list_priv->user_account_objects; iter; iter = iter->next) {
+        if (((UserAccountObject *)iter->data)->user == user) {
+            account = (UserAccountObject *)iter->data;
+            break;
+        }
+    }
+    if (!account)
+        return FALSE;
+
+    /* We have proxy, let's grab some properties */
+    if (priv->language)
+        g_free (priv->language);
+    if (priv->session)
+        g_free (priv->session);
+    priv->language = get_string_property (account->proxy, "Language");
+    priv->session = get_string_property (account->proxy, "XSession");
+
+    return TRUE;
+}
+
+/* Loads language/layout/session info for user */
+static void
+load_user_values (LightDMUser *user)
+{
+    load_dmrc (user);
+    load_accounts_service (user); // overrides dmrc values
 }
 
 /**
@@ -1095,7 +1185,7 @@ const gchar *
 lightdm_user_get_language (LightDMUser *user)
 {
     g_return_val_if_fail (LIGHTDM_IS_USER (user), NULL);
-    load_dmrc (user);
+    load_user_values (user);
     return GET_USER_PRIVATE (user)->language;
 }
 
@@ -1111,7 +1201,7 @@ const gchar *
 lightdm_user_get_layout (LightDMUser *user)
 {
     g_return_val_if_fail (LIGHTDM_IS_USER (user), NULL);
-    load_dmrc (user);
+    load_user_values (user);
     return GET_USER_PRIVATE (user)->layout;
 }
 
@@ -1127,7 +1217,7 @@ const gchar *
 lightdm_user_get_session (LightDMUser *user)
 {
     g_return_val_if_fail (LIGHTDM_IS_USER (user), NULL);
-    load_dmrc (user);
+    load_user_values (user);
     return GET_USER_PRIVATE (user)->session; 
 }
 
@@ -1250,69 +1340,69 @@ lightdm_user_class_init (LightDMUserClass *klass)
     object_class->get_property = lightdm_user_get_property;
     object_class->finalize = lightdm_user_finalize;
 
-    g_object_class_install_property(object_class,
-                                    USER_PROP_NAME,
-                                    g_param_spec_string("name",
-                                                        "name",
-                                                        "Username",
-                                                        NULL,
-                                                        G_PARAM_READWRITE));
-    g_object_class_install_property(object_class,
-                                    USER_PROP_REAL_NAME,
-                                    g_param_spec_string("real-name",
-                                                        "real-name",
-                                                        "Users real name",
-                                                        NULL,
-                                                        G_PARAM_READWRITE));
-    g_object_class_install_property(object_class,
-                                    USER_PROP_DISPLAY_NAME,
-                                    g_param_spec_string("display-name",
-                                                        "display-name",
-                                                        "Users display name",
-                                                        NULL,
-                                                        G_PARAM_READABLE));
-    g_object_class_install_property(object_class,
-                                    USER_PROP_HOME_DIRECTORY,
-                                    g_param_spec_string("home-directory",
-                                                        "home-directory",
-                                                        "Home directory",
-                                                        NULL,
-                                                        G_PARAM_READWRITE));
-    g_object_class_install_property(object_class,
-                                    USER_PROP_IMAGE,
-                                    g_param_spec_string("image",
-                                                        "image",
-                                                        "Avatar image",
-                                                        NULL,
-                                                        G_PARAM_READWRITE));
-    g_object_class_install_property(object_class,
-                                    USER_PROP_LANGUAGE,
-                                    g_param_spec_string("language",
-                                                        "language",
-                                                        "Language used by this user",
-                                                        NULL,
-                                                        G_PARAM_READABLE));
-    g_object_class_install_property(object_class,
-                                    USER_PROP_LAYOUT,
-                                    g_param_spec_string("layout",
-                                                        "layout",
-                                                        "Keyboard layout used by this user",
-                                                        NULL,
-                                                        G_PARAM_READABLE));
-    g_object_class_install_property(object_class,
-                                    USER_PROP_SESSION,
-                                    g_param_spec_string("session",
-                                                        "session",
-                                                        "Session used by this user",
-                                                        NULL,
-                                                        G_PARAM_READABLE));
-    g_object_class_install_property(object_class,
-                                    USER_PROP_LOGGED_IN,
-                                    g_param_spec_boolean("logged-in",
-                                                         "logged-in",
-                                                         "TRUE if the user is currently in a session",
-                                                         FALSE,
-                                                         G_PARAM_READWRITE));
+    g_object_class_install_property (object_class,
+                                     USER_PROP_NAME,
+                                     g_param_spec_string ("name",
+                                                          "name",
+                                                          "Username",
+                                                          NULL,
+                                                          G_PARAM_READWRITE));
+    g_object_class_install_property (object_class,
+                                     USER_PROP_REAL_NAME,
+                                     g_param_spec_string ("real-name",
+                                                          "real-name",
+                                                          "Users real name",
+                                                          NULL,
+                                                          G_PARAM_READWRITE));
+    g_object_class_install_property (object_class,
+                                     USER_PROP_DISPLAY_NAME,
+                                     g_param_spec_string ("display-name",
+                                                          "display-name",
+                                                          "Users display name",
+                                                          NULL,
+                                                          G_PARAM_READABLE));
+    g_object_class_install_property (object_class,
+                                     USER_PROP_HOME_DIRECTORY,
+                                     g_param_spec_string ("home-directory",
+                                                          "home-directory",
+                                                          "Home directory",
+                                                          NULL,
+                                                          G_PARAM_READWRITE));
+    g_object_class_install_property (object_class,
+                                     USER_PROP_IMAGE,
+                                     g_param_spec_string ("image",
+                                                          "image",
+                                                          "Avatar image",
+                                                          NULL,
+                                                          G_PARAM_READWRITE));
+    g_object_class_install_property (object_class,
+                                     USER_PROP_LANGUAGE,
+                                     g_param_spec_string ("language",
+                                                         "language",
+                                                         "Language used by this user",
+                                                         NULL,
+                                                         G_PARAM_READABLE));
+    g_object_class_install_property (object_class,
+                                     USER_PROP_LAYOUT,
+                                     g_param_spec_string ("layout",
+                                                          "layout",
+                                                          "Keyboard layout used by this user",
+                                                          NULL,
+                                                          G_PARAM_READABLE));
+    g_object_class_install_property (object_class,
+                                     USER_PROP_SESSION,
+                                     g_param_spec_string ("session",
+                                                          "session",
+                                                          "Session used by this user",
+                                                          NULL,
+                                                          G_PARAM_READABLE));
+    g_object_class_install_property (object_class,
+                                     USER_PROP_LOGGED_IN,
+                                     g_param_spec_boolean ("logged-in",
+                                                           "logged-in",
+                                                           "TRUE if the user is currently in a session",
+                                                           FALSE,
+                                                           G_PARAM_READWRITE));
 
     /**
      * LightDMUser::changed:

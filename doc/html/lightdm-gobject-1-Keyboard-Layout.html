@@ -40,13 +40,13 @@
 <pre class="synopsis">
 #include &lt;lightdm.h&gt;
 
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Doubly-Linked-Lists.html#GList"><span class="returnvalue">GList</span></a> *             <a class="link" href="lightdm-gobject-1-Keyboard-Layout.html#lightdm-get-layouts" title="lightdm_get_layouts ()">lightdm_get_layouts</a>                 (<em class="parameter"><code><span class="type">void</span></code></em>);
+<span class="returnvalue">GList</span> *             <a class="link" href="lightdm-gobject-1-Keyboard-Layout.html#lightdm-get-layouts" title="lightdm_get_layouts ()">lightdm_get_layouts</a>                 (<em class="parameter"><code><span class="type">void</span></code></em>);
 <span class="returnvalue">LightDMLayout</span> *     <a class="link" href="lightdm-gobject-1-Keyboard-Layout.html#lightdm-get-layout" title="lightdm_get_layout ()">lightdm_get_layout</a>                  (<em class="parameter"><code><span class="type">void</span></code></em>);
 <span class="returnvalue">void</span>                <a class="link" href="lightdm-gobject-1-Keyboard-Layout.html#lightdm-set-layout" title="lightdm_set_layout ()">lightdm_set_layout</a>                  (<em class="parameter"><code><span class="type">LightDMLayout</span> *layout</code></em>);
-const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       <a class="link" href="lightdm-gobject-1-Keyboard-Layout.html#lightdm-layout-get-name" title="lightdm_layout_get_name ()">lightdm_layout_get_name</a>             (<em class="parameter"><code><span class="type">LightDMLayout</span> *layout</code></em>);
-const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       <a class="link" href="lightdm-gobject-1-Keyboard-Layout.html#lightdm-layout-get-short-description" title="lightdm_layout_get_short_description ()">lightdm_layout_get_short_description</a>
+const <span class="returnvalue">gchar</span> *       <a class="link" href="lightdm-gobject-1-Keyboard-Layout.html#lightdm-layout-get-name" title="lightdm_layout_get_name ()">lightdm_layout_get_name</a>             (<em class="parameter"><code><span class="type">LightDMLayout</span> *layout</code></em>);
+const <span class="returnvalue">gchar</span> *       <a class="link" href="lightdm-gobject-1-Keyboard-Layout.html#lightdm-layout-get-short-description" title="lightdm_layout_get_short_description ()">lightdm_layout_get_short_description</a>
                                                         (<em class="parameter"><code><span class="type">LightDMLayout</span> *layout</code></em>);
-const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       <a class="link" href="lightdm-gobject-1-Keyboard-Layout.html#lightdm-layout-get-description" title="lightdm_layout_get_description ()">lightdm_layout_get_description</a>      (<em class="parameter"><code><span class="type">LightDMLayout</span> *layout</code></em>);
+const <span class="returnvalue">gchar</span> *       <a class="link" href="lightdm-gobject-1-Keyboard-Layout.html#lightdm-layout-get-description" title="lightdm_layout_get_description ()">lightdm_layout_get_description</a>      (<em class="parameter"><code><span class="type">LightDMLayout</span> *layout</code></em>);
 </pre>
 </div>
 <div class="refsect1">
@@ -59,7 +59,7 @@ const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.htm
 <a name="lightdm-gobject-1-Keyboard-Layout.details"></a><h2>Details</h2>
 <div class="refsect2">
 <a name="lightdm-get-layouts"></a><h3>lightdm_get_layouts ()</h3>
-<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Doubly-Linked-Lists.html#GList"><span class="returnvalue">GList</span></a> *             lightdm_get_layouts                 (<em class="parameter"><code><span class="type">void</span></code></em>);</pre>
+<pre class="programlisting"><span class="returnvalue">GList</span> *             lightdm_get_layouts                 (<em class="parameter"><code><span class="type">void</span></code></em>);</pre>
 <p>
 Get a list of keyboard layouts to present to the user.
 </p>
@@ -106,7 +106,7 @@ Set the layout for this session.
 <hr>
 <div class="refsect2">
 <a name="lightdm-layout-get-name"></a><h3>lightdm_layout_get_name ()</h3>
-<pre class="programlisting">const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       lightdm_layout_get_name             (<em class="parameter"><code><span class="type">LightDMLayout</span> *layout</code></em>);</pre>
+<pre class="programlisting">const <span class="returnvalue">gchar</span> *       lightdm_layout_get_name             (<em class="parameter"><code><span class="type">LightDMLayout</span> *layout</code></em>);</pre>
 <p>
 Get the name of a layout.
 </p>
@@ -128,7 +128,7 @@ Get the name of a layout.
 <hr>
 <div class="refsect2">
 <a name="lightdm-layout-get-short-description"></a><h3>lightdm_layout_get_short_description ()</h3>
-<pre class="programlisting">const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       lightdm_layout_get_short_description
+<pre class="programlisting">const <span class="returnvalue">gchar</span> *       lightdm_layout_get_short_description
                                                         (<em class="parameter"><code><span class="type">LightDMLayout</span> *layout</code></em>);</pre>
 <p>
 Get the short description of a layout.
@@ -151,7 +151,7 @@ Get the short description of a layout.
 <hr>
 <div class="refsect2">
 <a name="lightdm-layout-get-description"></a><h3>lightdm_layout_get_description ()</h3>
-<pre class="programlisting">const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       lightdm_layout_get_description      (<em class="parameter"><code><span class="type">LightDMLayout</span> *layout</code></em>);</pre>
+<pre class="programlisting">const <span class="returnvalue">gchar</span> *       lightdm_layout_get_description      (<em class="parameter"><code><span class="type">LightDMLayout</span> *layout</code></em>);</pre>
 <p>
 Get the long description of a layout.
 </p>

@@ -40,14 +40,14 @@
 <pre class="synopsis">
 #include &lt;lightdm.h&gt;
 
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="lightdm-gobject-1-Power-Management.html#lightdm-get-can-suspend" title="lightdm_get_can_suspend ()">lightdm_get_can_suspend</a>             (<em class="parameter"><code><span class="type">void</span></code></em>);
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="lightdm-gobject-1-Power-Management.html#lightdm-suspend" title="lightdm_suspend ()">lightdm_suspend</a>                     (<em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="lightdm-gobject-1-Power-Management.html#lightdm-get-can-hibernate" title="lightdm_get_can_hibernate ()">lightdm_get_can_hibernate</a>           (<em class="parameter"><code><span class="type">void</span></code></em>);
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="lightdm-gobject-1-Power-Management.html#lightdm-hibernate" title="lightdm_hibernate ()">lightdm_hibernate</a>                   (<em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="lightdm-gobject-1-Power-Management.html#lightdm-get-can-restart" title="lightdm_get_can_restart ()">lightdm_get_can_restart</a>             (<em class="parameter"><code><span class="type">void</span></code></em>);
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="lightdm-gobject-1-Power-Management.html#lightdm-restart" title="lightdm_restart ()">lightdm_restart</a>                     (<em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="lightdm-gobject-1-Power-Management.html#lightdm-get-can-shutdown" title="lightdm_get_can_shutdown ()">lightdm_get_can_shutdown</a>            (<em class="parameter"><code><span class="type">void</span></code></em>);
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="lightdm-gobject-1-Power-Management.html#lightdm-shutdown" title="lightdm_shutdown ()">lightdm_shutdown</a>                    (<em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);
+<span class="returnvalue">gboolean</span>            <a class="link" href="lightdm-gobject-1-Power-Management.html#lightdm-get-can-suspend" title="lightdm_get_can_suspend ()">lightdm_get_can_suspend</a>             (<em class="parameter"><code><span class="type">void</span></code></em>);
+<span class="returnvalue">gboolean</span>            <a class="link" href="lightdm-gobject-1-Power-Management.html#lightdm-suspend" title="lightdm_suspend ()">lightdm_suspend</a>                     (<em class="parameter"><code><span class="type">GError</span> **error</code></em>);
+<span class="returnvalue">gboolean</span>            <a class="link" href="lightdm-gobject-1-Power-Management.html#lightdm-get-can-hibernate" title="lightdm_get_can_hibernate ()">lightdm_get_can_hibernate</a>           (<em class="parameter"><code><span class="type">void</span></code></em>);
+<span class="returnvalue">gboolean</span>            <a class="link" href="lightdm-gobject-1-Power-Management.html#lightdm-hibernate" title="lightdm_hibernate ()">lightdm_hibernate</a>                   (<em class="parameter"><code><span class="type">GError</span> **error</code></em>);
+<span class="returnvalue">gboolean</span>            <a class="link" href="lightdm-gobject-1-Power-Management.html#lightdm-get-can-restart" title="lightdm_get_can_restart ()">lightdm_get_can_restart</a>             (<em class="parameter"><code><span class="type">void</span></code></em>);
+<span class="returnvalue">gboolean</span>            <a class="link" href="lightdm-gobject-1-Power-Management.html#lightdm-restart" title="lightdm_restart ()">lightdm_restart</a>                     (<em class="parameter"><code><span class="type">GError</span> **error</code></em>);
+<span class="returnvalue">gboolean</span>            <a class="link" href="lightdm-gobject-1-Power-Management.html#lightdm-get-can-shutdown" title="lightdm_get_can_shutdown ()">lightdm_get_can_shutdown</a>            (<em class="parameter"><code><span class="type">void</span></code></em>);
+<span class="returnvalue">gboolean</span>            <a class="link" href="lightdm-gobject-1-Power-Management.html#lightdm-shutdown" title="lightdm_shutdown ()">lightdm_shutdown</a>                    (<em class="parameter"><code><span class="type">GError</span> **error</code></em>);
 </pre>
 </div>
 <div class="refsect1">
@@ -59,7 +59,7 @@
 <a name="lightdm-gobject-1-Power-Management.details"></a><h2>Details</h2>
 <div class="refsect2">
 <a name="lightdm-get-can-suspend"></a><h3>lightdm_get_can_suspend ()</h3>
-<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            lightdm_get_can_suspend             (<em class="parameter"><code><span class="type">void</span></code></em>);</pre>
+<pre class="programlisting"><span class="returnvalue">gboolean</span>            lightdm_get_can_suspend             (<em class="parameter"><code><span class="type">void</span></code></em>);</pre>
 <p>
 Checks if authorized to do a system suspend.
 </p>
@@ -68,14 +68,14 @@ Checks if authorized to do a system suspend.
 <tbody><tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td>
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><span class="type">TRUE</span></a> if can suspend the system</td>
+<span class="type">TRUE</span> if can suspend the system</td>
 </tr></tbody>
 </table></div>
 </div>
 <hr>
 <div class="refsect2">
 <a name="lightdm-suspend"></a><h3>lightdm_suspend ()</h3>
-<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            lightdm_suspend                     (<em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);</pre>
+<pre class="programlisting"><span class="returnvalue">gboolean</span>            lightdm_suspend                     (<em class="parameter"><code><span class="type">GError</span> **error</code></em>);</pre>
 <p>
 Triggers a system suspend.
 </p>
@@ -84,13 +84,13 @@ Triggers a system suspend.
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>error</code></em> :</span></p></td>
-<td>return location for a <a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a>, or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>
+<td>return location for a <span class="type">GError</span>, or <code class="literal">NULL</code>
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td>
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><span class="type">TRUE</span></a> if suspend initiated.</td>
+<span class="type">TRUE</span> if suspend initiated.</td>
 </tr>
 </tbody>
 </table></div>
@@ -98,7 +98,7 @@ Triggers a system suspend.
 <hr>
 <div class="refsect2">
 <a name="lightdm-get-can-hibernate"></a><h3>lightdm_get_can_hibernate ()</h3>
-<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            lightdm_get_can_hibernate           (<em class="parameter"><code><span class="type">void</span></code></em>);</pre>
+<pre class="programlisting"><span class="returnvalue">gboolean</span>            lightdm_get_can_hibernate           (<em class="parameter"><code><span class="type">void</span></code></em>);</pre>
 <p>
 Checks if is authorized to do a system hibernate.
 </p>
@@ -107,14 +107,14 @@ Checks if is authorized to do a system hibernate.
 <tbody><tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td>
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><span class="type">TRUE</span></a> if can hibernate the system</td>
+<span class="type">TRUE</span> if can hibernate the system</td>
 </tr></tbody>
 </table></div>
 </div>
 <hr>
 <div class="refsect2">
 <a name="lightdm-hibernate"></a><h3>lightdm_hibernate ()</h3>
-<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            lightdm_hibernate                   (<em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);</pre>
+<pre class="programlisting"><span class="returnvalue">gboolean</span>            lightdm_hibernate                   (<em class="parameter"><code><span class="type">GError</span> **error</code></em>);</pre>
 <p>
 Triggers a system hibernate.
 </p>
@@ -123,13 +123,13 @@ Triggers a system hibernate.
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>error</code></em> :</span></p></td>
-<td>return location for a <a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a>, or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>
+<td>return location for a <span class="type">GError</span>, or <code class="literal">NULL</code>
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td>
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><span class="type">TRUE</span></a> if hibernate initiated.</td>
+<span class="type">TRUE</span> if hibernate initiated.</td>
 </tr>
 </tbody>
 </table></div>
@@ -137,7 +137,7 @@ Triggers a system hibernate.
 <hr>
 <div class="refsect2">
 <a name="lightdm-get-can-restart"></a><h3>lightdm_get_can_restart ()</h3>
-<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            lightdm_get_can_restart             (<em class="parameter"><code><span class="type">void</span></code></em>);</pre>
+<pre class="programlisting"><span class="returnvalue">gboolean</span>            lightdm_get_can_restart             (<em class="parameter"><code><span class="type">void</span></code></em>);</pre>
 <p>
 Checks if is authorized to do a system restart.
 </p>
@@ -146,14 +146,14 @@ Checks if is authorized to do a system restart.
 <tbody><tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td>
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><span class="type">TRUE</span></a> if can restart the system</td>
+<span class="type">TRUE</span> if can restart the system</td>
 </tr></tbody>
 </table></div>
 </div>
 <hr>
 <div class="refsect2">
 <a name="lightdm-restart"></a><h3>lightdm_restart ()</h3>
-<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            lightdm_restart                     (<em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);</pre>
+<pre class="programlisting"><span class="returnvalue">gboolean</span>            lightdm_restart                     (<em class="parameter"><code><span class="type">GError</span> **error</code></em>);</pre>
 <p>
 Triggers a system restart.
 </p>
@@ -162,13 +162,13 @@ Triggers a system restart.
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>error</code></em> :</span></p></td>
-<td>return location for a <a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a>, or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>
+<td>return location for a <span class="type">GError</span>, or <code class="literal">NULL</code>
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td>
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><span class="type">TRUE</span></a> if restart initiated.</td>
+<span class="type">TRUE</span> if restart initiated.</td>
 </tr>
 </tbody>
 </table></div>
@@ -176,7 +176,7 @@ Triggers a system restart.
 <hr>
 <div class="refsect2">
 <a name="lightdm-get-can-shutdown"></a><h3>lightdm_get_can_shutdown ()</h3>
-<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            lightdm_get_can_shutdown            (<em class="parameter"><code><span class="type">void</span></code></em>);</pre>
+<pre class="programlisting"><span class="returnvalue">gboolean</span>            lightdm_get_can_shutdown            (<em class="parameter"><code><span class="type">void</span></code></em>);</pre>
 <p>
 Checks if is authorized to do a system shutdown.
 </p>
@@ -185,14 +185,14 @@ Checks if is authorized to do a system shutdown.
 <tbody><tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td>
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><span class="type">TRUE</span></a> if can shutdown the system</td>
+<span class="type">TRUE</span> if can shutdown the system</td>
 </tr></tbody>
 </table></div>
 </div>
 <hr>
 <div class="refsect2">
 <a name="lightdm-shutdown"></a><h3>lightdm_shutdown ()</h3>
-<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            lightdm_shutdown                    (<em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);</pre>
+<pre class="programlisting"><span class="returnvalue">gboolean</span>            lightdm_shutdown                    (<em class="parameter"><code><span class="type">GError</span> **error</code></em>);</pre>
 <p>
 Triggers a system shutdown.
 </p>
@@ -201,13 +201,13 @@ Triggers a system shutdown.
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>error</code></em> :</span></p></td>
-<td>return location for a <a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a>, or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>
+<td>return location for a <span class="type">GError</span>, or <code class="literal">NULL</code>
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td>
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><span class="type">TRUE</span></a> if shutdown initiated.</td>
+<span class="type">TRUE</span> if shutdown initiated.</td>
 </tr>
 </tbody>
 </table></div>
