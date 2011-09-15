@@ -1,3 +1,5 @@
+00upstream_unlock_fix.patch
 01_transition_gnome_ubuntu_desktop.patch
 02_disable_tests.patch
 03_launch_dbus.patch
+04_dont_write_files_as_root.patch
