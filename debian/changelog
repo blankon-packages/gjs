@@ -1,3 +1,18 @@
+lightdm (0.9.6-0ubuntu1) oneiric; urgency=low
+
+  * New upstream release:
+    - Only unlock displays if switched to from greeter
+    - Make log file not system readable
+    - Write ~/.Xauthority inside the session process so it cannot be hijacked
+    - Set PAM_TTY and PAM_XDISPLAY when opening PAM session
+    - Add VNC server support
+    - Do not write ~/.dmrc and ~/.Xauthority as root. [CVE-2011-3349]
+  * debian/patches/00upstream_unlock_fix.patch:
+  * debian/patches/04_dont_write_files_as_root.patch:
+    - Applied upstream
+
+ -- Robert Ancell <robert.ancell@canonical.com>  Thu, 15 Sep 2011 17:32:25 +1000
+
 lightdm (0.9.5-0ubuntu2) oneiric; urgency=low
 
   * debian/lightdm.config: When installing from scratch as part of a release
