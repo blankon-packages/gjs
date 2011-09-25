@@ -1,3 +1,16 @@
+lightdm (0.9.7-0ubuntu2) oneiric; urgency=low
+
+  * don't start on graphics-device-added; reintroducing this reverted the fix
+    for bug #615549 from maverick without explanation.
+  * clean up the completely illegible start rule for debian/lightdm.upstart,
+    killing off the unnecessary parentheses
+  * debian/lightdm.upstart: when lightdm is shut down by a runlevel call,
+    emit an upstart event that can be caught by plymouth so it can
+    distinguish between the DM shutting down for a runlevel change vs.
+    other causes.  LP: #854329.
+
+ -- Steve Langasek <steve.langasek@ubuntu.com>  Sun, 25 Sep 2011 22:22:38 -0700
+
 lightdm (0.9.7-0ubuntu1) oneiric; urgency=low
 
   * New upstream release.
