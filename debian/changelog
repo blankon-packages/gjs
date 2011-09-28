@@ -1,3 +1,15 @@
+lightdm (1.0.0-0ubuntu2) oneiric; urgency=low
+
+  * debian/lightdm-gtk-greeter.postinst,
+    debian/lightdm-gtk-greeter.postrm,
+    debian/lightdm-gtk-greeter.preinst:
+    - move the gtk-greeter conffile starting from 1.0.0-0ubuntu1 and not
+      0.9.7-0ubuntu1 (the patch using 0.9.7-0ubuntu1 as a reference has
+      been integrated in 1.0.0-0ubuntu1 without being updated even if
+      0.9.7-0ubuntu2 was already released). Ensure we do it now (LP: #861316)
+
+ -- Didier Roche <didrocks@ubuntu.com>  Wed, 28 Sep 2011 13:40:40 +0200
+
 lightdm (1.0.0-0ubuntu1) oneiric; urgency=low
 
   [ Steve Langasek ]
