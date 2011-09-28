@@ -1,5 +1,0 @@
-Greeter crash before connect
-Greeter crash after connect
-Greeter crash loop
-Autologin, session exit, check not autologin again
-X server crash before greeter connects (fail to start display)

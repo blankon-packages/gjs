@@ -1,8 +1,8 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'Greeter'
 **
-** Created: Tue Sep 6 15:54:20 2011
-**      by: The Qt Meta Object Compiler version 62 (Qt 4.7.3)
+** Created: Tue Sep 20 10:23:34 2011
+**      by: The Qt Meta Object Compiler version 62 (Qt 4.7.4)
 **
 ** WARNING! All changes made in this file will be lost!
 *****************************************************************************/
@@ -11,7 +11,7 @@
 #if !defined(Q_MOC_OUTPUT_REVISION)
 #error "The header file 'Greeter' doesn't include <QObject>."
 #elif Q_MOC_OUTPUT_REVISION != 62
-#error "This file was generated using the moc from 4.7.3. It"
+#error "This file was generated using the moc from 4.7.4. It"
 #error "cannot be used with the include files from this version of Qt."
 #error "(The moc has changed too much.)"
 #endif
@@ -23,7 +23,7 @@ static const uint qt_meta_data_QLightDM__Greeter[] = {
        5,       // revision
        0,       // classname
        0,    0, // classinfo
-      13,   14, // methods
+      14,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -43,9 +43,10 @@ static const uint qt_meta_data_QLightDM__Greeter[] = {
      227,   18,   18,   18, 0x0a,
      258,  249,   18,   18, 0x0a,
      275,   18,   18,   18, 0x0a,
-     306,  298,  162,   18, 0x0a,
-     332,   18,  162,   18, 0x2a,
-     354,  351,   18,   18, 0x08,
+     307,  298,   18,   18, 0x0a,
+     336,  328,  162,   18, 0x0a,
+     362,   18,  162,   18, 0x2a,
+     384,  381,   18,   18, 0x08,
 
        0        // eod
 };
@@ -59,7 +60,8 @@ static const char qt_meta_stringdata_QLightDM__Greeter[] = {
     "username\0authenticate(QString)\0"
     "authenticate()\0authenticateAsGuest()\0"
     "response\0respond(QString)\0"
-    "cancelAuthentication()\0session\0"
+    "cancelAuthentication()\0language\0"
+    "setLanguage(QString)\0session\0"
     "startSessionSync(QString)\0startSessionSync()\0"
     "fd\0onRead(int)\0"
 };
@@ -104,14 +106,15 @@ int QLightDM::Greeter::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
         case 7: authenticateAsGuest(); break;
         case 8: respond((*reinterpret_cast< const QString(*)>(_a[1]))); break;
         case 9: cancelAuthentication(); break;
-        case 10: { bool _r = startSessionSync((*reinterpret_cast< const QString(*)>(_a[1])));
+        case 10: setLanguage((*reinterpret_cast< QString(*)>(_a[1]))); break;
+        case 11: { bool _r = startSessionSync((*reinterpret_cast< const QString(*)>(_a[1])));
             if (_a[0]) *reinterpret_cast< bool*>(_a[0]) = _r; }  break;
-        case 11: { bool _r = startSessionSync();
+        case 12: { bool _r = startSessionSync();
             if (_a[0]) *reinterpret_cast< bool*>(_a[0]) = _r; }  break;
-        case 12: onRead((*reinterpret_cast< int(*)>(_a[1]))); break;
+        case 13: onRead((*reinterpret_cast< int(*)>(_a[1]))); break;
         default: ;
         }
-        _id -= 13;
+        _id -= 14;
     }
     return _id;
 }

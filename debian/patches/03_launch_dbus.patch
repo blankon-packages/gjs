@@ -1,11 +1,11 @@
 === modified file 'src/display.c'
-Index: lightdm/src/display.c
+Index: lightdm-0.9.9~bzr/src/display.c
 ===================================================================
---- lightdm.orig/src/display.c	2011-09-07 15:17:37.463555000 +1000
-+++ lightdm/src/display.c	2011-09-07 16:14:19.369289500 +1000
-@@ -461,6 +461,12 @@
-             g_free (wrapper);
-         }
+--- lightdm-0.9.9~bzr.orig/src/display.c	2011-09-28 15:55:33.602339221 +1000
++++ lightdm-0.9.9~bzr/src/display.c	2011-09-28 15:55:37.974339180 +1000
+@@ -467,6 +467,12 @@
+         if (g_getenv ("PATH"))
+             session_set_env (session, "PATH", g_getenv ("PATH"));
      }
 +    else if (is_greeter)
 +    {
@@ -14,5 +14,5 @@ Index: lightdm/src/display.c
 +        g_free (t);
 +    }
  
-     session = DISPLAY_GET_CLASS (display)->create_session (display);
-     g_return_val_if_fail (session != NULL, NULL);
+     /* Variables required for regression tests */
+     if (g_getenv ("LIGHTDM_TEST_STATUS_SOCKET"))

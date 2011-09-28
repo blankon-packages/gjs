@@ -7,6 +7,8 @@ ldm-marshal.h: ldm-marshal.list
 	@GLIB_GENMARSHAL@ --prefix=ldm_marshal $(srcdir)/ldm-marshal.list --header > ldm-marshal.h
 
 lightdm_SOURCES = \
+	accounts.c \
+	accounts.h \
 	configuration.c \
 	configuration.h \
 	console-kit.c \
@@ -46,16 +48,12 @@ lightdm_SOURCES = \
 	seat-xvnc.h \
 	session.c \
 	session.h \
-	user.c \
-	user.h \
 	vnc-server.c \
 	vnc-server.h \
 	vt.c \
 	vt.h \
 	xauthority.c \
 	xauthority.h \
-	xdisplay.c \
-	xdisplay.h \
 	xdmcp-protocol.c \
 	xdmcp-protocol.h \
 	xdmcp-server.c \
@@ -82,6 +80,7 @@ lightdm_CFLAGS = \
 	$(LIGHTDM_CFLAGS) \
 	$(WARN_CFLAGS) \
 	-DPKGLIBEXEC_DIR=\"$(pkglibexecdir)\" \
+	-DSBIN_DIR=\"$(sbindir)\" \
 	-DCONFIG_DIR=\"$(sysconfdir)/lightdm\" \
 	-DLOG_DIR=\"$(localstatedir)/log/lightdm\" \
 	-DRUN_DIR=\"$(localstatedir)/run/lightdm\" \

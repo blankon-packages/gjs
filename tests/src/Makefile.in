@@ -36,7 +36,8 @@ build_triplet = @build@
 host_triplet = @host@
 noinst_PROGRAMS = test-runner$(EXEEXT) test-xserver$(EXEEXT) \
 	test-gobject-greeter$(EXEEXT) test-guest-account$(EXEEXT) \
-	test-session$(EXEEXT) plymouth$(EXEEXT) $(am__EXEEXT_1)
+	test-session$(EXEEXT) test-script-hook$(EXEEXT) \
+	plymouth$(EXEEXT) $(am__EXEEXT_1)
 @COMPILE_LIBLIGHTDM_QT_TRUE@am__append_1 = test-qt-greeter
 subdir = tests/src
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
@@ -96,6 +97,15 @@ test_runner_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 test_runner_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(test_runner_CFLAGS) \
 	$(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
+am_test_script_hook_OBJECTS =  \
+	test_script_hook-test-script-hook.$(OBJEXT) \
+	test_script_hook-status.$(OBJEXT)
+test_script_hook_OBJECTS = $(am_test_script_hook_OBJECTS)
+test_script_hook_DEPENDENCIES = $(am__DEPENDENCIES_1)
+test_script_hook_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
+	$(test_script_hook_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) \
+	-o $@
 am_test_session_OBJECTS = test_session-test-session.$(OBJEXT) \
 	test_session-status.$(OBJEXT)
 test_session_OBJECTS = $(am_test_session_OBJECTS)
@@ -157,10 +167,12 @@ am__v_GEN_ = $(am__v_GEN_$(AM_DEFAULT_VERBOSITY))
 am__v_GEN_0 = @echo "  GEN   " $@;
 SOURCES = $(plymouth_SOURCES) $(test_gobject_greeter_SOURCES) \
 	$(test_guest_account_SOURCES) $(test_qt_greeter_SOURCES) \
-	test-runner.c $(test_session_SOURCES) $(test_xserver_SOURCES)
+	test-runner.c $(test_script_hook_SOURCES) \
+	$(test_session_SOURCES) $(test_xserver_SOURCES)
 DIST_SOURCES = $(plymouth_SOURCES) $(test_gobject_greeter_SOURCES) \
 	$(test_guest_account_SOURCES) $(test_qt_greeter_SOURCES) \
-	test-runner.c $(test_session_SOURCES) $(test_xserver_SOURCES)
+	test-runner.c $(test_script_hook_SOURCES) \
+	$(test_session_SOURCES) $(test_xserver_SOURCES)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
@@ -387,6 +399,14 @@ test_guest_account_CFLAGS = \
 test_guest_account_LDADD = \
 	$(GLIB_LIBS)
 
+test_script_hook_SOURCES = test-script-hook.c status.c status.h
+test_script_hook_CFLAGS = \
+	$(WARN_CFLAGS) \
+	$(GLIB_CFLAGS)
+
+test_script_hook_LDADD = \
+	$(GLIB_LIBS)
+
 test_qt_greeter_SOURCES = test-qt-greeter.cpp test-qt-greeter.h test-qt-greeter_moc.cpp status.c status.h
 test_qt_greeter_CXXFLAGS = \
 	-I$(top_srcdir)/liblightdm-qt \
@@ -478,6 +498,9 @@ test-qt-greeter$(EXEEXT): $(test_qt_greeter_OBJECTS) $(test_qt_greeter_DEPENDENC
 test-runner$(EXEEXT): $(test_runner_OBJECTS) $(test_runner_DEPENDENCIES) 
 	@rm -f test-runner$(EXEEXT)
 	$(AM_V_CCLD)$(test_runner_LINK) $(test_runner_OBJECTS) $(test_runner_LDADD) $(LIBS)
+test-script-hook$(EXEEXT): $(test_script_hook_OBJECTS) $(test_script_hook_DEPENDENCIES) 
+	@rm -f test-script-hook$(EXEEXT)
+	$(AM_V_CCLD)$(test_script_hook_LINK) $(test_script_hook_OBJECTS) $(test_script_hook_LDADD) $(LIBS)
 test-session$(EXEEXT): $(test_session_OBJECTS) $(test_session_DEPENDENCIES) 
 	@rm -f test-session$(EXEEXT)
 	$(AM_V_CCLD)$(test_session_LINK) $(test_session_OBJECTS) $(test_session_LDADD) $(LIBS)
@@ -501,6 +524,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_qt_greeter-test-qt-greeter.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_qt_greeter-test-qt-greeter_moc.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_runner-test-runner.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_script_hook-status.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_script_hook-test-script-hook.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_session-status.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_session-test-session.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_xserver-status.Po@am__quote@
@@ -641,6 +666,38 @@ test_runner-test-runner.obj: test-runner.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='test-runner.c' object='test_runner-test-runner.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_runner_CFLAGS) $(CFLAGS) -c -o test_runner-test-runner.obj `if test -f 'test-runner.c'; then $(CYGPATH_W) 'test-runner.c'; else $(CYGPATH_W) '$(srcdir)/test-runner.c'; fi`
+
+test_script_hook-test-script-hook.o: test-script-hook.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_script_hook_CFLAGS) $(CFLAGS) -MT test_script_hook-test-script-hook.o -MD -MP -MF $(DEPDIR)/test_script_hook-test-script-hook.Tpo -c -o test_script_hook-test-script-hook.o `test -f 'test-script-hook.c' || echo '$(srcdir)/'`test-script-hook.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/test_script_hook-test-script-hook.Tpo $(DEPDIR)/test_script_hook-test-script-hook.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='test-script-hook.c' object='test_script_hook-test-script-hook.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_script_hook_CFLAGS) $(CFLAGS) -c -o test_script_hook-test-script-hook.o `test -f 'test-script-hook.c' || echo '$(srcdir)/'`test-script-hook.c
+
+test_script_hook-test-script-hook.obj: test-script-hook.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_script_hook_CFLAGS) $(CFLAGS) -MT test_script_hook-test-script-hook.obj -MD -MP -MF $(DEPDIR)/test_script_hook-test-script-hook.Tpo -c -o test_script_hook-test-script-hook.obj `if test -f 'test-script-hook.c'; then $(CYGPATH_W) 'test-script-hook.c'; else $(CYGPATH_W) '$(srcdir)/test-script-hook.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/test_script_hook-test-script-hook.Tpo $(DEPDIR)/test_script_hook-test-script-hook.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='test-script-hook.c' object='test_script_hook-test-script-hook.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_script_hook_CFLAGS) $(CFLAGS) -c -o test_script_hook-test-script-hook.obj `if test -f 'test-script-hook.c'; then $(CYGPATH_W) 'test-script-hook.c'; else $(CYGPATH_W) '$(srcdir)/test-script-hook.c'; fi`
+
+test_script_hook-status.o: status.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_script_hook_CFLAGS) $(CFLAGS) -MT test_script_hook-status.o -MD -MP -MF $(DEPDIR)/test_script_hook-status.Tpo -c -o test_script_hook-status.o `test -f 'status.c' || echo '$(srcdir)/'`status.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/test_script_hook-status.Tpo $(DEPDIR)/test_script_hook-status.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='status.c' object='test_script_hook-status.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_script_hook_CFLAGS) $(CFLAGS) -c -o test_script_hook-status.o `test -f 'status.c' || echo '$(srcdir)/'`status.c
+
+test_script_hook-status.obj: status.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_script_hook_CFLAGS) $(CFLAGS) -MT test_script_hook-status.obj -MD -MP -MF $(DEPDIR)/test_script_hook-status.Tpo -c -o test_script_hook-status.obj `if test -f 'status.c'; then $(CYGPATH_W) 'status.c'; else $(CYGPATH_W) '$(srcdir)/status.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/test_script_hook-status.Tpo $(DEPDIR)/test_script_hook-status.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='status.c' object='test_script_hook-status.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_script_hook_CFLAGS) $(CFLAGS) -c -o test_script_hook-status.obj `if test -f 'status.c'; then $(CYGPATH_W) 'status.c'; else $(CYGPATH_W) '$(srcdir)/status.c'; fi`
 
 test_session-test-session.o: test-session.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_session_CFLAGS) $(CFLAGS) -MT test_session-test-session.o -MD -MP -MF $(DEPDIR)/test_session-test-session.Tpo -c -o test_session-test-session.o `test -f 'test-session.c' || echo '$(srcdir)/'`test-session.c

@@ -49,7 +49,7 @@ Architecture: any
 Depends: ${misc:Depends},
          ${shlibs:Depends}
 Recommends: lightdm
-Provides: lightdm-greeter, lightdm-greeter-example-gtk
+Provides: lightdm-greeter, lightdm-greeter-example-gtk, lightdm-gtk-greeter-config
 Description: LightDM GTK+ Greeter
  A LightDM greeter that uses the GTK+ toolkit.
 

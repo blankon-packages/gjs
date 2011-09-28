@@ -15,7 +15,7 @@
 
 #include "dmrc.h"
 #include "configuration.h"
-#include "user.h"
+#include "accounts.h"
 #include "privileges.h"
 
 GKeyFile *
@@ -28,7 +28,7 @@ dmrc_load (const gchar *username)
 
     dmrc_file = g_key_file_new ();
 
-    user = user_get_by_name (username);
+    user = accounts_get_user_by_name (username);
     if (!user)
     {
         g_warning ("Cannot load .dmrc file, unable to get information on user %s", username);      
@@ -69,7 +69,7 @@ dmrc_save (GKeyFile *dmrc_file, const gchar *username)
     gchar *data;
     gsize length;
 
-    user = user_get_by_name (username);
+    user = accounts_get_user_by_name (username);
     if (!user)
     {
         g_warning ("Not saving DMRC file - unable to get information on user %s", username);
@@ -89,6 +89,7 @@ dmrc_save (GKeyFile *dmrc_file, const gchar *username)
         drop_privileges = geteuid () == 0;
         if (drop_privileges)
             privileges_drop (user);
+        g_debug ("Writing %s", path);
         g_file_set_contents (path, data, length, NULL);
         if (drop_privileges)
             privileges_reclaim ();

@@ -1,15 +1,54 @@
-lightdm (0.9.7-0ubuntu2) oneiric; urgency=low
+lightdm (1.0.0-0ubuntu1) oneiric; urgency=low
 
+  [ Steve Langasek ]
   * don't start on graphics-device-added; reintroducing this reverted the fix
     for bug #615549 from maverick without explanation.
   * clean up the completely illegible start rule for debian/lightdm.upstart,
     killing off the unnecessary parentheses
   * debian/lightdm.upstart: when lightdm is shut down by a runlevel call,
     emit an upstart event that can be caught by plymouth so it can
-    distinguish between the DM shutting down for a runlevel change vs.
-    other causes.  LP: #854329.
+    distinguish between the DM shutting down for a runlevel change vs. other
+    causes.  LP: #854329.
 
- -- Steve Langasek <steve.langasek@ubuntu.com>  Sun, 25 Sep 2011 22:22:38 -0700
+  [ Robert Ancell ]
+  * New upstream release.
+    [ 0.9.8 ]
+    - GetSeatForCookie and GetSessionForCookie are now deprecated.  They
+      remain for now but use the XDG_SEAT_PATH and XDG_SESSION_PATH
+      environment variables instead.
+    - Change log filenames to be unique across different display types.
+    - Fix up script hooks, add regression tests for them
+    - Complete removal of X code from the core of LightDM, so it can better
+      support various display types
+    - Add ability to set the language of a user from the greeter (LP: #803858)
+    - Set LANG variable based on the user language
+    - Add language selector into GTK greeter (disabled by default)
+    - Allow TCP/IP connections if xserver-allow-tcp is true
+    - Allow lightdm --version to be run as non-root
+    - Automatically respond to PAM messages without prompts (LP: #783598)
+    - Create 'AddLocalXSeat' D-Bus method, and require root to use 'AddSeat'
+    - Fix multi-seat configuration picking the same display number (LP: #851362)
+    - Use correct D-Bus and power interface in liblightdm-qt (LP: #852803)
+    - Run pam_setcred inside the session process so pam_group works
+      (LP: #851347)
+    - Make sure one session is always selected in the GTK greeter (LP: #819177)
+    [ 1.0.0 ]
+    - Explicitly grab keyboard focus in GTK greeter
+    - Fix removed power and a11y menu items in GTK greeter
+    - Put system binary directory into path when running in test mode
+      (LP: #860003)
+    - Call pam_getenvlist after pam_setcred
+
+  [ Lionel Le Folgoc ]
+  * Make the gtk greeter easily themable by derivatives: (LP: #845549)
+    - rename lightdm-gtk-greeter.conf to lightdm-gtk-greeter-ubuntu.conf,
+      and handle the move in maintainer scripts.
+    - manage /etc/lightdm/lightdm-gtk-greeter.conf with update-alternatives,
+      by default it uses /etc/lightdm/lightdm-gtk-greeter-ubuntu.conf with a
+      very low priority.
+  * debian/control: lightdm-gtk-greeter provides lightdm-gtk-greeter-config.
+
+ -- Robert Ancell <robert.ancell@canonical.com>  Wed, 28 Sep 2011 16:00:20 +1000
 
 lightdm (0.9.7-0ubuntu1) oneiric; urgency=low
 

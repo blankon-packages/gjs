@@ -53,52 +53,7 @@ G_BEGIN_DECLS
 #endif /* !G_ENABLE_DEBUG */
 
 
-/* BOOLEAN:OBJECT (./ldm-marshal.list:1) */
-extern void ldm_marshal_BOOLEAN__OBJECT (GClosure     *closure,
-                                         GValue       *return_value,
-                                         guint         n_param_values,
-                                         const GValue *param_values,
-                                         gpointer      invocation_hint,
-                                         gpointer      marshal_data);
-void
-ldm_marshal_BOOLEAN__OBJECT (GClosure     *closure,
-                             GValue       *return_value G_GNUC_UNUSED,
-                             guint         n_param_values,
-                             const GValue *param_values,
-                             gpointer      invocation_hint G_GNUC_UNUSED,
-                             gpointer      marshal_data)
-{
-  typedef gboolean (*GMarshalFunc_BOOLEAN__OBJECT) (gpointer     data1,
-                                                    gpointer     arg_1,
-                                                    gpointer     data2);
-  register GMarshalFunc_BOOLEAN__OBJECT callback;
-  register GCClosure *cc = (GCClosure*) closure;
-  register gpointer data1, data2;
-  gboolean v_return;
-
-  g_return_if_fail (return_value != NULL);
-  g_return_if_fail (n_param_values == 2);
-
-  if (G_CCLOSURE_SWAP_DATA (closure))
-    {
-      data1 = closure->data;
-      data2 = g_value_peek_pointer (param_values + 0);
-    }
-  else
-    {
-      data1 = g_value_peek_pointer (param_values + 0);
-      data2 = closure->data;
-    }
-  callback = (GMarshalFunc_BOOLEAN__OBJECT) (marshal_data ? marshal_data : cc->callback);
-
-  v_return = callback (data1,
-                       g_marshal_value_peek_object (param_values + 1),
-                       data2);
-
-  g_value_set_boolean (return_value, v_return);
-}
-
-/* VOID:INT,POINTER (./ldm-marshal.list:2) */
+/* VOID:INT,POINTER (./ldm-marshal.list:1) */
 extern void ldm_marshal_VOID__INT_POINTER (GClosure     *closure,
                                            GValue       *return_value,
                                            guint         n_param_values,
@@ -141,30 +96,30 @@ ldm_marshal_VOID__INT_POINTER (GClosure     *closure,
             data2);
 }
 
-/* VOID:OBJECT,BOOLEAN (./ldm-marshal.list:3) */
-extern void ldm_marshal_VOID__OBJECT_BOOLEAN (GClosure     *closure,
-                                              GValue       *return_value,
-                                              guint         n_param_values,
-                                              const GValue *param_values,
-                                              gpointer      invocation_hint,
-                                              gpointer      marshal_data);
+/* BOOLEAN:VOID (./ldm-marshal.list:2) */
+extern void ldm_marshal_BOOLEAN__VOID (GClosure     *closure,
+                                       GValue       *return_value,
+                                       guint         n_param_values,
+                                       const GValue *param_values,
+                                       gpointer      invocation_hint,
+                                       gpointer      marshal_data);
 void
-ldm_marshal_VOID__OBJECT_BOOLEAN (GClosure     *closure,
-                                  GValue       *return_value G_GNUC_UNUSED,
-                                  guint         n_param_values,
-                                  const GValue *param_values,
-                                  gpointer      invocation_hint G_GNUC_UNUSED,
-                                  gpointer      marshal_data)
+ldm_marshal_BOOLEAN__VOID (GClosure     *closure,
+                           GValue       *return_value G_GNUC_UNUSED,
+                           guint         n_param_values,
+                           const GValue *param_values,
+                           gpointer      invocation_hint G_GNUC_UNUSED,
+                           gpointer      marshal_data)
 {
-  typedef void (*GMarshalFunc_VOID__OBJECT_BOOLEAN) (gpointer     data1,
-                                                     gpointer     arg_1,
-                                                     gboolean     arg_2,
-                                                     gpointer     data2);
-  register GMarshalFunc_VOID__OBJECT_BOOLEAN callback;
+  typedef gboolean (*GMarshalFunc_BOOLEAN__VOID) (gpointer     data1,
+                                                  gpointer     data2);
+  register GMarshalFunc_BOOLEAN__VOID callback;
   register GCClosure *cc = (GCClosure*) closure;
   register gpointer data1, data2;
+  gboolean v_return;
 
-  g_return_if_fail (n_param_values == 3);
+  g_return_if_fail (return_value != NULL);
+  g_return_if_fail (n_param_values == 1);
 
   if (G_CCLOSURE_SWAP_DATA (closure))
     {
@@ -176,15 +131,15 @@ ldm_marshal_VOID__OBJECT_BOOLEAN (GClosure     *closure,
       data1 = g_value_peek_pointer (param_values + 0);
       data2 = closure->data;
     }
-  callback = (GMarshalFunc_VOID__OBJECT_BOOLEAN) (marshal_data ? marshal_data : cc->callback);
+  callback = (GMarshalFunc_BOOLEAN__VOID) (marshal_data ? marshal_data : cc->callback);
 
-  callback (data1,
-            g_marshal_value_peek_object (param_values + 1),
-            g_marshal_value_peek_boolean (param_values + 2),
-            data2);
+  v_return = callback (data1,
+                       data2);
+
+  g_value_set_boolean (return_value, v_return);
 }
 
-/* BOOLEAN:STRING (./ldm-marshal.list:4) */
+/* BOOLEAN:STRING (./ldm-marshal.list:3) */
 extern void ldm_marshal_BOOLEAN__STRING (GClosure     *closure,
                                          GValue       *return_value,
                                          guint         n_param_values,
@@ -229,27 +184,72 @@ ldm_marshal_BOOLEAN__STRING (GClosure     *closure,
   g_value_set_boolean (return_value, v_return);
 }
 
-/* BOOLEAN:VOID (./ldm-marshal.list:5) */
-extern void ldm_marshal_BOOLEAN__VOID (GClosure     *closure,
-                                       GValue       *return_value,
-                                       guint         n_param_values,
-                                       const GValue *param_values,
-                                       gpointer      invocation_hint,
-                                       gpointer      marshal_data);
+/* BOOLEAN:OBJECT (./ldm-marshal.list:4) */
+extern void ldm_marshal_BOOLEAN__OBJECT (GClosure     *closure,
+                                         GValue       *return_value,
+                                         guint         n_param_values,
+                                         const GValue *param_values,
+                                         gpointer      invocation_hint,
+                                         gpointer      marshal_data);
 void
-ldm_marshal_BOOLEAN__VOID (GClosure     *closure,
-                           GValue       *return_value G_GNUC_UNUSED,
-                           guint         n_param_values,
-                           const GValue *param_values,
-                           gpointer      invocation_hint G_GNUC_UNUSED,
-                           gpointer      marshal_data)
+ldm_marshal_BOOLEAN__OBJECT (GClosure     *closure,
+                             GValue       *return_value G_GNUC_UNUSED,
+                             guint         n_param_values,
+                             const GValue *param_values,
+                             gpointer      invocation_hint G_GNUC_UNUSED,
+                             gpointer      marshal_data)
 {
-  typedef gboolean (*GMarshalFunc_BOOLEAN__VOID) (gpointer     data1,
-                                                  gpointer     data2);
-  register GMarshalFunc_BOOLEAN__VOID callback;
+  typedef gboolean (*GMarshalFunc_BOOLEAN__OBJECT) (gpointer     data1,
+                                                    gpointer     arg_1,
+                                                    gpointer     data2);
+  register GMarshalFunc_BOOLEAN__OBJECT callback;
   register GCClosure *cc = (GCClosure*) closure;
   register gpointer data1, data2;
   gboolean v_return;
+
+  g_return_if_fail (return_value != NULL);
+  g_return_if_fail (n_param_values == 2);
+
+  if (G_CCLOSURE_SWAP_DATA (closure))
+    {
+      data1 = closure->data;
+      data2 = g_value_peek_pointer (param_values + 0);
+    }
+  else
+    {
+      data1 = g_value_peek_pointer (param_values + 0);
+      data2 = closure->data;
+    }
+  callback = (GMarshalFunc_BOOLEAN__OBJECT) (marshal_data ? marshal_data : cc->callback);
+
+  v_return = callback (data1,
+                       g_marshal_value_peek_object (param_values + 1),
+                       data2);
+
+  g_value_set_boolean (return_value, v_return);
+}
+
+/* STRING:VOID (./ldm-marshal.list:5) */
+extern void ldm_marshal_STRING__VOID (GClosure     *closure,
+                                      GValue       *return_value,
+                                      guint         n_param_values,
+                                      const GValue *param_values,
+                                      gpointer      invocation_hint,
+                                      gpointer      marshal_data);
+void
+ldm_marshal_STRING__VOID (GClosure     *closure,
+                          GValue       *return_value G_GNUC_UNUSED,
+                          guint         n_param_values,
+                          const GValue *param_values,
+                          gpointer      invocation_hint G_GNUC_UNUSED,
+                          gpointer      marshal_data)
+{
+  typedef gchar* (*GMarshalFunc_STRING__VOID) (gpointer     data1,
+                                               gpointer     data2);
+  register GMarshalFunc_STRING__VOID callback;
+  register GCClosure *cc = (GCClosure*) closure;
+  register gpointer data1, data2;
+  gchar* v_return;
 
   g_return_if_fail (return_value != NULL);
   g_return_if_fail (n_param_values == 1);
@@ -264,15 +264,58 @@ ldm_marshal_BOOLEAN__VOID (GClosure     *closure,
       data1 = g_value_peek_pointer (param_values + 0);
       data2 = closure->data;
     }
-  callback = (GMarshalFunc_BOOLEAN__VOID) (marshal_data ? marshal_data : cc->callback);
+  callback = (GMarshalFunc_STRING__VOID) (marshal_data ? marshal_data : cc->callback);
 
   v_return = callback (data1,
                        data2);
 
-  g_value_set_boolean (return_value, v_return);
+  g_value_take_string (return_value, v_return);
 }
 
-/* OBJECT:STRING (./ldm-marshal.list:6) */
+/* OBJECT:VOID (./ldm-marshal.list:6) */
+extern void ldm_marshal_OBJECT__VOID (GClosure     *closure,
+                                      GValue       *return_value,
+                                      guint         n_param_values,
+                                      const GValue *param_values,
+                                      gpointer      invocation_hint,
+                                      gpointer      marshal_data);
+void
+ldm_marshal_OBJECT__VOID (GClosure     *closure,
+                          GValue       *return_value G_GNUC_UNUSED,
+                          guint         n_param_values,
+                          const GValue *param_values,
+                          gpointer      invocation_hint G_GNUC_UNUSED,
+                          gpointer      marshal_data)
+{
+  typedef GObject* (*GMarshalFunc_OBJECT__VOID) (gpointer     data1,
+                                                 gpointer     data2);
+  register GMarshalFunc_OBJECT__VOID callback;
+  register GCClosure *cc = (GCClosure*) closure;
+  register gpointer data1, data2;
+  GObject* v_return;
+
+  g_return_if_fail (return_value != NULL);
+  g_return_if_fail (n_param_values == 1);
+
+  if (G_CCLOSURE_SWAP_DATA (closure))
+    {
+      data1 = closure->data;
+      data2 = g_value_peek_pointer (param_values + 0);
+    }
+  else
+    {
+      data1 = g_value_peek_pointer (param_values + 0);
+      data2 = closure->data;
+    }
+  callback = (GMarshalFunc_OBJECT__VOID) (marshal_data ? marshal_data : cc->callback);
+
+  v_return = callback (data1,
+                       data2);
+
+  g_value_take_object (return_value, v_return);
+}
+
+/* OBJECT:STRING (./ldm-marshal.list:7) */
 extern void ldm_marshal_OBJECT__STRING (GClosure     *closure,
                                         GValue       *return_value,
                                         guint         n_param_values,
@@ -315,49 +358,6 @@ ldm_marshal_OBJECT__STRING (GClosure     *closure,
                        data2);
 
   g_value_take_object (return_value, v_return);
-}
-
-/* STRING:VOID (./ldm-marshal.list:7) */
-extern void ldm_marshal_STRING__VOID (GClosure     *closure,
-                                      GValue       *return_value,
-                                      guint         n_param_values,
-                                      const GValue *param_values,
-                                      gpointer      invocation_hint,
-                                      gpointer      marshal_data);
-void
-ldm_marshal_STRING__VOID (GClosure     *closure,
-                          GValue       *return_value G_GNUC_UNUSED,
-                          guint         n_param_values,
-                          const GValue *param_values,
-                          gpointer      invocation_hint G_GNUC_UNUSED,
-                          gpointer      marshal_data)
-{
-  typedef gchar* (*GMarshalFunc_STRING__VOID) (gpointer     data1,
-                                               gpointer     data2);
-  register GMarshalFunc_STRING__VOID callback;
-  register GCClosure *cc = (GCClosure*) closure;
-  register gpointer data1, data2;
-  gchar* v_return;
-
-  g_return_if_fail (return_value != NULL);
-  g_return_if_fail (n_param_values == 1);
-
-  if (G_CCLOSURE_SWAP_DATA (closure))
-    {
-      data1 = closure->data;
-      data2 = g_value_peek_pointer (param_values + 0);
-    }
-  else
-    {
-      data1 = g_value_peek_pointer (param_values + 0);
-      data2 = closure->data;
-    }
-  callback = (GMarshalFunc_STRING__VOID) (marshal_data ? marshal_data : cc->callback);
-
-  v_return = callback (data1,
-                       data2);
-
-  g_value_take_string (return_value, v_return);
 }
 
 G_END_DECLS

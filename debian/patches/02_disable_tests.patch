@@ -1,8 +1,8 @@
 Index: lightdm/tests/Makefile.am
 ===================================================================
---- lightdm.orig/tests/Makefile.am	2011-09-07 16:09:52.809566000 +1000
-+++ lightdm/tests/Makefile.am	2011-09-07 16:14:15.829289495 +1000
-@@ -59,6 +59,8 @@
+--- lightdm.orig/tests/Makefile.am	2011-09-22 17:15:42.985827000 +1000
++++ lightdm/tests/Makefile.am	2011-09-22 17:15:59.486475679 +1000
+@@ -63,6 +63,8 @@
  	test-login-qt-guest-logout
  endif
  
