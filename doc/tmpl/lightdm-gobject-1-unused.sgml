@@ -1,0 +1,758 @@
+<!-- ##### SECTION ./tmpl/user-list.sgml:Image ##### -->
+
+
+
+<!-- ##### SECTION ./tmpl/user-list.sgml:Long_Description ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SECTION ./tmpl/user-list.sgml:See_Also ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SECTION ./tmpl/user-list.sgml:Short_Description ##### -->
+
+
+
+<!-- ##### SECTION ./tmpl/user-list.sgml:Stability_Level ##### -->
+
+
+
+<!-- ##### SECTION ./tmpl/user-list.sgml:Title ##### -->
+User Accounts
+
+
+<!-- ##### STRUCT LightDMGreeter ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SIGNAL LightDMGreeter::authentication-complete ##### -->
+<para>
+
+</para>
+
+@ldmgreeter: the object which received the signal.
+
+<!-- ##### SIGNAL LightDMGreeter::autologin-timer-expired ##### -->
+<para>
+
+</para>
+
+@ldmgreeter: the object which received the signal.
+
+<!-- ##### SIGNAL LightDMGreeter::connected ##### -->
+<para>
+
+</para>
+
+@ldmgreeter: the object which received the signal.
+
+<!-- ##### SIGNAL LightDMGreeter::quit ##### -->
+<para>
+
+</para>
+
+@ldmgreeter: the object which received the signal.
+
+<!-- ##### SIGNAL LightDMGreeter::select-guest ##### -->
+<para>
+
+</para>
+
+@ldmgreeter: the object which received the signal.
+
+<!-- ##### SIGNAL LightDMGreeter::select-user ##### -->
+<para>
+
+</para>
+
+@ldmgreeter: the object which received the signal.
+@arg1: 
+
+<!-- ##### SIGNAL LightDMGreeter::session-failed ##### -->
+<para>
+
+</para>
+
+@ldmgreeter: the object which received the signal.
+
+<!-- ##### SIGNAL LightDMGreeter::session-started ##### -->
+<para>
+
+</para>
+
+@ldmgreeter: the object which received the signal.
+
+<!-- ##### SIGNAL LightDMGreeter::show-error ##### -->
+<para>
+
+</para>
+
+@ldmgreeter: the object which received the signal.
+@arg1: 
+
+<!-- ##### SIGNAL LightDMGreeter::show-message ##### -->
+<para>
+
+</para>
+
+@ldmgreeter: the object which received the signal.
+@arg1: 
+@Param3: 
+
+<!-- ##### SIGNAL LightDMGreeter::show-prompt ##### -->
+<para>
+
+</para>
+
+@ldmgreeter: the object which received the signal.
+@arg1: 
+@Param3: 
+
+<!-- ##### SIGNAL LightDMGreeter::timed-login ##### -->
+<para>
+
+</para>
+
+@ldmgreeter: the object which received the signal.
+@arg1: 
+
+<!-- ##### SIGNAL LightDMGreeter::user-added ##### -->
+<para>
+
+</para>
+
+@ldmgreeter: the object which received the signal.
+@Param2: 
+
+<!-- ##### SIGNAL LightDMGreeter::user-changed ##### -->
+<para>
+
+</para>
+
+@ldmgreeter: the object which received the signal.
+@Param2: 
+
+<!-- ##### SIGNAL LightDMGreeter::user-removed ##### -->
+<para>
+
+</para>
+
+@ldmgreeter: the object which received the signal.
+@arg1: 
+
+<!-- ##### ARG LightDMGreeter:authentication-user ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ARG LightDMGreeter:autologin-guest-hint ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ARG LightDMGreeter:autologin-timeout-hint ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ARG LightDMGreeter:autologin-user-hint ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ARG LightDMGreeter:can-hibernate ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ARG LightDMGreeter:can-restart ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ARG LightDMGreeter:can-shutdown ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ARG LightDMGreeter:can-suspend ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ARG LightDMGreeter:default-session ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ARG LightDMGreeter:default-session-hint ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ARG LightDMGreeter:has-guest-account-hint ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ARG LightDMGreeter:has-guest-session-hint ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ARG LightDMGreeter:hide-users-hint ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ARG LightDMGreeter:hostname ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ARG LightDMGreeter:in-authentication ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ARG LightDMGreeter:is-authenticated ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ARG LightDMGreeter:layout ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ARG LightDMGreeter:login-delay ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ARG LightDMGreeter:num-users ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ARG LightDMGreeter:select-guest-hint ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ARG LightDMGreeter:select-user-hint ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ARG LightDMGreeter:show-users-hint ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ARG LightDMGreeter:timed-login-user ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### STRUCT LightDMLanguage ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ARG LightDMLanguage:code ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ARG LightDMLanguage:name ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ARG LightDMLanguage:territory ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### STRUCT LightDMLayout ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ARG LightDMLayout:description ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ARG LightDMLayout:name ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ARG LightDMLayout:short-description ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### STRUCT LightDMSession ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ARG LightDMSession:comment ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ARG LightDMSession:key ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ARG LightDMSession:name ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### STRUCT LightDMUser ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ARG LightDMUser:display-name ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ARG LightDMUser:greeter ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ARG LightDMUser:home-directory ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ARG LightDMUser:image ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ARG LightDMUser:language ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ARG LightDMUser:layout ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ARG LightDMUser:logged-in ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ARG LightDMUser:name ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ARG LightDMUser:real-name ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ARG LightDMUser:session ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### USER_FUNCTION connected ##### -->
+<para>
+
+</para>
+
+@greeter: 
+
+<!-- ##### FUNCTION lightdm_greeter_cancel_timed_login ##### -->
+<para>
+
+</para>
+
+@greeter: 
+
+<!-- ##### FUNCTION lightdm_greeter_connect_to_server ##### -->
+<para>
+
+</para>
+
+@greeter: 
+@Returns: 
+
+<!-- ##### FUNCTION lightdm_greeter_get_boolean_property ##### -->
+<para>
+
+</para>
+
+@greeter: 
+@name: 
+@Returns: 
+
+<!-- ##### FUNCTION lightdm_greeter_get_can_hibernate ##### -->
+<para>
+
+</para>
+
+@greeter: 
+@Returns: 
+
+<!-- ##### FUNCTION lightdm_greeter_get_can_restart ##### -->
+<para>
+
+</para>
+
+@greeter: 
+@Returns: 
+
+<!-- ##### FUNCTION lightdm_greeter_get_can_shutdown ##### -->
+<para>
+
+</para>
+
+@greeter: 
+@Returns: 
+
+<!-- ##### FUNCTION lightdm_greeter_get_can_suspend ##### -->
+<para>
+
+</para>
+
+@greeter: 
+@Returns: 
+
+<!-- ##### FUNCTION lightdm_greeter_get_default_language ##### -->
+<para>
+
+</para>
+
+@greeter: 
+@Returns: 
+
+<!-- ##### FUNCTION lightdm_greeter_get_default_session ##### -->
+<para>
+
+</para>
+
+@greeter: 
+@Returns: 
+
+<!-- ##### FUNCTION lightdm_greeter_get_has_guest_session ##### -->
+<para>
+
+</para>
+
+@greeter: 
+@Returns: 
+
+<!-- ##### FUNCTION lightdm_greeter_get_hostname ##### -->
+<para>
+
+</para>
+
+@greeter: 
+@Returns: 
+
+<!-- ##### FUNCTION lightdm_greeter_get_integer_property ##### -->
+<para>
+
+</para>
+
+@greeter: 
+@name: 
+@Returns: 
+
+<!-- ##### FUNCTION lightdm_greeter_get_is_first ##### -->
+<para>
+
+</para>
+
+@greeter: 
+@Returns: 
+
+<!-- ##### FUNCTION lightdm_greeter_get_languages ##### -->
+<para>
+
+</para>
+
+@greeter: 
+@Returns: 
+
+<!-- ##### FUNCTION lightdm_greeter_get_layout ##### -->
+<para>
+
+</para>
+
+@greeter: 
+@Returns: 
+
+<!-- ##### FUNCTION lightdm_greeter_get_layouts ##### -->
+<para>
+
+</para>
+
+@greeter: 
+@Returns: 
+
+<!-- ##### FUNCTION lightdm_greeter_get_num_users ##### -->
+<para>
+
+</para>
+
+@greeter: 
+@Returns: 
+
+<!-- ##### FUNCTION lightdm_greeter_get_sessions ##### -->
+<para>
+
+</para>
+
+@greeter: 
+@Returns: 
+
+<!-- ##### FUNCTION lightdm_greeter_get_show_users_hint ##### -->
+<para>
+
+</para>
+
+@greeter: 
+@Returns: 
+
+<!-- ##### FUNCTION lightdm_greeter_get_string_property ##### -->
+<para>
+
+</para>
+
+@greeter: 
+@name: 
+@Returns: 
+
+<!-- ##### FUNCTION lightdm_greeter_get_theme ##### -->
+<para>
+
+</para>
+
+@greeter: 
+@Returns: 
+
+<!-- ##### FUNCTION lightdm_greeter_get_timed_login_delay ##### -->
+<para>
+
+</para>
+
+@greeter: 
+@Returns: 
+
+<!-- ##### FUNCTION lightdm_greeter_get_timed_login_user ##### -->
+<para>
+
+</para>
+
+@greeter: 
+@Returns: 
+
+<!-- ##### FUNCTION lightdm_greeter_get_user_by_name ##### -->
+<para>
+
+</para>
+
+@greeter: 
+@username: 
+@Returns: 
+
+<!-- ##### FUNCTION lightdm_greeter_get_user_defaults ##### -->
+<para>
+
+</para>
+
+@greeter: 
+@username: 
+@language: 
+@layout: 
+@session: 
+@Returns: 
+
+<!-- ##### FUNCTION lightdm_greeter_get_user_list ##### -->
+<para>
+
+</para>
+
+@greeter: 
+@Returns: 
+
+<!-- ##### FUNCTION lightdm_greeter_get_users ##### -->
+<para>
+
+</para>
+
+@greeter: 
+@Returns: 
+
+<!-- ##### FUNCTION lightdm_greeter_hibernate ##### -->
+<para>
+
+</para>
+
+@greeter: 
+
+<!-- ##### FUNCTION lightdm_greeter_login ##### -->
+<para>
+
+</para>
+
+@greeter: 
+@username: 
+
+<!-- ##### FUNCTION lightdm_greeter_login_as_guest ##### -->
+<para>
+
+</para>
+
+@greeter: 
+
+<!-- ##### FUNCTION lightdm_greeter_login_with_user_prompt ##### -->
+<para>
+
+</para>
+
+@greeter: 
+
+<!-- ##### FUNCTION lightdm_greeter_restart ##### -->
+<para>
+
+</para>
+
+@greeter: 
+
+<!-- ##### FUNCTION lightdm_greeter_set_layout ##### -->
+<para>
+
+</para>
+
+@greeter: 
+@layout: 
+
+<!-- ##### FUNCTION lightdm_greeter_shutdown ##### -->
+<para>
+
+</para>
+
+@greeter: 
+
+<!-- ##### FUNCTION lightdm_greeter_start_default_session ##### -->
+<para>
+
+</para>
+
+@greeter: 
+
+<!-- ##### FUNCTION lightdm_greeter_start_session ##### -->
+<para>
+
+</para>
+
+@greeter: 
+@session: 
+
+<!-- ##### FUNCTION lightdm_greeter_suspend ##### -->
+<para>
+
+</para>
+
+@greeter: 
+
+<!-- ##### FUNCTION lightdm_user_list_get_num_users ##### -->
+<para>
+
+</para>
+
+@user_list: 
+@Returns: 
+
+<!-- ##### FUNCTION lightdm_user_list_new ##### -->
+<para>
+
+</para>
+
+@void: 
+@Returns: 
+
+<!-- ##### USER_FUNCTION quit ##### -->
+<para>
+
+</para>
+
+@greeter: 
+
+<!-- ##### USER_FUNCTION session_failed ##### -->
+<para>
+
+</para>
+
+@greeter: 
+

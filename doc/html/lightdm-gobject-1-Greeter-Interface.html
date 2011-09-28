@@ -8,7 +8,7 @@
 <link rel="up" href="core.html" title="Part I. liblightdm-gobject">
 <link rel="prev" href="core.html" title="Part I. liblightdm-gobject">
 <link rel="next" href="lightdm-gobject-1-Languages.html" title="Languages">
-<meta name="generator" content="GTK-Doc V1.17 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.18 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
@@ -41,34 +41,34 @@
 #include &lt;lightdm.h&gt;
 
 <span class="returnvalue">void</span>                (<a class="link" href="lightdm-gobject-1-Greeter-Interface.html#show-message" title="show_message ()">*show_message</a>)                     (<em class="parameter"><code><span class="type">LightDMGreeter</span> *greeter</code></em>,
-                                                         <em class="parameter"><code>const <span class="type">gchar</span> *text</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *text</code></em>,
                                                          <em class="parameter"><code><a class="link" href="lightdm-gobject-1-Greeter-Interface.html#LightDMMessageType" title="enum LightDMMessageType"><span class="type">LightDMMessageType</span></a> type</code></em>);
 <span class="returnvalue">void</span>                (<a class="link" href="lightdm-gobject-1-Greeter-Interface.html#show-prompt" title="show_prompt ()">*show_prompt</a>)                      (<em class="parameter"><code><span class="type">LightDMGreeter</span> *greeter</code></em>,
-                                                         <em class="parameter"><code>const <span class="type">gchar</span> *text</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *text</code></em>,
                                                          <em class="parameter"><code><a class="link" href="lightdm-gobject-1-Greeter-Interface.html#LightDMPromptType" title="enum LightDMPromptType"><span class="type">LightDMPromptType</span></a> type</code></em>);
 <span class="returnvalue">void</span>                (<a class="link" href="lightdm-gobject-1-Greeter-Interface.html#authentication-complete" title="authentication_complete ()">*authentication_complete</a>)          (<em class="parameter"><code><span class="type">LightDMGreeter</span> *greeter</code></em>);
 <span class="returnvalue">void</span>                (<a class="link" href="lightdm-gobject-1-Greeter-Interface.html#autologin-timer-expired" title="autologin_timer_expired ()">*autologin_timer_expired</a>)          (<em class="parameter"><code><span class="type">LightDMGreeter</span> *greeter</code></em>);
 enum                <a class="link" href="lightdm-gobject-1-Greeter-Interface.html#LightDMMessageType" title="enum LightDMMessageType">LightDMMessageType</a>;
 enum                <a class="link" href="lightdm-gobject-1-Greeter-Interface.html#LightDMPromptType" title="enum LightDMPromptType">LightDMPromptType</a>;
 <span class="returnvalue">LightDMGreeter</span> *    <a class="link" href="lightdm-gobject-1-Greeter-Interface.html#lightdm-greeter-new" title="lightdm_greeter_new ()">lightdm_greeter_new</a>                 (<em class="parameter"><code><span class="type">void</span></code></em>);
-<span class="returnvalue">gboolean</span>            <a class="link" href="lightdm-gobject-1-Greeter-Interface.html#lightdm-greeter-connect-sync" title="lightdm_greeter_connect_sync ()">lightdm_greeter_connect_sync</a>        (<em class="parameter"><code><span class="type">LightDMGreeter</span> *greeter</code></em>,
-                                                         <em class="parameter"><code><span class="type">GError</span> **error</code></em>);
-const <span class="returnvalue">gchar</span> *       <a class="link" href="lightdm-gobject-1-Greeter-Interface.html#lightdm-greeter-get-default-session-hint" title="lightdm_greeter_get_default_session_hint ()">lightdm_greeter_get_default_session_hint</a>
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="lightdm-gobject-1-Greeter-Interface.html#lightdm-greeter-connect-sync" title="lightdm_greeter_connect_sync ()">lightdm_greeter_connect_sync</a>        (<em class="parameter"><code><span class="type">LightDMGreeter</span> *greeter</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);
+const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       <a class="link" href="lightdm-gobject-1-Greeter-Interface.html#lightdm-greeter-get-default-session-hint" title="lightdm_greeter_get_default_session_hint ()">lightdm_greeter_get_default_session_hint</a>
                                                         (<em class="parameter"><code><span class="type">LightDMGreeter</span> *greeter</code></em>);
-const <span class="returnvalue">gchar</span> *       <a class="link" href="lightdm-gobject-1-Greeter-Interface.html#lightdm-greeter-get-hint" title="lightdm_greeter_get_hint ()">lightdm_greeter_get_hint</a>            (<em class="parameter"><code><span class="type">LightDMGreeter</span> *greeter</code></em>,
-                                                         <em class="parameter"><code>const <span class="type">gchar</span> *name</code></em>);
-<span class="returnvalue">gboolean</span>            <a class="link" href="lightdm-gobject-1-Greeter-Interface.html#lightdm-greeter-get-has-guest-account-hint" title="lightdm_greeter_get_has_guest_account_hint ()">lightdm_greeter_get_has_guest_account_hint</a>
+const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       <a class="link" href="lightdm-gobject-1-Greeter-Interface.html#lightdm-greeter-get-hint" title="lightdm_greeter_get_hint ()">lightdm_greeter_get_hint</a>            (<em class="parameter"><code><span class="type">LightDMGreeter</span> *greeter</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *name</code></em>);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="lightdm-gobject-1-Greeter-Interface.html#lightdm-greeter-get-has-guest-account-hint" title="lightdm_greeter_get_has_guest_account_hint ()">lightdm_greeter_get_has_guest_account_hint</a>
                                                         (<em class="parameter"><code><span class="type">LightDMGreeter</span> *greeter</code></em>);
-<span class="returnvalue">gboolean</span>            <a class="link" href="lightdm-gobject-1-Greeter-Interface.html#lightdm-greeter-get-hide-users-hint" title="lightdm_greeter_get_hide_users_hint ()">lightdm_greeter_get_hide_users_hint</a> (<em class="parameter"><code><span class="type">LightDMGreeter</span> *greeter</code></em>);
-const <span class="returnvalue">gchar</span> *       <a class="link" href="lightdm-gobject-1-Greeter-Interface.html#lightdm-greeter-get-select-user-hint" title="lightdm_greeter_get_select_user_hint ()">lightdm_greeter_get_select_user_hint</a>
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="lightdm-gobject-1-Greeter-Interface.html#lightdm-greeter-get-hide-users-hint" title="lightdm_greeter_get_hide_users_hint ()">lightdm_greeter_get_hide_users_hint</a> (<em class="parameter"><code><span class="type">LightDMGreeter</span> *greeter</code></em>);
+const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       <a class="link" href="lightdm-gobject-1-Greeter-Interface.html#lightdm-greeter-get-select-user-hint" title="lightdm_greeter_get_select_user_hint ()">lightdm_greeter_get_select_user_hint</a>
                                                         (<em class="parameter"><code><span class="type">LightDMGreeter</span> *greeter</code></em>);
-<span class="returnvalue">gboolean</span>            <a class="link" href="lightdm-gobject-1-Greeter-Interface.html#lightdm-greeter-get-select-guest-hint" title="lightdm_greeter_get_select_guest_hint ()">lightdm_greeter_get_select_guest_hint</a>
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="lightdm-gobject-1-Greeter-Interface.html#lightdm-greeter-get-select-guest-hint" title="lightdm_greeter_get_select_guest_hint ()">lightdm_greeter_get_select_guest_hint</a>
                                                         (<em class="parameter"><code><span class="type">LightDMGreeter</span> *greeter</code></em>);
-const <span class="returnvalue">gchar</span> *       <a class="link" href="lightdm-gobject-1-Greeter-Interface.html#lightdm-greeter-get-autologin-user-hint" title="lightdm_greeter_get_autologin_user_hint ()">lightdm_greeter_get_autologin_user_hint</a>
+const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       <a class="link" href="lightdm-gobject-1-Greeter-Interface.html#lightdm-greeter-get-autologin-user-hint" title="lightdm_greeter_get_autologin_user_hint ()">lightdm_greeter_get_autologin_user_hint</a>
                                                         (<em class="parameter"><code><span class="type">LightDMGreeter</span> *greeter</code></em>);
-<span class="returnvalue">gboolean</span>            <a class="link" href="lightdm-gobject-1-Greeter-Interface.html#lightdm-greeter-get-autologin-guest-hint" title="lightdm_greeter_get_autologin_guest_hint ()">lightdm_greeter_get_autologin_guest_hint</a>
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="lightdm-gobject-1-Greeter-Interface.html#lightdm-greeter-get-autologin-guest-hint" title="lightdm_greeter_get_autologin_guest_hint ()">lightdm_greeter_get_autologin_guest_hint</a>
                                                         (<em class="parameter"><code><span class="type">LightDMGreeter</span> *greeter</code></em>);
-<span class="returnvalue">gint</span>                <a class="link" href="lightdm-gobject-1-Greeter-Interface.html#lightdm-greeter-get-autologin-timeout-hint" title="lightdm_greeter_get_autologin_timeout_hint ()">lightdm_greeter_get_autologin_timeout_hint</a>
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="returnvalue">gint</span></a>                <a class="link" href="lightdm-gobject-1-Greeter-Interface.html#lightdm-greeter-get-autologin-timeout-hint" title="lightdm_greeter_get_autologin_timeout_hint ()">lightdm_greeter_get_autologin_timeout_hint</a>
                                                         (<em class="parameter"><code><span class="type">LightDMGreeter</span> *greeter</code></em>);
 <span class="returnvalue">void</span>                <a class="link" href="lightdm-gobject-1-Greeter-Interface.html#lightdm-greeter-cancel-autologin" title="lightdm_greeter_cancel_autologin ()">lightdm_greeter_cancel_autologin</a>    (<em class="parameter"><code><span class="type">LightDMGreeter</span> *greeter</code></em>);
 <span class="returnvalue">void</span>                <a class="link" href="lightdm-gobject-1-Greeter-Interface.html#lightdm-greeter-authenticate" title="lightdm_greeter_authenticate ()">lightdm_greeter_authenticate</a>        (<em class="parameter"><code><span class="type">LightDMGreeter</span> *greeter</code></em>,
@@ -76,18 +76,18 @@ const <span class="returnvalue">gchar</span> *       <a class="link" href="light
 <span class="returnvalue">void</span>                <a class="link" href="lightdm-gobject-1-Greeter-Interface.html#lightdm-greeter-authenticate-as-guest" title="lightdm_greeter_authenticate_as_guest ()">lightdm_greeter_authenticate_as_guest</a>
                                                         (<em class="parameter"><code><span class="type">LightDMGreeter</span> *greeter</code></em>);
 <span class="returnvalue">void</span>                <a class="link" href="lightdm-gobject-1-Greeter-Interface.html#lightdm-greeter-respond" title="lightdm_greeter_respond ()">lightdm_greeter_respond</a>             (<em class="parameter"><code><span class="type">LightDMGreeter</span> *greeter</code></em>,
-                                                         <em class="parameter"><code>const <span class="type">gchar</span> *response</code></em>);
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *response</code></em>);
 <span class="returnvalue">void</span>                <a class="link" href="lightdm-gobject-1-Greeter-Interface.html#lightdm-greeter-cancel-authentication" title="lightdm_greeter_cancel_authentication ()">lightdm_greeter_cancel_authentication</a>
                                                         (<em class="parameter"><code><span class="type">LightDMGreeter</span> *greeter</code></em>);
-<span class="returnvalue">gboolean</span>            <a class="link" href="lightdm-gobject-1-Greeter-Interface.html#lightdm-greeter-get-in-authentication" title="lightdm_greeter_get_in_authentication ()">lightdm_greeter_get_in_authentication</a>
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="lightdm-gobject-1-Greeter-Interface.html#lightdm-greeter-get-in-authentication" title="lightdm_greeter_get_in_authentication ()">lightdm_greeter_get_in_authentication</a>
                                                         (<em class="parameter"><code><span class="type">LightDMGreeter</span> *greeter</code></em>);
-<span class="returnvalue">gboolean</span>            <a class="link" href="lightdm-gobject-1-Greeter-Interface.html#lightdm-greeter-get-is-authenticated" title="lightdm_greeter_get_is_authenticated ()">lightdm_greeter_get_is_authenticated</a>
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="lightdm-gobject-1-Greeter-Interface.html#lightdm-greeter-get-is-authenticated" title="lightdm_greeter_get_is_authenticated ()">lightdm_greeter_get_is_authenticated</a>
                                                         (<em class="parameter"><code><span class="type">LightDMGreeter</span> *greeter</code></em>);
-const <span class="returnvalue">gchar</span> *       <a class="link" href="lightdm-gobject-1-Greeter-Interface.html#lightdm-greeter-get-authentication-user" title="lightdm_greeter_get_authentication_user ()">lightdm_greeter_get_authentication_user</a>
+const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       <a class="link" href="lightdm-gobject-1-Greeter-Interface.html#lightdm-greeter-get-authentication-user" title="lightdm_greeter_get_authentication_user ()">lightdm_greeter_get_authentication_user</a>
                                                         (<em class="parameter"><code><span class="type">LightDMGreeter</span> *greeter</code></em>);
-<span class="returnvalue">gboolean</span>            <a class="link" href="lightdm-gobject-1-Greeter-Interface.html#lightdm-greeter-start-session-sync" title="lightdm_greeter_start_session_sync ()">lightdm_greeter_start_session_sync</a>  (<em class="parameter"><code><span class="type">LightDMGreeter</span> *greeter</code></em>,
-                                                         <em class="parameter"><code>const <span class="type">gchar</span> *session</code></em>,
-                                                         <em class="parameter"><code><span class="type">GError</span> **error</code></em>);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="lightdm-gobject-1-Greeter-Interface.html#lightdm-greeter-start-session-sync" title="lightdm_greeter_start_session_sync ()">lightdm_greeter_start_session_sync</a>  (<em class="parameter"><code><span class="type">LightDMGreeter</span> *greeter</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *session</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);
 </pre>
 </div>
 <div class="refsect1">
@@ -98,7 +98,7 @@ const <span class="returnvalue">gchar</span> *       <a class="link" href="light
 <p>
 </p>
 <div class="example">
-<a name="idp6890080"></a><p class="title"><b>Example 1. Example Greeter</b></p>
+<a name="idp6889968"></a><p class="title"><b>Example 1. Example Greeter</b></p>
 <div class="example-contents"><pre class="programlisting">
 int main ()
 {
@@ -143,7 +143,7 @@ static void authentication_complete_cb (LightDMGreeter *greeter)
 <div class="refsect2">
 <a name="show-message"></a><h3>show_message ()</h3>
 <pre class="programlisting"><span class="returnvalue">void</span>                (*show_message)                     (<em class="parameter"><code><span class="type">LightDMGreeter</span> *greeter</code></em>,
-                                                         <em class="parameter"><code>const <span class="type">gchar</span> *text</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *text</code></em>,
                                                          <em class="parameter"><code><a class="link" href="lightdm-gobject-1-Greeter-Interface.html#LightDMMessageType" title="enum LightDMMessageType"><span class="type">LightDMMessageType</span></a> type</code></em>);</pre>
 <p>
 </p>
@@ -152,7 +152,7 @@ static void authentication_complete_cb (LightDMGreeter *greeter)
 <div class="refsect2">
 <a name="show-prompt"></a><h3>show_prompt ()</h3>
 <pre class="programlisting"><span class="returnvalue">void</span>                (*show_prompt)                      (<em class="parameter"><code><span class="type">LightDMGreeter</span> *greeter</code></em>,
-                                                         <em class="parameter"><code>const <span class="type">gchar</span> *text</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *text</code></em>,
                                                          <em class="parameter"><code><a class="link" href="lightdm-gobject-1-Greeter-Interface.html#LightDMPromptType" title="enum LightDMPromptType"><span class="type">LightDMPromptType</span></a> type</code></em>);</pre>
 <p>
 </p>
@@ -174,8 +174,7 @@ static void authentication_complete_cb (LightDMGreeter *greeter)
 <hr>
 <div class="refsect2">
 <a name="LightDMMessageType"></a><h3>enum LightDMMessageType</h3>
-<pre class="programlisting">typedef enum
-{
+<pre class="programlisting">typedef enum {
     LIGHTDM_MESSAGE_TYPE_INFO,
     LIGHTDM_MESSAGE_TYPE_ERROR
 } LightDMMessageType;
@@ -199,8 +198,7 @@ static void authentication_complete_cb (LightDMGreeter *greeter)
 <hr>
 <div class="refsect2">
 <a name="LightDMPromptType"></a><h3>enum LightDMPromptType</h3>
-<pre class="programlisting">typedef enum
-{
+<pre class="programlisting">typedef enum {
     LIGHTDM_PROMPT_TYPE_QUESTION,
     LIGHTDM_PROMPT_TYPE_SECRET
 } LightDMPromptType;
@@ -240,8 +238,8 @@ Create a new greeter.
 <hr>
 <div class="refsect2">
 <a name="lightdm-greeter-connect-sync"></a><h3>lightdm_greeter_connect_sync ()</h3>
-<pre class="programlisting"><span class="returnvalue">gboolean</span>            lightdm_greeter_connect_sync        (<em class="parameter"><code><span class="type">LightDMGreeter</span> *greeter</code></em>,
-                                                         <em class="parameter"><code><span class="type">GError</span> **error</code></em>);</pre>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            lightdm_greeter_connect_sync        (<em class="parameter"><code><span class="type">LightDMGreeter</span> *greeter</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);</pre>
 <p>
 Connects the greeter to the display manager.  Will block until connected.
 </p>
@@ -254,13 +252,13 @@ Connects the greeter to the display manager.  Will block until connected.
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>error</code></em> :</span></p></td>
-<td>return location for a <span class="type">GError</span>, or <code class="literal">NULL</code>
+<td>return location for a <a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a>, or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td>
-<span class="type">TRUE</span> if successfully connected</td>
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><span class="type">TRUE</span></a> if successfully connected</td>
 </tr>
 </tbody>
 </table></div>
@@ -268,7 +266,7 @@ Connects the greeter to the display manager.  Will block until connected.
 <hr>
 <div class="refsect2">
 <a name="lightdm-greeter-get-default-session-hint"></a><h3>lightdm_greeter_get_default_session_hint ()</h3>
-<pre class="programlisting">const <span class="returnvalue">gchar</span> *       lightdm_greeter_get_default_session_hint
+<pre class="programlisting">const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       lightdm_greeter_get_default_session_hint
                                                         (<em class="parameter"><code><span class="type">LightDMGreeter</span> *greeter</code></em>);</pre>
 <p>
 Get the default session to use.
@@ -291,8 +289,8 @@ Get the default session to use.
 <hr>
 <div class="refsect2">
 <a name="lightdm-greeter-get-hint"></a><h3>lightdm_greeter_get_hint ()</h3>
-<pre class="programlisting">const <span class="returnvalue">gchar</span> *       lightdm_greeter_get_hint            (<em class="parameter"><code><span class="type">LightDMGreeter</span> *greeter</code></em>,
-                                                         <em class="parameter"><code>const <span class="type">gchar</span> *name</code></em>);</pre>
+<pre class="programlisting">const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       lightdm_greeter_get_hint            (<em class="parameter"><code><span class="type">LightDMGreeter</span> *greeter</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *name</code></em>);</pre>
 <p>
 Get a hint.
 </p>
@@ -310,7 +308,7 @@ Get a hint.
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td>The value for this hint or <span class="type">NULL</span> if not set.</td>
+<td>The value for this hint or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><span class="type">NULL</span></a> if not set.</td>
 </tr>
 </tbody>
 </table></div>
@@ -318,7 +316,7 @@ Get a hint.
 <hr>
 <div class="refsect2">
 <a name="lightdm-greeter-get-has-guest-account-hint"></a><h3>lightdm_greeter_get_has_guest_account_hint ()</h3>
-<pre class="programlisting"><span class="returnvalue">gboolean</span>            lightdm_greeter_get_has_guest_account_hint
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            lightdm_greeter_get_has_guest_account_hint
                                                         (<em class="parameter"><code><span class="type">LightDMGreeter</span> *greeter</code></em>);</pre>
 <p>
 Check if guest sessions are supported.
@@ -334,7 +332,7 @@ Check if guest sessions are supported.
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td>
-<span class="type">TRUE</span> if guest sessions are supported.</td>
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><span class="type">TRUE</span></a> if guest sessions are supported.</td>
 </tr>
 </tbody>
 </table></div>
@@ -342,7 +340,7 @@ Check if guest sessions are supported.
 <hr>
 <div class="refsect2">
 <a name="lightdm-greeter-get-hide-users-hint"></a><h3>lightdm_greeter_get_hide_users_hint ()</h3>
-<pre class="programlisting"><span class="returnvalue">gboolean</span>            lightdm_greeter_get_hide_users_hint (<em class="parameter"><code><span class="type">LightDMGreeter</span> *greeter</code></em>);</pre>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            lightdm_greeter_get_hide_users_hint (<em class="parameter"><code><span class="type">LightDMGreeter</span> *greeter</code></em>);</pre>
 <p>
 Check if user accounts should be shown.
 </p>
@@ -357,7 +355,7 @@ Check if user accounts should be shown.
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td>
-<span class="type">TRUE</span> if the available users should not be shown.</td>
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><span class="type">TRUE</span></a> if the available users should not be shown.</td>
 </tr>
 </tbody>
 </table></div>
@@ -365,7 +363,7 @@ Check if user accounts should be shown.
 <hr>
 <div class="refsect2">
 <a name="lightdm-greeter-get-select-user-hint"></a><h3>lightdm_greeter_get_select_user_hint ()</h3>
-<pre class="programlisting">const <span class="returnvalue">gchar</span> *       lightdm_greeter_get_select_user_hint
+<pre class="programlisting">const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       lightdm_greeter_get_select_user_hint
                                                         (<em class="parameter"><code><span class="type">LightDMGreeter</span> *greeter</code></em>);</pre>
 <p>
 Get the user to select by default.
@@ -388,7 +386,7 @@ Get the user to select by default.
 <hr>
 <div class="refsect2">
 <a name="lightdm-greeter-get-select-guest-hint"></a><h3>lightdm_greeter_get_select_guest_hint ()</h3>
-<pre class="programlisting"><span class="returnvalue">gboolean</span>            lightdm_greeter_get_select_guest_hint
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            lightdm_greeter_get_select_guest_hint
                                                         (<em class="parameter"><code><span class="type">LightDMGreeter</span> *greeter</code></em>);</pre>
 <p>
 Check if the guest account should be selected by default.
@@ -404,7 +402,7 @@ Check if the guest account should be selected by default.
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td>
-<span class="type">TRUE</span> if the guest account should be selected by default.</td>
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><span class="type">TRUE</span></a> if the guest account should be selected by default.</td>
 </tr>
 </tbody>
 </table></div>
@@ -412,7 +410,7 @@ Check if the guest account should be selected by default.
 <hr>
 <div class="refsect2">
 <a name="lightdm-greeter-get-autologin-user-hint"></a><h3>lightdm_greeter_get_autologin_user_hint ()</h3>
-<pre class="programlisting">const <span class="returnvalue">gchar</span> *       lightdm_greeter_get_autologin_user_hint
+<pre class="programlisting">const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       lightdm_greeter_get_autologin_user_hint
                                                         (<em class="parameter"><code><span class="type">LightDMGreeter</span> *greeter</code></em>);</pre>
 <p>
 Get the user account to automatically logg into when the timer expires.
@@ -435,7 +433,7 @@ Get the user account to automatically logg into when the timer expires.
 <hr>
 <div class="refsect2">
 <a name="lightdm-greeter-get-autologin-guest-hint"></a><h3>lightdm_greeter_get_autologin_guest_hint ()</h3>
-<pre class="programlisting"><span class="returnvalue">gboolean</span>            lightdm_greeter_get_autologin_guest_hint
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            lightdm_greeter_get_autologin_guest_hint
                                                         (<em class="parameter"><code><span class="type">LightDMGreeter</span> *greeter</code></em>);</pre>
 <p>
 Check if the guest account should be automatically logged into when the timer expires.
@@ -451,7 +449,7 @@ Check if the guest account should be automatically logged into when the timer ex
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td>
-<span class="type">TRUE</span> if the guest account should be automatically logged into.</td>
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><span class="type">TRUE</span></a> if the guest account should be automatically logged into.</td>
 </tr>
 </tbody>
 </table></div>
@@ -459,7 +457,7 @@ Check if the guest account should be automatically logged into when the timer ex
 <hr>
 <div class="refsect2">
 <a name="lightdm-greeter-get-autologin-timeout-hint"></a><h3>lightdm_greeter_get_autologin_timeout_hint ()</h3>
-<pre class="programlisting"><span class="returnvalue">gint</span>                lightdm_greeter_get_autologin_timeout_hint
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="returnvalue">gint</span></a>                lightdm_greeter_get_autologin_timeout_hint
                                                         (<em class="parameter"><code><span class="type">LightDMGreeter</span> *greeter</code></em>);</pre>
 <p>
 Get the number of seconds to wait before automaitcally logging in.
@@ -513,7 +511,7 @@ Starts the authentication procedure for a user.
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>username</code></em> :</span></p></td>
-<td>A username or <span class="type">NULL</span> to prompt for a username. <span class="annotation">[<a href="http://foldoc.org/allow-none"><span class="acronym">allow-none</span></a>]</span>
+<td>A username or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><span class="type">NULL</span></a> to prompt for a username. <span class="annotation">[<a href="http://foldoc.org/allow-none"><span class="acronym">allow-none</span></a>]</span>
 </td>
 </tr>
 </tbody>
@@ -540,7 +538,7 @@ Starts the authentication procedure for the guest user.
 <div class="refsect2">
 <a name="lightdm-greeter-respond"></a><h3>lightdm_greeter_respond ()</h3>
 <pre class="programlisting"><span class="returnvalue">void</span>                lightdm_greeter_respond             (<em class="parameter"><code><span class="type">LightDMGreeter</span> *greeter</code></em>,
-                                                         <em class="parameter"><code>const <span class="type">gchar</span> *response</code></em>);</pre>
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *response</code></em>);</pre>
 <p>
 Provide response to a prompt.
 </p>
@@ -579,7 +577,7 @@ Cancel the current user authentication.
 <hr>
 <div class="refsect2">
 <a name="lightdm-greeter-get-in-authentication"></a><h3>lightdm_greeter_get_in_authentication ()</h3>
-<pre class="programlisting"><span class="returnvalue">gboolean</span>            lightdm_greeter_get_in_authentication
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            lightdm_greeter_get_in_authentication
                                                         (<em class="parameter"><code><span class="type">LightDMGreeter</span> *greeter</code></em>);</pre>
 <p>
 Checks if the greeter is in the process of authenticating.
@@ -595,7 +593,7 @@ Checks if the greeter is in the process of authenticating.
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td>
-<span class="type">TRUE</span> if the greeter is authenticating a user.</td>
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><span class="type">TRUE</span></a> if the greeter is authenticating a user.</td>
 </tr>
 </tbody>
 </table></div>
@@ -603,7 +601,7 @@ Checks if the greeter is in the process of authenticating.
 <hr>
 <div class="refsect2">
 <a name="lightdm-greeter-get-is-authenticated"></a><h3>lightdm_greeter_get_is_authenticated ()</h3>
-<pre class="programlisting"><span class="returnvalue">gboolean</span>            lightdm_greeter_get_is_authenticated
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            lightdm_greeter_get_is_authenticated
                                                         (<em class="parameter"><code><span class="type">LightDMGreeter</span> *greeter</code></em>);</pre>
 <p>
 Checks if the greeter has successfully authenticated.
@@ -619,7 +617,7 @@ Checks if the greeter has successfully authenticated.
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td>
-<span class="type">TRUE</span> if the greeter is authenticated for login.</td>
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><span class="type">TRUE</span></a> if the greeter is authenticated for login.</td>
 </tr>
 </tbody>
 </table></div>
@@ -627,7 +625,7 @@ Checks if the greeter has successfully authenticated.
 <hr>
 <div class="refsect2">
 <a name="lightdm-greeter-get-authentication-user"></a><h3>lightdm_greeter_get_authentication_user ()</h3>
-<pre class="programlisting">const <span class="returnvalue">gchar</span> *       lightdm_greeter_get_authentication_user
+<pre class="programlisting">const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       lightdm_greeter_get_authentication_user
                                                         (<em class="parameter"><code><span class="type">LightDMGreeter</span> *greeter</code></em>);</pre>
 <p>
 Get the user that is being authenticated.
@@ -642,7 +640,7 @@ Get the user that is being authenticated.
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td>The username of the authentication user being authenticated or <span class="type">NULL</span> if no authentication in progress.</td>
+<td>The username of the authentication user being authenticated or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><span class="type">NULL</span></a> if no authentication in progress.</td>
 </tr>
 </tbody>
 </table></div>
@@ -650,9 +648,9 @@ Get the user that is being authenticated.
 <hr>
 <div class="refsect2">
 <a name="lightdm-greeter-start-session-sync"></a><h3>lightdm_greeter_start_session_sync ()</h3>
-<pre class="programlisting"><span class="returnvalue">gboolean</span>            lightdm_greeter_start_session_sync  (<em class="parameter"><code><span class="type">LightDMGreeter</span> *greeter</code></em>,
-                                                         <em class="parameter"><code>const <span class="type">gchar</span> *session</code></em>,
-                                                         <em class="parameter"><code><span class="type">GError</span> **error</code></em>);</pre>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            lightdm_greeter_start_session_sync  (<em class="parameter"><code><span class="type">LightDMGreeter</span> *greeter</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *session</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);</pre>
 <p>
 Start a session for the authenticated user.
 </p>
@@ -666,12 +664,12 @@ Start a session for the authenticated user.
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>session</code></em> :</span></p></td>
-<td>The session to log into or <span class="type">NULL</span> to use the default. <span class="annotation">[<a href="http://foldoc.org/allow-none"><span class="acronym">allow-none</span></a>]</span>
+<td>The session to log into or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><span class="type">NULL</span></a> to use the default. <span class="annotation">[<a href="http://foldoc.org/allow-none"><span class="acronym">allow-none</span></a>]</span>
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>error</code></em> :</span></p></td>
-<td>return location for a <span class="type">GError</span>, or <code class="literal">NULL</code>
+<td>return location for a <a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a>, or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>
 </td>
 </tr>
 <tr>
@@ -685,6 +683,6 @@ Start a session for the authenticated user.
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.17</div>
+          Generated by GTK-Doc V1.18</div>
 </body>
 </html>
