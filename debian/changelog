@@ -1,3 +1,10 @@
+lightdm (1.0.0-0ubuntu3) oneiric; urgency=low
+
+  * debian/patches/03_launch_dbus.patch:
+    - Fix patch applying in the wrong place
+
+ -- Robert Ancell <robert.ancell@canonical.com>  Thu, 29 Sep 2011 16:08:20 +1000
+
 lightdm (1.0.0-0ubuntu2) oneiric; urgency=low
 
   * debian/lightdm-gtk-greeter.postinst,
