@@ -1,3 +1,13 @@
+lightdm (1.0.0-0ubuntu4) oneiric; urgency=low
+
+  * Add 01_guest_session_lockdown.patch: Lock down guest session with an
+    AppArmor profile. This uses the very same approach as gdm-guest-session,
+    and copies the profile from it. (LP: #849027)
+  * 03_launch_dbus.patch: Refresh.
+  * debian/lightdm.install: Install AppArmor profile.
+
+ -- Martin Pitt <martin.pitt@ubuntu.com>  Fri, 30 Sep 2011 17:30:56 +0200
+
 lightdm (1.0.0-0ubuntu3) oneiric; urgency=low
 
   * debian/patches/03_launch_dbus.patch:
