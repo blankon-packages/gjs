@@ -1,6 +1,6 @@
 dnl Process this file with autoconf to produce a configure script.
 
-AC_INIT(lightdm, 1.0.0)
+AC_INIT(lightdm, 1.0.1)
 AC_CONFIG_MACRO_DIR(m4)
 AC_CONFIG_HEADER(config.h)
 AM_INIT_AUTOMAKE
@@ -86,6 +86,7 @@ if test x"$enable_liblightdm_qt" = "xauto"; then
         QtCore
         QtDBus
         QtNetwork
+        QtGui
     ], compile_liblightdm_qt=yes, compile_liblightdm_qt=no)
 elif test x"$enable_liblightdm_qt" = "xyes"; then
     PKG_CHECK_MODULES(LIBLIGHTDM_QT, [

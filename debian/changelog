@@ -1,3 +1,23 @@
+lightdm (1.0.1-0ubuntu1) oneiric; urgency=low
+
+  * New upstream release:
+    - GTK greeter now remembers last user
+    - GTK greeter now initializes i18n (LP: #862427)
+    - Start authentication for automatically selected user in GTK greeter
+    - Link liblightdm-qt against QtGui
+    - Fix liblightdm-qt crashing when face images are installed (LP: #850095)
+    - Set correct permissions on session log files (LP: #863119)
+    - Prefer a locale with a codeset over one without for setting LANG
+      (LP: #864618)
+    - Introduce a lightdm-guest-session-wrapper session command which MAC
+      systems like AppArmor and SELinux can use for attaching a restrictive
+      policy to guest sessions.
+    - Provide an AppArmor profile for guest session lockdown.
+  * debian/patches/01_guest_session_lockdown.patch:
+    - Applied upstream
+
+ -- Robert Ancell <robert.ancell@canonical.com>  Tue, 04 Oct 2011 19:58:25 +1100
+
 lightdm (1.0.0-0ubuntu4) oneiric; urgency=low
 
   * Add 01_guest_session_lockdown.patch: Lock down guest session with an

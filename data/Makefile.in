@@ -38,7 +38,11 @@ subdir = data
 DIST_COMMON = $(dist_conf_DATA) $(dist_dbusconf_DATA) \
 	$(dist_man1_MANS) $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
-am__aclocal_m4_deps = $(top_srcdir)/configure.ac
+am__aclocal_m4_deps = $(top_srcdir)/m4/gtk-doc.m4 \
+	$(top_srcdir)/m4/intltool.m4 $(top_srcdir)/m4/introspection.m4 \
+	$(top_srcdir)/m4/libtool.m4 $(top_srcdir)/m4/ltoptions.m4 \
+	$(top_srcdir)/m4/ltsugar.m4 $(top_srcdir)/m4/ltversion.m4 \
+	$(top_srcdir)/m4/lt~obsolete.m4 $(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 mkinstalldirs = $(install_sh) -d
@@ -301,6 +305,8 @@ confdir = $(sysconfdir)/lightdm
 dist_conf_DATA = lightdm.conf users.conf keys.conf
 dbusconfdir = $(sysconfdir)/dbus-1/system.d
 dist_dbusconf_DATA = org.freedesktop.DisplayManager.conf
+EXTRA_DIST = guest-session.apparmor
+apparmor_profiledir = $(sysconfdir)/apparmor.d
 dist_man1_MANS = lightdm.1
 DISTCLEANFILES = \
 	Makefile.in
@@ -681,7 +687,8 @@ info-am:
 
 install-data-am: install-dist_confDATA install-dist_dbusconfDATA \
 	install-man
-
+	@$(NORMAL_INSTALL)
+	$(MAKE) $(AM_MAKEFLAGS) install-data-hook
 install-dvi: install-dvi-recursive
 
 install-dvi-am:
@@ -730,14 +737,14 @@ uninstall-am: uninstall-dist_confDATA uninstall-dist_dbusconfDATA \
 uninstall-man: uninstall-man1
 
 .MAKE: $(RECURSIVE_CLEAN_TARGETS) $(RECURSIVE_TARGETS) ctags-recursive \
-	install-am install-strip tags-recursive
+	install-am install-data-am install-strip tags-recursive
 
 .PHONY: $(RECURSIVE_CLEAN_TARGETS) $(RECURSIVE_TARGETS) CTAGS GTAGS \
 	all all-am check check-am clean clean-generic clean-libtool \
 	ctags ctags-recursive distclean distclean-generic \
 	distclean-libtool distclean-tags distdir dvi dvi-am html \
 	html-am info info-am install install-am install-data \
-	install-data-am install-dist_confDATA \
+	install-data-am install-data-hook install-dist_confDATA \
 	install-dist_dbusconfDATA install-dvi install-dvi-am \
 	install-exec install-exec-am install-html install-html-am \
 	install-info install-info-am install-man install-man1 \
@@ -749,6 +756,11 @@ uninstall-man: uninstall-man1
 	uninstall-dist_confDATA uninstall-dist_dbusconfDATA \
 	uninstall-man uninstall-man1
 
+
+install-data-hook:
+	install -d $(DESTDIR)$(apparmor_profiledir)
+	sed 's!LIBEXECDIR!$(libexecdir)!g' < $(srcdir)/guest-session.apparmor \
+		> $(DESTDIR)$(apparmor_profiledir)/lightdm-guest-session
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
