@@ -206,12 +206,11 @@ set_language (Session *session)
     gboolean result;
     gchar *stdout_text = NULL;
     int exit_status;
-    gboolean found_code = FALSE;
     GError *error = NULL;
 
     user = pam_session_get_user (session->priv->authentication);
     language = user_get_language (user);
-    if (!language)
+    if (!language || language[0] == '\0')
         return;
 
     language_dot = g_strdup_printf ("%s.", language);
@@ -227,34 +226,48 @@ set_language (Session *session)
         g_warning ("Failed to get languages, locale -a returned %d", exit_status);
     else if (result)
     {
-        gchar **tokens;
+        gchar **tokens, *matched_code = NULL;
         int i;
 
         tokens = g_strsplit_set (stdout_text, "\n\r", -1);
+
+        /* Look for a locale with an encoding */
         for (i = 0; tokens[i]; i++)
         {
-            gchar *code;
-
-            code = g_strchug (tokens[i]);
-            if (code[0] == '\0')
-                continue;
-
-            if (strcmp (code, language) == 0 || g_str_has_prefix (code, language_dot))
+            gchar *code = g_strchug (tokens[i]);
+            if (g_str_has_prefix (code, language_dot))
             {
-                g_debug ("Using locale %s for language %s", code, language);
-                found_code = TRUE;
-                session_set_env (session, "LANG", code);
+                matched_code = code;
                 break;
             }
         }
+
+        /* Fall back to a locale without an encoding */
+        if (!matched_code)
+        {
+            for (i = 0; tokens[i]; i++)
+            {
+                gchar *code = g_strchug (tokens[i]);
+                if (strcmp (code, language) == 0)
+                {
+                    matched_code = code;
+                    break;
+                }
+            }
+        }
+
+        if (matched_code)
+        {
+            g_debug ("Using locale %s for language %s", matched_code, language);
+            session_set_env (session, "LANG", matched_code);
+        }
+        else
+            g_debug ("Failed to find locale for language %s", language);
 
         g_strfreev (tokens);
     }
     g_free (language_dot);
     g_free (stdout_text);
-  
-    if (!found_code)
-        g_debug ("Failed to find locale for language %s", language);
 }
 
 gboolean
@@ -400,27 +413,15 @@ session_run (Process *process)
     dup2 (fd, STDIN_FILENO);
     close (fd);
 
-    /* Redirect output to logfile */
-    if (session->priv->log_file)
-    {
-         int fd;
-
-         fd = g_open (session->priv->log_file, O_WRONLY | O_CREAT | O_TRUNC, 0600);
-         if (fd < 0)
-             g_warning ("Failed to open log file %s: %s", session->priv->log_file, g_strerror (errno));
-         else
-         {
-             dup2 (fd, STDOUT_FILENO);
-             dup2 (fd, STDERR_FILENO);
-             close (fd);
-         }
-    }
-
     /* Make this process its own session */
     if (setsid () < 0)
         g_warning ("Failed to make process a new session: %s", strerror (errno));
 
     user = pam_session_get_user (session->priv->authentication);
+  
+    /* Delete existing log file if it exists - a bug in 1.0.0 would cause this file to be written as root */
+    if (session->priv->log_file)
+        unlink (session->priv->log_file);
 
     /* Change working directory */
     if (chdir (user_get_home_directory (user)) != 0)
@@ -449,6 +450,22 @@ session_run (Process *process)
             g_warning ("Failed to set user ID to %d: %s", user_get_uid (user), strerror (errno));
             _exit (EXIT_FAILURE);
         }
+    }
+
+    /* Redirect output to logfile */
+    if (session->priv->log_file)
+    {
+         int fd;
+
+         fd = g_open (session->priv->log_file, O_WRONLY | O_CREAT | O_TRUNC, 0600);
+         if (fd < 0)
+             g_warning ("Failed to open log file %s: %s", session->priv->log_file, g_strerror (errno));
+         else
+         {
+             dup2 (fd, STDOUT_FILENO);
+             dup2 (fd, STDERR_FILENO);
+             close (fd);
+         }
     }
 
     /* Do PAM actions requiring session process */

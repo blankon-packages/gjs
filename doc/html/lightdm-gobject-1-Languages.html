@@ -41,7 +41,7 @@
 #include &lt;lightdm.h&gt;
 
 <a href="http://library.gnome.org/devel/glib/unstable/glib-Doubly-Linked-Lists.html#GList"><span class="returnvalue">GList</span></a> *             <a class="link" href="lightdm-gobject-1-Languages.html#lightdm-get-languages" title="lightdm_get_languages ()">lightdm_get_languages</a>               (<em class="parameter"><code><span class="type">void</span></code></em>);
-const <span class="returnvalue">LightDMLanguage</span> * <a class="link" href="lightdm-gobject-1-Languages.html#lightdm-get-language" title="lightdm_get_language ()">lightdm_get_language</a>            (<em class="parameter"><code><span class="type">void</span></code></em>);
+<span class="returnvalue">LightDMLanguage</span> *   <a class="link" href="lightdm-gobject-1-Languages.html#lightdm-get-language" title="lightdm_get_language ()">lightdm_get_language</a>                (<em class="parameter"><code><span class="type">void</span></code></em>);
 const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       <a class="link" href="lightdm-gobject-1-Languages.html#lightdm-language-get-code" title="lightdm_language_get_code ()">lightdm_language_get_code</a>           (<em class="parameter"><code><span class="type">LightDMLanguage</span> *language</code></em>);
 const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       <a class="link" href="lightdm-gobject-1-Languages.html#lightdm-language-get-name" title="lightdm_language_get_name ()">lightdm_language_get_name</a>           (<em class="parameter"><code><span class="type">LightDMLanguage</span> *language</code></em>);
 const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       <a class="link" href="lightdm-gobject-1-Languages.html#lightdm-language-get-territory" title="lightdm_language_get_territory ()">lightdm_language_get_territory</a>      (<em class="parameter"><code><span class="type">LightDMLanguage</span> *language</code></em>);
@@ -75,7 +75,7 @@ Get a list of languages to present to the user.
 <hr>
 <div class="refsect2">
 <a name="lightdm-get-language"></a><h3>lightdm_get_language ()</h3>
-<pre class="programlisting">const <span class="returnvalue">LightDMLanguage</span> * lightdm_get_language            (<em class="parameter"><code><span class="type">void</span></code></em>);</pre>
+<pre class="programlisting"><span class="returnvalue">LightDMLanguage</span> *   lightdm_get_language                (<em class="parameter"><code><span class="type">void</span></code></em>);</pre>
 <p>
 Get the current language.
 </p>
