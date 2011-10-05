@@ -1,3 +1,12 @@
+lightdm (1.0.1-0ubuntu2) oneiric; urgency=low
+
+  * debian/patches/04_language_not_to_LANG.patch:
+    Locale names based on AccountsService's "Language" key may not
+    go to $LANG, as that property is a language name, not a locale.
+    (LP: #864618).
+
+ -- Gunnar Hjalmarsson <ubuntu@gunnar.cc>  Wed, 05 Oct 2011 09:49:15 +0200
+
 lightdm (1.0.1-0ubuntu1) oneiric; urgency=low
 
   * New upstream release:
