@@ -1,3 +1,12 @@
+lightdm (1.0.1-0ubuntu3) oneiric; urgency=low
+
+  * debian/patches/05_gdmflexiserver_not_in_PATH.patch:
+    - Make sure to insert our own utility path into PATH after PAM
+      sets PATH, not before.  This ensures gdmflexiserver is present
+      in PATH and can be found by gnome-screensaver, gnome-shell, etc.
+
+ -- Michael Terry <mterry@ubuntu.com>  Wed, 05 Oct 2011 09:05:31 -0400
+
 lightdm (1.0.1-0ubuntu2) oneiric; urgency=low
 
   * debian/patches/04_language_not_to_LANG.patch:

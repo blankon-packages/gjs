@@ -2,3 +2,4 @@
 02_disable_tests.patch
 03_launch_dbus.patch
 04_language_not_to_LANG.patch
+05_gdmflexiserver_not_in_PATH.patch
