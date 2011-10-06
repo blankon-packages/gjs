@@ -1,3 +1,18 @@
+lightdm (1.0.1-0ubuntu4) oneiric; urgency=low
+
+  * debian/patches/04_language_not_to_LANG.patch:
+  * debian/patches/04_dmrc_set_LANG_only.patch:
+    - Replace LANG disabling code with proper fix (LP: #868149)
+  * debian/patches/03_launch_dbus.patch:
+  * debian/patches/05_gdmflexiserver_not_in_PATH.patch:
+    - Refreshed
+  * debian/patches/06_accounts_service_timeout.patch:
+    - Fix D-Bus timeout when accounts service not installed (LP: #866035)
+  * debian/patches/07_long_password_crash.patch:
+    - Fix crash with long passwords (LP: #817186)
+
+ -- Robert Ancell <robert.ancell@canonical.com>  Thu, 06 Oct 2011 15:45:21 +1100
+
 lightdm (1.0.1-0ubuntu3) oneiric; urgency=low
 
   * debian/patches/05_gdmflexiserver_not_in_PATH.patch:

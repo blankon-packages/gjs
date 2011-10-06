@@ -1,8 +1,8 @@
 === modified file 'src/display.c'
 Index: lightdm/src/display.c
 ===================================================================
---- lightdm.orig/src/display.c	2011-09-30 14:39:20.853095661 +0200
-+++ lightdm/src/display.c	2011-09-30 14:39:25.921095905 +0200
+--- lightdm.orig/src/display.c	2011-10-04 17:19:31.171492692 +1100
++++ lightdm/src/display.c	2011-10-06 15:46:40.923661121 +1100
 @@ -439,6 +439,12 @@
              g_free (wrapper);
          }
@@ -14,5 +14,5 @@ Index: lightdm/src/display.c
 +        g_free (t);
 +    }
  
-     /* for a guest session, run command through the wrapper covered by MAC */
-     if (display->priv->autologin_guest)
+     g_signal_emit (display, signals[CREATE_SESSION], 0, &session);
+     g_return_val_if_fail (session != NULL, NULL);

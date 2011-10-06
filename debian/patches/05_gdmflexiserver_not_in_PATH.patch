@@ -1,9 +1,9 @@
-Index: lightdm-1.0.1/src/session.c
+Index: lightdm/src/session.c
 ===================================================================
---- lightdm-1.0.1.orig/src/session.c	2011-10-05 08:43:14.913228567 -0400
-+++ lightdm-1.0.1/src/session.c	2011-10-05 08:43:59.693229041 -0400
-@@ -270,6 +270,26 @@
-     g_free (stdout_text);
+--- lightdm.orig/src/session.c	2011-10-06 15:48:20.463657673 +1100
++++ lightdm/src/session.c	2011-10-06 15:49:55.635654379 +1100
+@@ -211,6 +211,26 @@
+     }
  }
  
 +/* Insert our own utility directory to PATH
@@ -29,7 +29,7 @@ Index: lightdm-1.0.1/src/session.c
  gboolean
  session_start (Session *session)
  {
-@@ -296,7 +316,6 @@
+@@ -237,7 +257,6 @@
  {
      gboolean result;
      gchar *absolute_command;
@@ -37,7 +37,7 @@ Index: lightdm-1.0.1/src/session.c
  
      absolute_command = get_absolute_command (session->priv->command);
      if (!absolute_command)
-@@ -307,19 +326,6 @@
+@@ -248,19 +267,6 @@
      process_set_command (PROCESS (session), absolute_command);
      g_free (absolute_command);
  
@@ -57,10 +57,10 @@ Index: lightdm-1.0.1/src/session.c
      pam_session_open (session->priv->authentication);
  
      /* Open ConsoleKit session */
-@@ -472,6 +478,7 @@
+@@ -413,6 +419,7 @@
      pam_session_setup (session->priv->authentication);
      set_env_from_authentication (session, session->priv->authentication);
-     /* set_language (session); Disabled, see LP#864618 */
+     set_locale (session);
 +    insert_utility_path (session);
  
      PROCESS_CLASS (session_parent_class)->run (process);

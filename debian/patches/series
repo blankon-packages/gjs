@@ -1,5 +1,7 @@
 01_transition_gnome_ubuntu_desktop.patch
 02_disable_tests.patch
 03_launch_dbus.patch
-04_language_not_to_LANG.patch
+04_dmrc_set_LANG_only.patch
 05_gdmflexiserver_not_in_PATH.patch
+06_accounts_service_timeout.patch
+07_long_password_crash.patch

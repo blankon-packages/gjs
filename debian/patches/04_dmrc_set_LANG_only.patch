@@ -1,0 +1,229 @@
+=== modified file 'lightdm/src/accounts.c'
+Index: lightdm/src/accounts.c
+===================================================================
+--- lightdm.orig/src/accounts.c	2011-09-22 17:15:42.985827000 +1000
++++ lightdm/src/accounts.c	2011-10-06 15:48:20.463657673 +1100
+@@ -44,6 +44,9 @@
+     /* Language */
+     gchar *language;
+ 
++    /* Locale */
++    gchar *locale;
++
+     /* X session */
+     gchar *xsession;
+ };
+@@ -399,15 +402,6 @@
+     return user->priv->shell;
+ }
+ 
+-void
+-user_set_language (User *user, const gchar *language)
+-{
+-    g_return_if_fail (user != NULL);
+-
+-    call_method (user->priv->proxy, "SetLanguage", g_variant_new ("(s)", language), "()", NULL);
+-    save_string_to_dmrc (user->priv->name, "Desktop", "Language", language);
+-}
+-
+ const gchar *
+ user_get_language (User *user)
+ {
+@@ -416,14 +410,15 @@
+     g_return_val_if_fail (user != NULL, NULL);
+ 
+     g_free (user->priv->language);
+-
+     if (get_property (user->priv->proxy, "Language", "s", &result))
+     {
+         g_variant_get (result, "s", &user->priv->language);
+         g_variant_unref (result);
+     }
+     else
+-        user->priv->language = get_string_from_dmrc (user->priv->name, "Desktop", "Language");
++    {
++        user->priv->language = NULL;
++    }
+ 
+     if (g_strcmp0 (user->priv->language, "") == 0)
+     {
+@@ -434,6 +429,35 @@
+     return user->priv->language;
+ }
+ 
++const gchar *
++user_get_locale (User *user)
++{
++    g_return_val_if_fail (user != NULL, NULL);
++
++    g_free (user->priv->locale);
++    if (user->priv->proxy)
++        user->priv->locale = NULL;
++    else
++        user->priv->locale = get_string_from_dmrc (user->priv->name, "Desktop", "Language");
++
++    /* Treat a blank locale as unset */
++    if (g_strcmp0 (user->priv->locale, "") == 0)
++    {
++        g_free (user->priv->locale);
++        user->priv->locale = NULL;
++    }
++
++    return user->priv->locale;
++}
++
++void
++user_set_locale (User *user, const gchar *locale)
++{
++    g_return_if_fail (user != NULL);
++    if (!user->priv->proxy)
++        save_string_to_dmrc (user->priv->name, "Desktop", "Language", locale);
++}
++
+ void
+ user_set_xsession (User *user, const gchar *xsession)
+ {
+@@ -482,7 +506,8 @@
+ 
+     self = USER (object);
+ 
+-    if (self->priv->proxy) {
++    if (self->priv->proxy)
++    {
+         g_object_unref (self->priv->proxy);
+         self->priv->proxy = NULL;
+     }
+Index: lightdm/src/accounts.h
+===================================================================
+--- lightdm.orig/src/accounts.h	2011-09-22 17:15:42.000000000 +1000
++++ lightdm/src/accounts.h	2011-10-06 15:48:20.463657673 +1100
+@@ -64,7 +64,9 @@
+ 
+ const gchar *user_get_language (User *user);
+ 
+-void user_set_language (User *user, const gchar *language);
++const gchar *user_get_locale (User *user);
++
++void user_set_locale (User *user, const gchar *language);
+ 
+ G_END_DECLS
+ 
+Index: lightdm/src/greeter.c
+===================================================================
+--- lightdm.orig/src/greeter.c	2011-09-22 17:15:42.000000000 +1000
++++ lightdm/src/greeter.c	2011-10-06 15:48:20.463657673 +1100
+@@ -442,7 +442,7 @@
+ 
+     g_debug ("Greeter sets language %s", language);
+     user = pam_session_get_user (greeter->priv->authentication);
+-    user_set_language (user, language);
++    user_set_locale (user, language);
+ }
+ 
+ static guint32
+Index: lightdm/src/session.c
+===================================================================
+--- lightdm.orig/src/session.c	2011-10-04 19:58:24.000000000 +1100
++++ lightdm/src/session.c	2011-10-06 15:48:20.463657673 +1100
+@@ -192,82 +192,23 @@
+     return session->priv->console_kit_cookie;
+ }
+ 
+-/* Set the LANG variable based on the chosen language.  This is not a great
+- * solution, as it will override the language set in PAM (which is where it
+- * should be set).  It's also overly simplistic to set all the locale
+- * settings based on one language.  In the case of Ubuntu these will be
+- * overridden by setting these variables in ~/.profile */
++/* Set the LANG variable based on the chosen locale.  This is not a great
++ * solution, as it will override the locale set in PAM (which is where it
++ * should be set).  In the case of Ubuntu these will be overridden by setting
++ * these variables in ~/.profile */
+ static void
+-set_language (Session *session)
++set_locale (Session *session)
+ {
+     User *user;
+-    const gchar *language;
+-    gchar *language_dot;
+-    gboolean result;
+-    gchar *stdout_text = NULL;
+-    int exit_status;
+-    GError *error = NULL;
++    const gchar *locale;
+ 
+     user = pam_session_get_user (session->priv->authentication);
+-    language = user_get_language (user);
+-    if (!language || language[0] == '\0')
+-        return;
+-
+-    language_dot = g_strdup_printf ("%s.", language);
+-
+-    /* Find a locale that matches the language code */
+-    result = g_spawn_command_line_sync ("locale -a", &stdout_text, NULL, &exit_status, &error);
+-    if (error)
+-    {
+-        g_warning ("Failed to run 'locale -a': %s", error->message);
+-        g_clear_error (&error);
+-    }
+-    else if (exit_status != 0)
+-        g_warning ("Failed to get languages, locale -a returned %d", exit_status);
+-    else if (result)
++    locale = user_get_locale (user);
++    if (locale)
+     {
+-        gchar **tokens, *matched_code = NULL;
+-        int i;
+-
+-        tokens = g_strsplit_set (stdout_text, "\n\r", -1);
+-
+-        /* Look for a locale with an encoding */
+-        for (i = 0; tokens[i]; i++)
+-        {
+-            gchar *code = g_strchug (tokens[i]);
+-            if (g_str_has_prefix (code, language_dot))
+-            {
+-                matched_code = code;
+-                break;
+-            }
+-        }
+-
+-        /* Fall back to a locale without an encoding */
+-        if (!matched_code)
+-        {
+-            for (i = 0; tokens[i]; i++)
+-            {
+-                gchar *code = g_strchug (tokens[i]);
+-                if (strcmp (code, language) == 0)
+-                {
+-                    matched_code = code;
+-                    break;
+-                }
+-            }
+-        }
+-
+-        if (matched_code)
+-        {
+-            g_debug ("Using locale %s for language %s", matched_code, language);
+-            session_set_env (session, "LANG", matched_code);
+-        }
+-        else
+-            g_debug ("Failed to find locale for language %s", language);
+-
+-        g_strfreev (tokens);
++        g_debug ("Using locale %s", locale);
++        session_set_env (session, "LANG", locale);
+     }
+-    g_free (language_dot);
+-    g_free (stdout_text);
+ }
+ 
+ gboolean
+@@ -471,7 +412,7 @@
+     /* Do PAM actions requiring session process */
+     pam_session_setup (session->priv->authentication);
+     set_env_from_authentication (session, session->priv->authentication);
+-    set_language (session);
++    set_locale (session);
+ 
+     PROCESS_CLASS (session_parent_class)->run (process);
+ }
