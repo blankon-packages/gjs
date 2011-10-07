@@ -1,0 +1,14 @@
+=== modified file 'src/session.c'
+--- lightdm/src/session.c	2011-10-06 03:50:32 +0000
++++ lightdm/src/session.c	2011-10-07 11:50:22 +0000
+@@ -187,7 +187,8 @@
+     g_return_if_fail (session != NULL);
+     g_return_if_fail (name != NULL);
+ 
+-    g_hash_table_insert (session->priv->console_kit_parameters, g_strdup (name), value);
++    g_hash_table_insert (session->priv->console_kit_parameters,
++                         g_strdup (name), g_variant_ref_sink (value));
+ }
+ 
+ const gchar *
+

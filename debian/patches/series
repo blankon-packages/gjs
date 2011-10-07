@@ -6,3 +6,4 @@
 05_gdmflexiserver_not_in_PATH.patch
 06_accounts_service_timeout.patch
 07_long_password_crash.patch
+08_correct_ck_ref.patch

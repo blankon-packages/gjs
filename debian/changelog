@@ -1,3 +1,11 @@
+lightdm (1.0.1-0ubuntu6) oneiric; urgency=low
+
+  * debian/patches/08_correct_ck_ref.patch:
+    - backported fix from Mikkel Kamstrup Erlandsen for a refcounting issue
+      which leads to sessions where unity can't start (lp: #851345)
+
+ -- Sebastien Bacher <seb128@ubuntu.com>  Fri, 07 Oct 2011 13:57:44 +0200
+
 lightdm (1.0.1-0ubuntu5) oneiric; urgency=low
 
   * Add debian/patches/00bzr_guest_session_wrapper.diff: Add back the guest
