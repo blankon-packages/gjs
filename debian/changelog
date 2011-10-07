@@ -1,3 +1,12 @@
+lightdm (1.0.1-0ubuntu5) oneiric; urgency=low
+
+  * Add debian/patches/00bzr_guest_session_wrapper.diff: Add back the guest
+    session wrapper part that was uploaded in 1.0.0-0ubuntu4. The patch was
+    correctly merged into trunk, but the 1.0 branch backport missed this
+    wrapper part and thus broke AppArmor protection entirely. (LP: #849027)
+
+ -- Martin Pitt <martin.pitt@ubuntu.com>  Fri, 07 Oct 2011 11:47:36 +0200
+
 lightdm (1.0.1-0ubuntu4) oneiric; urgency=low
 
   * debian/patches/04_language_not_to_LANG.patch:

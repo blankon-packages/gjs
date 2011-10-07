@@ -1,3 +1,4 @@
+00bzr_guest_session_wrapper.diff
 01_transition_gnome_ubuntu_desktop.patch
 02_disable_tests.patch
 03_launch_dbus.patch
