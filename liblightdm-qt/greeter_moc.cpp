@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'Greeter'
 **
-** Created: Tue Oct 4 19:56:56 2011
+** Created: Tue Oct 25 16:49:58 2011
 **      by: The Qt Meta Object Compiler version 62 (Qt 4.7.4)
 **
 ** WARNING! All changes made in this file will be lost!
