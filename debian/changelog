@@ -1,3 +1,16 @@
+lightdm (1.0.6-0ubuntu1) oneiric-proposed; urgency=low
+
+  [ Martin Pitt ]
+  * debian/lightdm.upstart: Put back check for "text" in kernel command line,
+    for inhibiting automatic lightdm start. Check $JOB to still allow a manual
+    "start lightdm" command to work. (LP: #873334)
+
+  [ Robert Ancell ]
+  * New upstream release:
+    - Use lchown for correcting ownership of ~/.Xauthority instead of chown
+
+ -- Robert Ancell <robert.ancell@canonical.com>  Wed, 02 Nov 2011 11:37:43 -0400
+
 lightdm (1.0.5-0ubuntu1) oneiric-proposed; urgency=low
 
   * New upstream release.
@@ -191,6 +204,19 @@ lightdm (1.0.0-0ubuntu1) oneiric; urgency=low
   * debian/control: lightdm-gtk-greeter provides lightdm-gtk-greeter-config.
 
  -- Robert Ancell <robert.ancell@canonical.com>  Wed, 28 Sep 2011 16:00:20 +1000
+
+lightdm (0.9.7-0ubuntu2) oneiric; urgency=low
+
+  * don't start on graphics-device-added; reintroducing this reverted the fix
+    for bug #615549 from maverick without explanation.
+  * clean up the completely illegible start rule for debian/lightdm.upstart,
+    killing off the unnecessary parentheses
+  * debian/lightdm.upstart: when lightdm is shut down by a runlevel call,
+    emit an upstart event that can be caught by plymouth so it can
+    distinguish between the DM shutting down for a runlevel change vs.
+    other causes.  LP: #854329.
+
+ -- Steve Langasek <steve.langasek@ubuntu.com>  Sun, 25 Sep 2011 22:22:38 -0700
 
 lightdm (0.9.7-0ubuntu1) oneiric; urgency=low
 
