@@ -34,19 +34,15 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
-noinst_PROGRAMS = test-runner$(EXEEXT) test-xserver$(EXEEXT) \
+noinst_PROGRAMS = test-runner$(EXEEXT) X$(EXEEXT) Xvnc$(EXEEXT) \
 	test-gobject-greeter$(EXEEXT) test-guest-account$(EXEEXT) \
 	test-session$(EXEEXT) test-script-hook$(EXEEXT) \
-	plymouth$(EXEEXT) $(am__EXEEXT_1)
+	plymouth$(EXEEXT) vnc-client$(EXEEXT) $(am__EXEEXT_1)
 @COMPILE_LIBLIGHTDM_QT_TRUE@am__append_1 = test-qt-greeter
 subdir = tests/src
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
-am__aclocal_m4_deps = $(top_srcdir)/m4/gtk-doc.m4 \
-	$(top_srcdir)/m4/intltool.m4 $(top_srcdir)/m4/introspection.m4 \
-	$(top_srcdir)/m4/libtool.m4 $(top_srcdir)/m4/ltoptions.m4 \
-	$(top_srcdir)/m4/ltsugar.m4 $(top_srcdir)/m4/ltversion.m4 \
-	$(top_srcdir)/m4/lt~obsolete.m4 $(top_srcdir)/configure.ac
+am__aclocal_m4_deps = $(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 mkinstalldirs = $(install_sh) -d
@@ -55,14 +51,32 @@ CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
 @COMPILE_LIBLIGHTDM_QT_TRUE@am__EXEEXT_1 = test-qt-greeter$(EXEEXT)
 PROGRAMS = $(noinst_PROGRAMS)
-am_plymouth_OBJECTS = plymouth-plymouth.$(OBJEXT) \
-	plymouth-status.$(OBJEXT)
-plymouth_OBJECTS = $(am_plymouth_OBJECTS)
+am_X_OBJECTS = X-X.$(OBJEXT) X-x-authority.$(OBJEXT) \
+	X-x-common.$(OBJEXT) X-x-server.$(OBJEXT) \
+	X-xdmcp-client.$(OBJEXT) X-status.$(OBJEXT)
+X_OBJECTS = $(am_X_OBJECTS)
 am__DEPENDENCIES_1 =
-plymouth_DEPENDENCIES = $(am__DEPENDENCIES_1)
+X_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 AM_V_lt = $(am__v_lt_$(V))
 am__v_lt_ = $(am__v_lt_$(AM_DEFAULT_VERBOSITY))
 am__v_lt_0 = --silent
+X_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
+	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(X_CFLAGS) $(CFLAGS) \
+	$(AM_LDFLAGS) $(LDFLAGS) -o $@
+am_Xvnc_OBJECTS = Xvnc-Xvnc.$(OBJEXT) Xvnc-x-authority.$(OBJEXT) \
+	Xvnc-x-common.$(OBJEXT) Xvnc-x-server.$(OBJEXT) \
+	Xvnc-status.$(OBJEXT)
+Xvnc_OBJECTS = $(am_Xvnc_OBJECTS)
+Xvnc_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
+Xvnc_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
+	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(Xvnc_CFLAGS) $(CFLAGS) \
+	$(AM_LDFLAGS) $(LDFLAGS) -o $@
+am_plymouth_OBJECTS = plymouth-plymouth.$(OBJEXT) \
+	plymouth-status.$(OBJEXT)
+plymouth_OBJECTS = $(am_plymouth_OBJECTS)
+plymouth_DEPENDENCIES = $(am__DEPENDENCIES_1)
 plymouth_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(plymouth_CFLAGS) \
 	$(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
@@ -118,14 +132,12 @@ test_session_DEPENDENCIES = $(am__DEPENDENCIES_1) \
 test_session_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(test_session_CFLAGS) \
 	$(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
-am_test_xserver_OBJECTS = test_xserver-test-xserver.$(OBJEXT) \
-	test_xserver-status.$(OBJEXT)
-test_xserver_OBJECTS = $(am_test_xserver_OBJECTS)
-test_xserver_DEPENDENCIES = $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1)
-test_xserver_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
-	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(test_xserver_CFLAGS) \
+am_vnc_client_OBJECTS = vnc_client-vnc-client.$(OBJEXT) \
+	vnc_client-status.$(OBJEXT)
+vnc_client_OBJECTS = $(am_vnc_client_OBJECTS)
+vnc_client_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
+vnc_client_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
+	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(vnc_client_CFLAGS) \
 	$(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
@@ -169,14 +181,16 @@ am__v_CXXLD_0 = @echo "  CXXLD " $@;
 AM_V_GEN = $(am__v_GEN_$(V))
 am__v_GEN_ = $(am__v_GEN_$(AM_DEFAULT_VERBOSITY))
 am__v_GEN_0 = @echo "  GEN   " $@;
-SOURCES = $(plymouth_SOURCES) $(test_gobject_greeter_SOURCES) \
-	$(test_guest_account_SOURCES) $(test_qt_greeter_SOURCES) \
-	test-runner.c $(test_script_hook_SOURCES) \
-	$(test_session_SOURCES) $(test_xserver_SOURCES)
-DIST_SOURCES = $(plymouth_SOURCES) $(test_gobject_greeter_SOURCES) \
-	$(test_guest_account_SOURCES) $(test_qt_greeter_SOURCES) \
-	test-runner.c $(test_script_hook_SOURCES) \
-	$(test_session_SOURCES) $(test_xserver_SOURCES)
+SOURCES = $(X_SOURCES) $(Xvnc_SOURCES) $(plymouth_SOURCES) \
+	$(test_gobject_greeter_SOURCES) $(test_guest_account_SOURCES) \
+	$(test_qt_greeter_SOURCES) test-runner.c \
+	$(test_script_hook_SOURCES) $(test_session_SOURCES) \
+	$(vnc_client_SOURCES)
+DIST_SOURCES = $(X_SOURCES) $(Xvnc_SOURCES) $(plymouth_SOURCES) \
+	$(test_gobject_greeter_SOURCES) $(test_guest_account_SOURCES) \
+	$(test_qt_greeter_SOURCES) test-runner.c \
+	$(test_script_hook_SOURCES) $(test_session_SOURCES) \
+	$(vnc_client_SOURCES)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
@@ -366,15 +380,29 @@ test_runner_LDADD = \
 	$(GLIB_LIBS) \
 	$(GIO_LIBS)
 
-test_xserver_SOURCES = test-xserver.c status.c status.h
-test_xserver_CFLAGS = \
+X_SOURCES = X.c x-authority.c x-authority.h x-common.c x-common.h x-server.c x-server.h xdmcp-client.c xdmcp-client.h status.c status.h
+X_CFLAGS = \
 	$(WARN_CFLAGS) \
 	$(GOBJECT_CFLAGS) \
 	$(GLIB_CFLAGS) \
 	$(GIO_CFLAGS) \
 	$(GIO_UNIX_CFLAGS)
 
-test_xserver_LDADD = \
+X_LDADD = \
+	$(GOBJECT_LIBS) \
+	$(GLIB_LIBS) \
+	$(GIO_LIBS) \
+	$(GIO_UNIX_LIBS)
+
+Xvnc_SOURCES = Xvnc.c x-authority.c x-authority.h x-common.c x-common.h x-server.c x-server.h status.c status.h
+Xvnc_CFLAGS = \
+	$(WARN_CFLAGS) \
+	$(GOBJECT_CFLAGS) \
+	$(GLIB_CFLAGS) \
+	$(GIO_CFLAGS) \
+	$(GIO_UNIX_CFLAGS)
+
+Xvnc_LDADD = \
 	$(GOBJECT_LIBS) \
 	$(GLIB_LIBS) \
 	$(GIO_LIBS) \
@@ -441,6 +469,16 @@ plymouth_CFLAGS = \
 plymouth_LDADD = \
 	$(GLIB_LIBS)
 
+vnc_client_SOURCES = vnc-client.c status.c status.h
+vnc_client_CFLAGS = \
+	$(WARN_CFLAGS) \
+	$(GLIB_CFLAGS) \
+	$(GIO_CFLAGS)
+
+vnc_client_LDADD = \
+	$(GLIB_LIBS) \
+	$(GIO_LIBS)
+
 CLEANFILES = \
 	test-qt-greeter_moc.cpp
 
@@ -487,6 +525,12 @@ clean-noinstPROGRAMS:
 	list=`for p in $$list; do echo "$$p"; done | sed 's/$(EXEEXT)$$//'`; \
 	echo " rm -f" $$list; \
 	rm -f $$list
+X$(EXEEXT): $(X_OBJECTS) $(X_DEPENDENCIES) 
+	@rm -f X$(EXEEXT)
+	$(AM_V_CCLD)$(X_LINK) $(X_OBJECTS) $(X_LDADD) $(LIBS)
+Xvnc$(EXEEXT): $(Xvnc_OBJECTS) $(Xvnc_DEPENDENCIES) 
+	@rm -f Xvnc$(EXEEXT)
+	$(AM_V_CCLD)$(Xvnc_LINK) $(Xvnc_OBJECTS) $(Xvnc_LDADD) $(LIBS)
 plymouth$(EXEEXT): $(plymouth_OBJECTS) $(plymouth_DEPENDENCIES) 
 	@rm -f plymouth$(EXEEXT)
 	$(AM_V_CCLD)$(plymouth_LINK) $(plymouth_OBJECTS) $(plymouth_LDADD) $(LIBS)
@@ -508,9 +552,9 @@ test-script-hook$(EXEEXT): $(test_script_hook_OBJECTS) $(test_script_hook_DEPEND
 test-session$(EXEEXT): $(test_session_OBJECTS) $(test_session_DEPENDENCIES) 
 	@rm -f test-session$(EXEEXT)
 	$(AM_V_CCLD)$(test_session_LINK) $(test_session_OBJECTS) $(test_session_LDADD) $(LIBS)
-test-xserver$(EXEEXT): $(test_xserver_OBJECTS) $(test_xserver_DEPENDENCIES) 
-	@rm -f test-xserver$(EXEEXT)
-	$(AM_V_CCLD)$(test_xserver_LINK) $(test_xserver_OBJECTS) $(test_xserver_LDADD) $(LIBS)
+vnc-client$(EXEEXT): $(vnc_client_OBJECTS) $(vnc_client_DEPENDENCIES) 
+	@rm -f vnc-client$(EXEEXT)
+	$(AM_V_CCLD)$(vnc_client_LINK) $(vnc_client_OBJECTS) $(vnc_client_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -518,6 +562,17 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/X-X.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/X-status.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/X-x-authority.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/X-x-common.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/X-x-server.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/X-xdmcp-client.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Xvnc-Xvnc.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Xvnc-status.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Xvnc-x-authority.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Xvnc-x-common.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Xvnc-x-server.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/plymouth-plymouth.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/plymouth-status.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/status.Po@am__quote@
@@ -532,8 +587,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_script_hook-test-script-hook.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_session-status.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_session-test-session.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_xserver-status.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_xserver-test-xserver.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/vnc_client-status.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/vnc_client-vnc-client.Po@am__quote@
 
 .c.o:
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
@@ -558,6 +613,182 @@ distclean-compile:
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LTCOMPILE) -c -o $@ $<
+
+X-X.o: X.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(X_CFLAGS) $(CFLAGS) -MT X-X.o -MD -MP -MF $(DEPDIR)/X-X.Tpo -c -o X-X.o `test -f 'X.c' || echo '$(srcdir)/'`X.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/X-X.Tpo $(DEPDIR)/X-X.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='X.c' object='X-X.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(X_CFLAGS) $(CFLAGS) -c -o X-X.o `test -f 'X.c' || echo '$(srcdir)/'`X.c
+
+X-X.obj: X.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(X_CFLAGS) $(CFLAGS) -MT X-X.obj -MD -MP -MF $(DEPDIR)/X-X.Tpo -c -o X-X.obj `if test -f 'X.c'; then $(CYGPATH_W) 'X.c'; else $(CYGPATH_W) '$(srcdir)/X.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/X-X.Tpo $(DEPDIR)/X-X.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='X.c' object='X-X.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(X_CFLAGS) $(CFLAGS) -c -o X-X.obj `if test -f 'X.c'; then $(CYGPATH_W) 'X.c'; else $(CYGPATH_W) '$(srcdir)/X.c'; fi`
+
+X-x-authority.o: x-authority.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(X_CFLAGS) $(CFLAGS) -MT X-x-authority.o -MD -MP -MF $(DEPDIR)/X-x-authority.Tpo -c -o X-x-authority.o `test -f 'x-authority.c' || echo '$(srcdir)/'`x-authority.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/X-x-authority.Tpo $(DEPDIR)/X-x-authority.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='x-authority.c' object='X-x-authority.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(X_CFLAGS) $(CFLAGS) -c -o X-x-authority.o `test -f 'x-authority.c' || echo '$(srcdir)/'`x-authority.c
+
+X-x-authority.obj: x-authority.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(X_CFLAGS) $(CFLAGS) -MT X-x-authority.obj -MD -MP -MF $(DEPDIR)/X-x-authority.Tpo -c -o X-x-authority.obj `if test -f 'x-authority.c'; then $(CYGPATH_W) 'x-authority.c'; else $(CYGPATH_W) '$(srcdir)/x-authority.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/X-x-authority.Tpo $(DEPDIR)/X-x-authority.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='x-authority.c' object='X-x-authority.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(X_CFLAGS) $(CFLAGS) -c -o X-x-authority.obj `if test -f 'x-authority.c'; then $(CYGPATH_W) 'x-authority.c'; else $(CYGPATH_W) '$(srcdir)/x-authority.c'; fi`
+
+X-x-common.o: x-common.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(X_CFLAGS) $(CFLAGS) -MT X-x-common.o -MD -MP -MF $(DEPDIR)/X-x-common.Tpo -c -o X-x-common.o `test -f 'x-common.c' || echo '$(srcdir)/'`x-common.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/X-x-common.Tpo $(DEPDIR)/X-x-common.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='x-common.c' object='X-x-common.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(X_CFLAGS) $(CFLAGS) -c -o X-x-common.o `test -f 'x-common.c' || echo '$(srcdir)/'`x-common.c
+
+X-x-common.obj: x-common.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(X_CFLAGS) $(CFLAGS) -MT X-x-common.obj -MD -MP -MF $(DEPDIR)/X-x-common.Tpo -c -o X-x-common.obj `if test -f 'x-common.c'; then $(CYGPATH_W) 'x-common.c'; else $(CYGPATH_W) '$(srcdir)/x-common.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/X-x-common.Tpo $(DEPDIR)/X-x-common.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='x-common.c' object='X-x-common.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(X_CFLAGS) $(CFLAGS) -c -o X-x-common.obj `if test -f 'x-common.c'; then $(CYGPATH_W) 'x-common.c'; else $(CYGPATH_W) '$(srcdir)/x-common.c'; fi`
+
+X-x-server.o: x-server.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(X_CFLAGS) $(CFLAGS) -MT X-x-server.o -MD -MP -MF $(DEPDIR)/X-x-server.Tpo -c -o X-x-server.o `test -f 'x-server.c' || echo '$(srcdir)/'`x-server.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/X-x-server.Tpo $(DEPDIR)/X-x-server.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='x-server.c' object='X-x-server.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(X_CFLAGS) $(CFLAGS) -c -o X-x-server.o `test -f 'x-server.c' || echo '$(srcdir)/'`x-server.c
+
+X-x-server.obj: x-server.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(X_CFLAGS) $(CFLAGS) -MT X-x-server.obj -MD -MP -MF $(DEPDIR)/X-x-server.Tpo -c -o X-x-server.obj `if test -f 'x-server.c'; then $(CYGPATH_W) 'x-server.c'; else $(CYGPATH_W) '$(srcdir)/x-server.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/X-x-server.Tpo $(DEPDIR)/X-x-server.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='x-server.c' object='X-x-server.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(X_CFLAGS) $(CFLAGS) -c -o X-x-server.obj `if test -f 'x-server.c'; then $(CYGPATH_W) 'x-server.c'; else $(CYGPATH_W) '$(srcdir)/x-server.c'; fi`
+
+X-xdmcp-client.o: xdmcp-client.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(X_CFLAGS) $(CFLAGS) -MT X-xdmcp-client.o -MD -MP -MF $(DEPDIR)/X-xdmcp-client.Tpo -c -o X-xdmcp-client.o `test -f 'xdmcp-client.c' || echo '$(srcdir)/'`xdmcp-client.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/X-xdmcp-client.Tpo $(DEPDIR)/X-xdmcp-client.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='xdmcp-client.c' object='X-xdmcp-client.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(X_CFLAGS) $(CFLAGS) -c -o X-xdmcp-client.o `test -f 'xdmcp-client.c' || echo '$(srcdir)/'`xdmcp-client.c
+
+X-xdmcp-client.obj: xdmcp-client.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(X_CFLAGS) $(CFLAGS) -MT X-xdmcp-client.obj -MD -MP -MF $(DEPDIR)/X-xdmcp-client.Tpo -c -o X-xdmcp-client.obj `if test -f 'xdmcp-client.c'; then $(CYGPATH_W) 'xdmcp-client.c'; else $(CYGPATH_W) '$(srcdir)/xdmcp-client.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/X-xdmcp-client.Tpo $(DEPDIR)/X-xdmcp-client.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='xdmcp-client.c' object='X-xdmcp-client.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(X_CFLAGS) $(CFLAGS) -c -o X-xdmcp-client.obj `if test -f 'xdmcp-client.c'; then $(CYGPATH_W) 'xdmcp-client.c'; else $(CYGPATH_W) '$(srcdir)/xdmcp-client.c'; fi`
+
+X-status.o: status.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(X_CFLAGS) $(CFLAGS) -MT X-status.o -MD -MP -MF $(DEPDIR)/X-status.Tpo -c -o X-status.o `test -f 'status.c' || echo '$(srcdir)/'`status.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/X-status.Tpo $(DEPDIR)/X-status.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='status.c' object='X-status.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(X_CFLAGS) $(CFLAGS) -c -o X-status.o `test -f 'status.c' || echo '$(srcdir)/'`status.c
+
+X-status.obj: status.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(X_CFLAGS) $(CFLAGS) -MT X-status.obj -MD -MP -MF $(DEPDIR)/X-status.Tpo -c -o X-status.obj `if test -f 'status.c'; then $(CYGPATH_W) 'status.c'; else $(CYGPATH_W) '$(srcdir)/status.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/X-status.Tpo $(DEPDIR)/X-status.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='status.c' object='X-status.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(X_CFLAGS) $(CFLAGS) -c -o X-status.obj `if test -f 'status.c'; then $(CYGPATH_W) 'status.c'; else $(CYGPATH_W) '$(srcdir)/status.c'; fi`
+
+Xvnc-Xvnc.o: Xvnc.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(Xvnc_CFLAGS) $(CFLAGS) -MT Xvnc-Xvnc.o -MD -MP -MF $(DEPDIR)/Xvnc-Xvnc.Tpo -c -o Xvnc-Xvnc.o `test -f 'Xvnc.c' || echo '$(srcdir)/'`Xvnc.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/Xvnc-Xvnc.Tpo $(DEPDIR)/Xvnc-Xvnc.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='Xvnc.c' object='Xvnc-Xvnc.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(Xvnc_CFLAGS) $(CFLAGS) -c -o Xvnc-Xvnc.o `test -f 'Xvnc.c' || echo '$(srcdir)/'`Xvnc.c
+
+Xvnc-Xvnc.obj: Xvnc.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(Xvnc_CFLAGS) $(CFLAGS) -MT Xvnc-Xvnc.obj -MD -MP -MF $(DEPDIR)/Xvnc-Xvnc.Tpo -c -o Xvnc-Xvnc.obj `if test -f 'Xvnc.c'; then $(CYGPATH_W) 'Xvnc.c'; else $(CYGPATH_W) '$(srcdir)/Xvnc.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/Xvnc-Xvnc.Tpo $(DEPDIR)/Xvnc-Xvnc.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='Xvnc.c' object='Xvnc-Xvnc.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(Xvnc_CFLAGS) $(CFLAGS) -c -o Xvnc-Xvnc.obj `if test -f 'Xvnc.c'; then $(CYGPATH_W) 'Xvnc.c'; else $(CYGPATH_W) '$(srcdir)/Xvnc.c'; fi`
+
+Xvnc-x-authority.o: x-authority.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(Xvnc_CFLAGS) $(CFLAGS) -MT Xvnc-x-authority.o -MD -MP -MF $(DEPDIR)/Xvnc-x-authority.Tpo -c -o Xvnc-x-authority.o `test -f 'x-authority.c' || echo '$(srcdir)/'`x-authority.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/Xvnc-x-authority.Tpo $(DEPDIR)/Xvnc-x-authority.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='x-authority.c' object='Xvnc-x-authority.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(Xvnc_CFLAGS) $(CFLAGS) -c -o Xvnc-x-authority.o `test -f 'x-authority.c' || echo '$(srcdir)/'`x-authority.c
+
+Xvnc-x-authority.obj: x-authority.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(Xvnc_CFLAGS) $(CFLAGS) -MT Xvnc-x-authority.obj -MD -MP -MF $(DEPDIR)/Xvnc-x-authority.Tpo -c -o Xvnc-x-authority.obj `if test -f 'x-authority.c'; then $(CYGPATH_W) 'x-authority.c'; else $(CYGPATH_W) '$(srcdir)/x-authority.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/Xvnc-x-authority.Tpo $(DEPDIR)/Xvnc-x-authority.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='x-authority.c' object='Xvnc-x-authority.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(Xvnc_CFLAGS) $(CFLAGS) -c -o Xvnc-x-authority.obj `if test -f 'x-authority.c'; then $(CYGPATH_W) 'x-authority.c'; else $(CYGPATH_W) '$(srcdir)/x-authority.c'; fi`
+
+Xvnc-x-common.o: x-common.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(Xvnc_CFLAGS) $(CFLAGS) -MT Xvnc-x-common.o -MD -MP -MF $(DEPDIR)/Xvnc-x-common.Tpo -c -o Xvnc-x-common.o `test -f 'x-common.c' || echo '$(srcdir)/'`x-common.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/Xvnc-x-common.Tpo $(DEPDIR)/Xvnc-x-common.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='x-common.c' object='Xvnc-x-common.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(Xvnc_CFLAGS) $(CFLAGS) -c -o Xvnc-x-common.o `test -f 'x-common.c' || echo '$(srcdir)/'`x-common.c
+
+Xvnc-x-common.obj: x-common.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(Xvnc_CFLAGS) $(CFLAGS) -MT Xvnc-x-common.obj -MD -MP -MF $(DEPDIR)/Xvnc-x-common.Tpo -c -o Xvnc-x-common.obj `if test -f 'x-common.c'; then $(CYGPATH_W) 'x-common.c'; else $(CYGPATH_W) '$(srcdir)/x-common.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/Xvnc-x-common.Tpo $(DEPDIR)/Xvnc-x-common.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='x-common.c' object='Xvnc-x-common.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(Xvnc_CFLAGS) $(CFLAGS) -c -o Xvnc-x-common.obj `if test -f 'x-common.c'; then $(CYGPATH_W) 'x-common.c'; else $(CYGPATH_W) '$(srcdir)/x-common.c'; fi`
+
+Xvnc-x-server.o: x-server.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(Xvnc_CFLAGS) $(CFLAGS) -MT Xvnc-x-server.o -MD -MP -MF $(DEPDIR)/Xvnc-x-server.Tpo -c -o Xvnc-x-server.o `test -f 'x-server.c' || echo '$(srcdir)/'`x-server.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/Xvnc-x-server.Tpo $(DEPDIR)/Xvnc-x-server.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='x-server.c' object='Xvnc-x-server.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(Xvnc_CFLAGS) $(CFLAGS) -c -o Xvnc-x-server.o `test -f 'x-server.c' || echo '$(srcdir)/'`x-server.c
+
+Xvnc-x-server.obj: x-server.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(Xvnc_CFLAGS) $(CFLAGS) -MT Xvnc-x-server.obj -MD -MP -MF $(DEPDIR)/Xvnc-x-server.Tpo -c -o Xvnc-x-server.obj `if test -f 'x-server.c'; then $(CYGPATH_W) 'x-server.c'; else $(CYGPATH_W) '$(srcdir)/x-server.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/Xvnc-x-server.Tpo $(DEPDIR)/Xvnc-x-server.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='x-server.c' object='Xvnc-x-server.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(Xvnc_CFLAGS) $(CFLAGS) -c -o Xvnc-x-server.obj `if test -f 'x-server.c'; then $(CYGPATH_W) 'x-server.c'; else $(CYGPATH_W) '$(srcdir)/x-server.c'; fi`
+
+Xvnc-status.o: status.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(Xvnc_CFLAGS) $(CFLAGS) -MT Xvnc-status.o -MD -MP -MF $(DEPDIR)/Xvnc-status.Tpo -c -o Xvnc-status.o `test -f 'status.c' || echo '$(srcdir)/'`status.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/Xvnc-status.Tpo $(DEPDIR)/Xvnc-status.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='status.c' object='Xvnc-status.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(Xvnc_CFLAGS) $(CFLAGS) -c -o Xvnc-status.o `test -f 'status.c' || echo '$(srcdir)/'`status.c
+
+Xvnc-status.obj: status.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(Xvnc_CFLAGS) $(CFLAGS) -MT Xvnc-status.obj -MD -MP -MF $(DEPDIR)/Xvnc-status.Tpo -c -o Xvnc-status.obj `if test -f 'status.c'; then $(CYGPATH_W) 'status.c'; else $(CYGPATH_W) '$(srcdir)/status.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/Xvnc-status.Tpo $(DEPDIR)/Xvnc-status.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='status.c' object='Xvnc-status.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(Xvnc_CFLAGS) $(CFLAGS) -c -o Xvnc-status.obj `if test -f 'status.c'; then $(CYGPATH_W) 'status.c'; else $(CYGPATH_W) '$(srcdir)/status.c'; fi`
 
 plymouth-plymouth.o: plymouth.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(plymouth_CFLAGS) $(CFLAGS) -MT plymouth-plymouth.o -MD -MP -MF $(DEPDIR)/plymouth-plymouth.Tpo -c -o plymouth-plymouth.o `test -f 'plymouth.c' || echo '$(srcdir)/'`plymouth.c
@@ -735,37 +966,37 @@ test_session-status.obj: status.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_session_CFLAGS) $(CFLAGS) -c -o test_session-status.obj `if test -f 'status.c'; then $(CYGPATH_W) 'status.c'; else $(CYGPATH_W) '$(srcdir)/status.c'; fi`
 
-test_xserver-test-xserver.o: test-xserver.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_xserver_CFLAGS) $(CFLAGS) -MT test_xserver-test-xserver.o -MD -MP -MF $(DEPDIR)/test_xserver-test-xserver.Tpo -c -o test_xserver-test-xserver.o `test -f 'test-xserver.c' || echo '$(srcdir)/'`test-xserver.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/test_xserver-test-xserver.Tpo $(DEPDIR)/test_xserver-test-xserver.Po
+vnc_client-vnc-client.o: vnc-client.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(vnc_client_CFLAGS) $(CFLAGS) -MT vnc_client-vnc-client.o -MD -MP -MF $(DEPDIR)/vnc_client-vnc-client.Tpo -c -o vnc_client-vnc-client.o `test -f 'vnc-client.c' || echo '$(srcdir)/'`vnc-client.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/vnc_client-vnc-client.Tpo $(DEPDIR)/vnc_client-vnc-client.Po
 @am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='test-xserver.c' object='test_xserver-test-xserver.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='vnc-client.c' object='vnc_client-vnc-client.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_xserver_CFLAGS) $(CFLAGS) -c -o test_xserver-test-xserver.o `test -f 'test-xserver.c' || echo '$(srcdir)/'`test-xserver.c
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(vnc_client_CFLAGS) $(CFLAGS) -c -o vnc_client-vnc-client.o `test -f 'vnc-client.c' || echo '$(srcdir)/'`vnc-client.c
 
-test_xserver-test-xserver.obj: test-xserver.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_xserver_CFLAGS) $(CFLAGS) -MT test_xserver-test-xserver.obj -MD -MP -MF $(DEPDIR)/test_xserver-test-xserver.Tpo -c -o test_xserver-test-xserver.obj `if test -f 'test-xserver.c'; then $(CYGPATH_W) 'test-xserver.c'; else $(CYGPATH_W) '$(srcdir)/test-xserver.c'; fi`
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/test_xserver-test-xserver.Tpo $(DEPDIR)/test_xserver-test-xserver.Po
+vnc_client-vnc-client.obj: vnc-client.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(vnc_client_CFLAGS) $(CFLAGS) -MT vnc_client-vnc-client.obj -MD -MP -MF $(DEPDIR)/vnc_client-vnc-client.Tpo -c -o vnc_client-vnc-client.obj `if test -f 'vnc-client.c'; then $(CYGPATH_W) 'vnc-client.c'; else $(CYGPATH_W) '$(srcdir)/vnc-client.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/vnc_client-vnc-client.Tpo $(DEPDIR)/vnc_client-vnc-client.Po
 @am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='test-xserver.c' object='test_xserver-test-xserver.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='vnc-client.c' object='vnc_client-vnc-client.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_xserver_CFLAGS) $(CFLAGS) -c -o test_xserver-test-xserver.obj `if test -f 'test-xserver.c'; then $(CYGPATH_W) 'test-xserver.c'; else $(CYGPATH_W) '$(srcdir)/test-xserver.c'; fi`
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(vnc_client_CFLAGS) $(CFLAGS) -c -o vnc_client-vnc-client.obj `if test -f 'vnc-client.c'; then $(CYGPATH_W) 'vnc-client.c'; else $(CYGPATH_W) '$(srcdir)/vnc-client.c'; fi`
 
-test_xserver-status.o: status.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_xserver_CFLAGS) $(CFLAGS) -MT test_xserver-status.o -MD -MP -MF $(DEPDIR)/test_xserver-status.Tpo -c -o test_xserver-status.o `test -f 'status.c' || echo '$(srcdir)/'`status.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/test_xserver-status.Tpo $(DEPDIR)/test_xserver-status.Po
+vnc_client-status.o: status.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(vnc_client_CFLAGS) $(CFLAGS) -MT vnc_client-status.o -MD -MP -MF $(DEPDIR)/vnc_client-status.Tpo -c -o vnc_client-status.o `test -f 'status.c' || echo '$(srcdir)/'`status.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/vnc_client-status.Tpo $(DEPDIR)/vnc_client-status.Po
 @am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='status.c' object='test_xserver-status.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='status.c' object='vnc_client-status.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_xserver_CFLAGS) $(CFLAGS) -c -o test_xserver-status.o `test -f 'status.c' || echo '$(srcdir)/'`status.c
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(vnc_client_CFLAGS) $(CFLAGS) -c -o vnc_client-status.o `test -f 'status.c' || echo '$(srcdir)/'`status.c
 
-test_xserver-status.obj: status.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_xserver_CFLAGS) $(CFLAGS) -MT test_xserver-status.obj -MD -MP -MF $(DEPDIR)/test_xserver-status.Tpo -c -o test_xserver-status.obj `if test -f 'status.c'; then $(CYGPATH_W) 'status.c'; else $(CYGPATH_W) '$(srcdir)/status.c'; fi`
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/test_xserver-status.Tpo $(DEPDIR)/test_xserver-status.Po
+vnc_client-status.obj: status.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(vnc_client_CFLAGS) $(CFLAGS) -MT vnc_client-status.obj -MD -MP -MF $(DEPDIR)/vnc_client-status.Tpo -c -o vnc_client-status.obj `if test -f 'status.c'; then $(CYGPATH_W) 'status.c'; else $(CYGPATH_W) '$(srcdir)/status.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/vnc_client-status.Tpo $(DEPDIR)/vnc_client-status.Po
 @am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='status.c' object='test_xserver-status.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='status.c' object='vnc_client-status.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_xserver_CFLAGS) $(CFLAGS) -c -o test_xserver-status.obj `if test -f 'status.c'; then $(CYGPATH_W) 'status.c'; else $(CYGPATH_W) '$(srcdir)/status.c'; fi`
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(vnc_client_CFLAGS) $(CFLAGS) -c -o vnc_client-status.obj `if test -f 'status.c'; then $(CYGPATH_W) 'status.c'; else $(CYGPATH_W) '$(srcdir)/status.c'; fi`
 
 .cpp.o:
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXXCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<

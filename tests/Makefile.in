@@ -41,11 +41,14 @@ host_triplet = @host@
 @COMPILE_LIBLIGHTDM_QT_TRUE@am__append_1 = \
 @COMPILE_LIBLIGHTDM_QT_TRUE@	test-login-qt \
 @COMPILE_LIBLIGHTDM_QT_TRUE@	test-login-qt-manual \
+@COMPILE_LIBLIGHTDM_QT_TRUE@	test-login-qt-manual-previous-session \
 @COMPILE_LIBLIGHTDM_QT_TRUE@	test-login-qt-no-password \
+@COMPILE_LIBLIGHTDM_QT_TRUE@	test-login-qt-previous-session \
 @COMPILE_LIBLIGHTDM_QT_TRUE@	test-login-qt-wrong-password \
 @COMPILE_LIBLIGHTDM_QT_TRUE@	test-login-qt-invalid-user \
 @COMPILE_LIBLIGHTDM_QT_TRUE@	test-login-qt-invalid-session \
 @COMPILE_LIBLIGHTDM_QT_TRUE@	test-login-qt-logout \
+@COMPILE_LIBLIGHTDM_QT_TRUE@	test-login-qt-pick-session \
 @COMPILE_LIBLIGHTDM_QT_TRUE@	test-login-qt-guest \
 @COMPILE_LIBLIGHTDM_QT_TRUE@	test-login-qt-guest-disabled \
 @COMPILE_LIBLIGHTDM_QT_TRUE@	test-login-qt-guest-no-setup-script \
@@ -55,11 +58,7 @@ host_triplet = @host@
 subdir = tests
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
-am__aclocal_m4_deps = $(top_srcdir)/m4/gtk-doc.m4 \
-	$(top_srcdir)/m4/intltool.m4 $(top_srcdir)/m4/introspection.m4 \
-	$(top_srcdir)/m4/libtool.m4 $(top_srcdir)/m4/ltoptions.m4 \
-	$(top_srcdir)/m4/ltsugar.m4 $(top_srcdir)/m4/ltversion.m4 \
-	$(top_srcdir)/m4/lt~obsolete.m4 $(top_srcdir)/configure.ac
+am__aclocal_m4_deps = $(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 mkinstalldirs = $(install_sh) -d
@@ -298,10 +297,13 @@ TESTS = test-xserver-fail-start test-greeter-fail-start \
 	test-no-config test-headless test-autologin \
 	test-autologin-invalid-user test-autologin-invalid-session \
 	test-autologin-xserver-crash test-autologin-session-crash \
-	test-autologin-logout test-autologin-guest \
-	test-autologin-guest-fail-setup-script \
+	test-autologin-logout test-autologin-previous-session \
+	test-autologin-guest test-autologin-guest-fail-setup-script \
 	test-autologin-guest-logout test-login-gobject \
-	test-login-gobject-manual test-login-gobject-no-password \
+	test-login-gobject-manual \
+	test-login-gobject-manual-previous-session \
+	test-login-gobject-no-password test-login-gobject-pick-session \
+	test-login-gobject-previous-session \
 	test-login-gobject-wrong-password \
 	test-login-gobject-invalid-user \
 	test-login-gobject-invalid-session test-login-gobject-logout \
@@ -314,12 +316,13 @@ TESTS = test-xserver-fail-start test-greeter-fail-start \
 	test-script-hooks test-script-hook-fail-display-setup \
 	test-script-hook-fail-greeter-setup \
 	test-script-hook-fail-session-setup test-switch-to-greeter \
-	test-switch-to-guest test-switch-to-user test-xdmcp-login \
-	$(am__append_1)
+	test-switch-to-guest test-switch-to-user test-vnc-login \
+	test-xdmcp-login $(am__append_1)
 EXTRA_DIST = \
 	$(TESTS) \
 	data/xgreeters/test-gobject-greeter.desktop \
 	data/xgreeters/test-qt-greeter.desktop \
+	data/xsessions/alternative.desktop \
 	data/xsessions/default.desktop \
 	scripts/autologin.conf \
 	scripts/autologin-guest.conf \
@@ -328,6 +331,7 @@ EXTRA_DIST = \
 	scripts/autologin-invalid-session.conf \
 	scripts/autologin-invalid-user.conf \
 	scripts/autologin-logout.conf \
+	scripts/autologin-previous-session.conf \
 	scripts/autologin-session-crash.conf \
 	scripts/autologin-xserver-crash.conf \
 	scripts/greeter-fail-start.conf \
@@ -344,7 +348,10 @@ EXTRA_DIST = \
 	scripts/login-invalid-user.conf \
 	scripts/login-logout.conf \
 	scripts/login-manual.conf \
+	scripts/login-manual-previous-session.conf \
 	scripts/login-no-password.conf \
+	scripts/login-pick-session.conf \
+	scripts/login-previous-session.conf \
 	scripts/login-session-crash.conf \
 	scripts/login-wrong-password.conf \
 	scripts/login-xserver-crash.conf \
@@ -359,6 +366,7 @@ EXTRA_DIST = \
 	scripts/switch-to-greeter.conf \
 	scripts/switch-to-guest.conf \
 	scripts/switch-to-user.conf \
+	scripts/vnc-login.conf \
 	scripts/xdmcp-login.conf \
 	scripts/xserver-fail-start.conf
 

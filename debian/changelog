@@ -1,3 +1,65 @@
+lightdm (1.0.6-0ubuntu2) precise; urgency=low
+
+  * Upload to precise.
+
+ -- Martin Pitt <martin.pitt@ubuntu.com>  Thu, 10 Nov 2011 07:19:12 +0100
+
+lightdm (1.0.6-0ubuntu1) oneiric-proposed; urgency=low
+
+  [ Martin Pitt ]
+  * debian/lightdm.upstart: Put back check for "text" in kernel command line,
+    for inhibiting automatic lightdm start. Check $JOB to still allow a manual
+    "start lightdm" command to work. (LP: #873334)
+
+  [ Robert Ancell ]
+  * New upstream release:
+    - Use lchown for correcting ownership of ~/.Xauthority instead of chown
+
+ -- Robert Ancell <robert.ancell@canonical.com>  Wed, 02 Nov 2011 11:37:43 -0400
+
+lightdm (1.0.5-0ubuntu1) oneiric-proposed; urgency=low
+
+  * New upstream release.
+    [1.0.5]
+    - Relax AppArmor guest profile to allow compiz to start
+    - Connect up VNC settings for width, height, depth
+    [1.0.4]
+    - Fix --enable-gtk-greeter=yes not working
+    - Fix X sessions with arguments in Exec not working
+    - Use previous session for automatic login or if greeter does not request
+      one. (LP: #834515)
+    - Correct ownership of ~/.Xauthority if upgrading from buggy version of
+      LightDM that had it root owned. (LP: #871667)
+    - Set default resolution of VNC to 1024x768, add settings for width, height,
+      depth into lightdm.conf.
+    - AppArmor profile: Fix broken gnome-keyring and dbus/gwibber, and quiesce
+      annoying kernel audit messages for privileges that we definitively do not
+      want to grant. (LP: #877736) (LP: #874635)
+    - Set LOGNAME environment variable (LP: #875705)
+    - Mark strings as translatable in GTK greeter (LP: #868613)
+    [ 1.0.3]
+    - Fix reference counting issue in ConsoleKit code
+    - Really add the lightdm-guest-session-wrapper
+    [ 1.0.2 ]
+    - Fix daemon from blocking if Accounts Service does not exist
+    - Fix greeter log file not being written
+    - Don't set LANG environment variable if using Accounts Service.
+    - Fix gdmflexiserver not working due to it not being in PATH
+    - Don't authenticate the greeter user
+    - Allow greeters to be disabled in configure flags
+    - Fix over allocation of read buffer in greeter protocol
+    - Make sure objects are cleaned up on exit
+    - Fix minor memory leaks
+    - Fix hugely oversized allocation in greeter buffer.  Can trigger
+      crashes when entering very long passwords.
+  * debian/patches/00bzr_guest_session_wrapper.diff:
+  * debian/patches/07_long_password_crash.patch:
+  * debian/patches/08_correct_ck_ref.patch:
+    - Applied upstream
+  * New upstream release.
+
+ -- Robert Ancell <robert.ancell@canonical.com>  Wed, 26 Oct 2011 12:45:17 -0400
+
 lightdm (1.0.1-0ubuntu6) oneiric; urgency=low
 
   * debian/patches/08_correct_ck_ref.patch:
@@ -148,6 +210,19 @@ lightdm (1.0.0-0ubuntu1) oneiric; urgency=low
   * debian/control: lightdm-gtk-greeter provides lightdm-gtk-greeter-config.
 
  -- Robert Ancell <robert.ancell@canonical.com>  Wed, 28 Sep 2011 16:00:20 +1000
+
+lightdm (0.9.7-0ubuntu2) oneiric; urgency=low
+
+  * don't start on graphics-device-added; reintroducing this reverted the fix
+    for bug #615549 from maverick without explanation.
+  * clean up the completely illegible start rule for debian/lightdm.upstart,
+    killing off the unnecessary parentheses
+  * debian/lightdm.upstart: when lightdm is shut down by a runlevel call,
+    emit an upstart event that can be caught by plymouth so it can
+    distinguish between the DM shutting down for a runlevel change vs.
+    other causes.  LP: #854329.
+
+ -- Steve Langasek <steve.langasek@ubuntu.com>  Sun, 25 Sep 2011 22:22:38 -0700
 
 lightdm (0.9.7-0ubuntu1) oneiric; urgency=low
 

@@ -1,9 +1,9 @@
 === modified file 'src/display.c'
 Index: lightdm/src/display.c
 ===================================================================
---- lightdm.orig/src/display.c	2011-10-07 11:29:03.421904737 +0200
-+++ lightdm/src/display.c	2011-10-07 11:29:11.309905037 +0200
-@@ -439,6 +439,12 @@
+--- lightdm.orig/src/display.c	2011-10-25 16:59:44.225590000 -0400
++++ lightdm/src/display.c	2011-10-25 17:01:31.045046710 -0400
+@@ -469,6 +469,12 @@
              g_free (wrapper);
          }
      }
