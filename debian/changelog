@@ -1,3 +1,16 @@
+lightdm (1.0.6-0ubuntu3) precise; urgency=low
+
+  * SECURITY UPDATE: file contents disclosure via hard link
+    - debian/patches/04_CVE-2011-4105.patch: make sure file isn't a symlink
+      or a hard link before doing the chown on it.
+    - CVE-2011-4105
+  * SECURITY UPDATE: file contents disclosure via links (LP: #883865)
+    - debian/patches/05_CVE-2011-3153.patch: drop privileges before
+      accessing file.
+    - CVE-2011-3153
+
+ -- Marc Deslauriers <marc.deslauriers@ubuntu.com>  Tue, 15 Nov 2011 14:23:53 -0500
+
 lightdm (1.0.6-0ubuntu2) precise; urgency=low
 
   * Upload to precise.
