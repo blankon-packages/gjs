@@ -3,3 +3,6 @@
 03_launch_dbus.patch
 04_CVE-2011-4105.patch
 05_CVE-2011-3153.patch
+09_show_lang_chooser_option.patch
+10_available_languages.patch
+11_set_language_in_accountsservice.patch

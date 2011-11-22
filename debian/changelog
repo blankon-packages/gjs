@@ -1,3 +1,22 @@
+lightdm (1.0.6-0ubuntu4) precise; urgency=low
+
+  [ Gunnar Hjalmarsson ]
+  * debian/lightdm-gtk-greeter-ubuntu.conf and
+    debian/patches/09_show_lang_chooser_option.patch:
+    - Disclose the option to enable the language chooser.
+  * debian/patches/10_available_languages.patch:
+    - If available, show a list of installed translations in the
+      language chooser instead of a 'locale -a' list (LP: #868346).
+    - Use nl_langinfo() to get language and country names for the
+      language chooser labels.
+    - Translate language and country names.
+    - Handle @variants properly.
+  * debian/patches/11_set_language_in_accountsservice.patch:
+    - Save item that is selected from the language chooser also when
+      AccountsService is in use (LP: #868346).
+
+ -- Robert Ancell <robert.ancell@canonical.com>  Tue, 22 Nov 2011 12:41:43 +1100
+
 lightdm (1.0.6-0ubuntu3) precise; urgency=low
 
   * SECURITY UPDATE: file contents disclosure via hard link
