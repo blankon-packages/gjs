@@ -306,6 +306,10 @@ handle_login (Greeter *greeter, guint32 sequence_number, const gchar *username)
 
     g_signal_connect (G_OBJECT (greeter->priv->authentication), "got-messages", G_CALLBACK (pam_messages_cb), greeter);
     g_signal_connect (G_OBJECT (greeter->priv->authentication), "authentication-result", G_CALLBACK (authentication_result_cb), greeter);
+
+    pam_session_set_item (greeter->priv->authentication, PAM_TTY,
+                          session_get_env (greeter->priv->session, "DISPLAY"));
+
     result = pam_session_authenticate (greeter->priv->authentication, &error);
     if (error)
         g_debug ("Failed to start authentication: %s", error->message);
@@ -442,7 +446,7 @@ handle_set_language (Greeter *greeter, const gchar *language)
 
     g_debug ("Greeter sets language %s", language);
     user = pam_session_get_user (greeter->priv->authentication);
-    user_set_locale (user, language);
+    user_set_language (user, language);
 }
 
 static guint32

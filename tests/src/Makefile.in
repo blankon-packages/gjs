@@ -15,6 +15,8 @@
 
 @SET_MAKE@
 
+
+
 VPATH = @srcdir@
 pkgdatadir = $(datadir)/@PACKAGE@
 pkgincludedir = $(includedir)/@PACKAGE@
@@ -34,21 +36,59 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
-noinst_PROGRAMS = test-runner$(EXEEXT) X$(EXEEXT) Xvnc$(EXEEXT) \
-	test-gobject-greeter$(EXEEXT) test-guest-account$(EXEEXT) \
+noinst_PROGRAMS = dbus-env$(EXEEXT) test-runner$(EXEEXT) X$(EXEEXT) \
+	Xvnc$(EXEEXT) test-gobject-greeter$(EXEEXT) \
 	test-session$(EXEEXT) test-script-hook$(EXEEXT) \
-	plymouth$(EXEEXT) vnc-client$(EXEEXT) $(am__EXEEXT_1)
+	guest-account$(EXEEXT) initctl$(EXEEXT) plymouth$(EXEEXT) \
+	vnc-client$(EXEEXT) $(am__EXEEXT_1)
 @COMPILE_LIBLIGHTDM_QT_TRUE@am__append_1 = test-qt-greeter
 subdir = tests/src
-DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
+DIST_COMMON = $(dist_noinst_SCRIPTS) $(srcdir)/Makefile.am \
+	$(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
-am__aclocal_m4_deps = $(top_srcdir)/configure.ac
+am__aclocal_m4_deps = $(top_srcdir)/m4/gtk-doc.m4 \
+	$(top_srcdir)/m4/intltool.m4 $(top_srcdir)/m4/introspection.m4 \
+	$(top_srcdir)/m4/libtool.m4 $(top_srcdir)/m4/ltoptions.m4 \
+	$(top_srcdir)/m4/ltsugar.m4 $(top_srcdir)/m4/ltversion.m4 \
+	$(top_srcdir)/m4/lt~obsolete.m4 $(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 mkinstalldirs = $(install_sh) -d
 CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
+am__vpath_adj_setup = srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`;
+am__vpath_adj = case $$p in \
+    $(srcdir)/*) f=`echo "$$p" | sed "s|^$$srcdirstrip/||"`;; \
+    *) f=$$p;; \
+  esac;
+am__strip_dir = f=`echo $$p | sed -e 's|^.*/||'`;
+am__install_max = 40
+am__nobase_strip_setup = \
+  srcdirstrip=`echo "$(srcdir)" | sed 's/[].[^$$\\*|]/\\\\&/g'`
+am__nobase_strip = \
+  for p in $$list; do echo "$$p"; done | sed -e "s|$$srcdirstrip/||"
+am__nobase_list = $(am__nobase_strip_setup); \
+  for p in $$list; do echo "$$p $$p"; done | \
+  sed "s| $$srcdirstrip/| |;"' / .*\//!s/ .*/ ./; s,\( .*\)/[^/]*$$,\1,' | \
+  $(AWK) 'BEGIN { files["."] = "" } { files[$$2] = files[$$2] " " $$1; \
+    if (++n[$$2] == $(am__install_max)) \
+      { print $$2, files[$$2]; n[$$2] = 0; files[$$2] = "" } } \
+    END { for (dir in files) print dir, files[dir] }'
+am__base_list = \
+  sed '$$!N;$$!N;$$!N;$$!N;$$!N;$$!N;$$!N;s/\n/ /g' | \
+  sed '$$!N;$$!N;$$!N;$$!N;s/\n/ /g'
+am__installdirs = "$(DESTDIR)$(libdir)"
+LTLIBRARIES = $(lib_LTLIBRARIES)
+libsystem_la_DEPENDENCIES =
+am_libsystem_la_OBJECTS = libsystem_la-libsystem.lo
+libsystem_la_OBJECTS = $(am_libsystem_la_OBJECTS)
+AM_V_lt = $(am__v_lt_$(V))
+am__v_lt_ = $(am__v_lt_$(AM_DEFAULT_VERBOSITY))
+am__v_lt_0 = --silent
+libsystem_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
+	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(libsystem_la_CFLAGS) \
+	$(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
 @COMPILE_LIBLIGHTDM_QT_TRUE@am__EXEEXT_1 = test-qt-greeter$(EXEEXT)
 PROGRAMS = $(noinst_PROGRAMS)
 am_X_OBJECTS = X-X.$(OBJEXT) X-x-authority.$(OBJEXT) \
@@ -58,9 +98,6 @@ X_OBJECTS = $(am_X_OBJECTS)
 am__DEPENDENCIES_1 =
 X_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
-AM_V_lt = $(am__v_lt_$(V))
-am__v_lt_ = $(am__v_lt_$(AM_DEFAULT_VERBOSITY))
-am__v_lt_0 = --silent
 X_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(X_CFLAGS) $(CFLAGS) \
 	$(AM_LDFLAGS) $(LDFLAGS) -o $@
@@ -73,6 +110,26 @@ Xvnc_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 Xvnc_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(Xvnc_CFLAGS) $(CFLAGS) \
 	$(AM_LDFLAGS) $(LDFLAGS) -o $@
+dbus_env_SOURCES = dbus-env.c
+dbus_env_OBJECTS = dbus_env-dbus-env.$(OBJEXT)
+dbus_env_DEPENDENCIES = $(am__DEPENDENCIES_1)
+dbus_env_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
+	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(dbus_env_CFLAGS) \
+	$(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
+am_guest_account_OBJECTS = guest_account-guest-account.$(OBJEXT) \
+	guest_account-status.$(OBJEXT)
+guest_account_OBJECTS = $(am_guest_account_OBJECTS)
+guest_account_DEPENDENCIES = $(am__DEPENDENCIES_1)
+guest_account_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
+	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(guest_account_CFLAGS) \
+	$(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
+am_initctl_OBJECTS = initctl-initctl.$(OBJEXT) \
+	initctl-status.$(OBJEXT)
+initctl_OBJECTS = $(am_initctl_OBJECTS)
+initctl_DEPENDENCIES = $(am__DEPENDENCIES_1)
+initctl_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
+	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(initctl_CFLAGS) \
+	$(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
 am_plymouth_OBJECTS = plymouth-plymouth.$(OBJEXT) \
 	plymouth-status.$(OBJEXT)
 plymouth_OBJECTS = $(am_plymouth_OBJECTS)
@@ -90,19 +147,12 @@ test_gobject_greeter_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(test_gobject_greeter_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
-am_test_guest_account_OBJECTS =  \
-	test_guest_account-test-guest-account.$(OBJEXT) \
-	test_guest_account-status.$(OBJEXT)
-test_guest_account_OBJECTS = $(am_test_guest_account_OBJECTS)
-test_guest_account_DEPENDENCIES = $(am__DEPENDENCIES_1)
-test_guest_account_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
-	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
-	$(test_guest_account_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
-	$(LDFLAGS) -o $@
 am_test_qt_greeter_OBJECTS =  \
-	test_qt_greeter-test-qt-greeter.$(OBJEXT) \
-	test_qt_greeter-test-qt-greeter_moc.$(OBJEXT) status.$(OBJEXT)
-test_qt_greeter_OBJECTS = $(am_test_qt_greeter_OBJECTS)
+	test_qt_greeter-test-qt-greeter.$(OBJEXT) status.$(OBJEXT)
+nodist_test_qt_greeter_OBJECTS =  \
+	test_qt_greeter-test-qt-greeter_moc.$(OBJEXT)
+test_qt_greeter_OBJECTS = $(am_test_qt_greeter_OBJECTS) \
+	$(nodist_test_qt_greeter_OBJECTS)
 test_qt_greeter_DEPENDENCIES = $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1)
 test_qt_greeter_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX \
@@ -139,6 +189,7 @@ vnc_client_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 vnc_client_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(vnc_client_CFLAGS) \
 	$(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
+SCRIPTS = $(dist_noinst_SCRIPTS)
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
@@ -181,13 +232,15 @@ am__v_CXXLD_0 = @echo "  CXXLD " $@;
 AM_V_GEN = $(am__v_GEN_$(V))
 am__v_GEN_ = $(am__v_GEN_$(AM_DEFAULT_VERBOSITY))
 am__v_GEN_0 = @echo "  GEN   " $@;
-SOURCES = $(X_SOURCES) $(Xvnc_SOURCES) $(plymouth_SOURCES) \
-	$(test_gobject_greeter_SOURCES) $(test_guest_account_SOURCES) \
-	$(test_qt_greeter_SOURCES) test-runner.c \
-	$(test_script_hook_SOURCES) $(test_session_SOURCES) \
-	$(vnc_client_SOURCES)
-DIST_SOURCES = $(X_SOURCES) $(Xvnc_SOURCES) $(plymouth_SOURCES) \
-	$(test_gobject_greeter_SOURCES) $(test_guest_account_SOURCES) \
+SOURCES = $(libsystem_la_SOURCES) $(X_SOURCES) $(Xvnc_SOURCES) \
+	dbus-env.c $(guest_account_SOURCES) $(initctl_SOURCES) \
+	$(plymouth_SOURCES) $(test_gobject_greeter_SOURCES) \
+	$(test_qt_greeter_SOURCES) $(nodist_test_qt_greeter_SOURCES) \
+	test-runner.c $(test_script_hook_SOURCES) \
+	$(test_session_SOURCES) $(vnc_client_SOURCES)
+DIST_SOURCES = $(libsystem_la_SOURCES) $(X_SOURCES) $(Xvnc_SOURCES) \
+	dbus-env.c $(guest_account_SOURCES) $(initctl_SOURCES) \
+	$(plymouth_SOURCES) $(test_gobject_greeter_SOURCES) \
 	$(test_qt_greeter_SOURCES) test-runner.c \
 	$(test_script_hook_SOURCES) $(test_session_SOURCES) \
 	$(vnc_client_SOURCES)
@@ -214,7 +267,6 @@ CXXDEPMODE = @CXXDEPMODE@
 CXXFLAGS = @CXXFLAGS@
 CYGPATH_W = @CYGPATH_W@
 DATADIRNAME = @DATADIRNAME@
-DBUSBINDINGTOOL = @DBUSBINDINGTOOL@
 DEFS = @DEFS@
 DEPDIR = @DEPDIR@
 DLLTOOL = @DLLTOOL@
@@ -273,11 +325,7 @@ LIBOBJS = @LIBOBJS@
 LIBS = @LIBS@
 LIBTOOL = @LIBTOOL@
 LIGHTDM_CFLAGS = @LIGHTDM_CFLAGS@
-LIGHTDM_GTK_GREETER_CFLAGS = @LIGHTDM_GTK_GREETER_CFLAGS@
-LIGHTDM_GTK_GREETER_LIBS = @LIGHTDM_GTK_GREETER_LIBS@
 LIGHTDM_LIBS = @LIGHTDM_LIBS@
-LIGHTDM_QT_GREETER_CFLAGS = @LIGHTDM_QT_GREETER_CFLAGS@
-LIGHTDM_QT_GREETER_LIBS = @LIGHTDM_QT_GREETER_LIBS@
 LIPO = @LIPO@
 LN_S = @LN_S@
 LTLIBOBJS = @LTLIBOBJS@
@@ -285,6 +333,7 @@ MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
 MANIFEST_TOOL = @MANIFEST_TOOL@
 MKDIR_P = @MKDIR_P@
+MOC = @MOC@
 MSGFMT = @MSGFMT@
 MSGMERGE = @MSGMERGE@
 NM = @NM@
@@ -324,6 +373,7 @@ ac_ct_AR = @ac_ct_AR@
 ac_ct_CC = @ac_ct_CC@
 ac_ct_CXX = @ac_ct_CXX@
 ac_ct_DUMPBIN = @ac_ct_DUMPBIN@
+ac_ct_MOC = @ac_ct_MOC@
 am__include = @am__include@
 am__leading_dot = @am__leading_dot@
 am__quote = @am__quote@
@@ -369,12 +419,26 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
+dist_noinst_SCRIPTS = lightdm-session
+lib_LTLIBRARIES = libsystem.la
+libsystem_la_SOURCES = libsystem.c
+libsystem_la_CFLAGS = $(GLIB_CFLAGS)
+libsystem_la_LIBADD = -ldl
+dbus_env_CFLAGS = \
+	$(WARN_CFLAGS) \
+	$(GLIB_CFLAGS) \
+	-DDATADIR=\"$(abs_srcdir)/../data\"
+
+dbus_env_LDADD = \
+	$(GLIB_LIBS)
+
 test_runner_CFLAGS = \
 	$(WARN_CFLAGS) \
 	$(GLIB_CFLAGS) \
 	$(GIO_CFLAGS) \
 	-DSRCDIR=\"$(abs_top_srcdir)\" \
-	-DBUILDDIR=\"$(abs_top_builddir)\"
+	-DBUILDDIR=\"$(abs_top_builddir)\" \
+	-DDATADIR=\"$(abs_srcdir)/../data\"
 
 test_runner_LDADD = \
 	$(GLIB_LIBS) \
@@ -423,12 +487,12 @@ test_gobject_greeter_LDADD = \
 	$(GOBJECT_LIBS) \
 	$(XCB_LIBS)
 
-test_guest_account_SOURCES = test-guest-account.c status.c status.h
-test_guest_account_CFLAGS = \
+guest_account_SOURCES = guest-account.c status.c status.h
+guest_account_CFLAGS = \
 	$(WARN_CFLAGS) \
 	$(GLIB_CFLAGS)
 
-test_guest_account_LDADD = \
+guest_account_LDADD = \
 	$(GLIB_LIBS)
 
 test_script_hook_SOURCES = test-script-hook.c status.c status.h
@@ -439,16 +503,17 @@ test_script_hook_CFLAGS = \
 test_script_hook_LDADD = \
 	$(GLIB_LIBS)
 
-test_qt_greeter_SOURCES = test-qt-greeter.cpp test-qt-greeter.h test-qt-greeter_moc.cpp status.c status.h
+test_qt_greeter_SOURCES = test-qt-greeter.cpp test-qt-greeter.h status.c status.h
+nodist_test_qt_greeter_SOURCES = test-qt-greeter_moc.cpp
 test_qt_greeter_CXXFLAGS = \
 	-I$(top_srcdir)/liblightdm-qt \
-	$(LIGHTDM_QT_GREETER_CFLAGS) \
+	$(LIBLIGHTDM_QT_CFLAGS) \
 	$(XCB_CFLAGS)
 
 test_qt_greeter_LDADD = \
 	-L$(top_builddir)/liblightdm-qt \
-	-llightdm-qt-1 \
-	$(LIGHTDM_QT_GREETER_LIBS) \
+	-llightdm-qt-2 \
+	$(LIBLIGHTDM_QT_LIBS) \
 	$(XCB_LIBS)
 
 test_session_SOURCES = test-session.c status.c status.h
@@ -460,6 +525,14 @@ test_session_CFLAGS = \
 test_session_LDADD = \
 	$(GLIB_LIBS) \
 	$(XCB_LIBS)
+
+initctl_SOURCES = initctl.c status.c status.h
+initctl_CFLAGS = \
+	$(WARN_CFLAGS) \
+	$(GLIB_CFLAGS)
+
+initctl_LDADD = \
+	$(GLIB_LIBS)
 
 plymouth_SOURCES = plymouth.c status.c status.h
 plymouth_CFLAGS = \
@@ -516,6 +589,39 @@ $(top_srcdir)/configure: @MAINTAINER_MODE_TRUE@ $(am__configure_deps)
 $(ACLOCAL_M4): @MAINTAINER_MODE_TRUE@ $(am__aclocal_m4_deps)
 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
 $(am__aclocal_m4_deps):
+install-libLTLIBRARIES: $(lib_LTLIBRARIES)
+	@$(NORMAL_INSTALL)
+	test -z "$(libdir)" || $(MKDIR_P) "$(DESTDIR)$(libdir)"
+	@list='$(lib_LTLIBRARIES)'; test -n "$(libdir)" || list=; \
+	list2=; for p in $$list; do \
+	  if test -f $$p; then \
+	    list2="$$list2 $$p"; \
+	  else :; fi; \
+	done; \
+	test -z "$$list2" || { \
+	  echo " $(LIBTOOL) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=install $(INSTALL) $(INSTALL_STRIP_FLAG) $$list2 '$(DESTDIR)$(libdir)'"; \
+	  $(LIBTOOL) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=install $(INSTALL) $(INSTALL_STRIP_FLAG) $$list2 "$(DESTDIR)$(libdir)"; \
+	}
+
+uninstall-libLTLIBRARIES:
+	@$(NORMAL_UNINSTALL)
+	@list='$(lib_LTLIBRARIES)'; test -n "$(libdir)" || list=; \
+	for p in $$list; do \
+	  $(am__strip_dir) \
+	  echo " $(LIBTOOL) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=uninstall rm -f '$(DESTDIR)$(libdir)/$$f'"; \
+	  $(LIBTOOL) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=uninstall rm -f "$(DESTDIR)$(libdir)/$$f"; \
+	done
+
+clean-libLTLIBRARIES:
+	-test -z "$(lib_LTLIBRARIES)" || rm -f $(lib_LTLIBRARIES)
+	@list='$(lib_LTLIBRARIES)'; for p in $$list; do \
+	  dir="`echo $$p | sed -e 's|/[^/]*$$||'`"; \
+	  test "$$dir" != "$$p" || dir=.; \
+	  echo "rm -f \"$${dir}/so_locations\""; \
+	  rm -f "$${dir}/so_locations"; \
+	done
+libsystem.la: $(libsystem_la_OBJECTS) $(libsystem_la_DEPENDENCIES) 
+	$(AM_V_CCLD)$(libsystem_la_LINK) -rpath $(libdir) $(libsystem_la_OBJECTS) $(libsystem_la_LIBADD) $(LIBS)
 
 clean-noinstPROGRAMS:
 	@list='$(noinst_PROGRAMS)'; test -n "$$list" || exit 0; \
@@ -531,15 +637,21 @@ X$(EXEEXT): $(X_OBJECTS) $(X_DEPENDENCIES)
 Xvnc$(EXEEXT): $(Xvnc_OBJECTS) $(Xvnc_DEPENDENCIES) 
 	@rm -f Xvnc$(EXEEXT)
 	$(AM_V_CCLD)$(Xvnc_LINK) $(Xvnc_OBJECTS) $(Xvnc_LDADD) $(LIBS)
+dbus-env$(EXEEXT): $(dbus_env_OBJECTS) $(dbus_env_DEPENDENCIES) 
+	@rm -f dbus-env$(EXEEXT)
+	$(AM_V_CCLD)$(dbus_env_LINK) $(dbus_env_OBJECTS) $(dbus_env_LDADD) $(LIBS)
+guest-account$(EXEEXT): $(guest_account_OBJECTS) $(guest_account_DEPENDENCIES) 
+	@rm -f guest-account$(EXEEXT)
+	$(AM_V_CCLD)$(guest_account_LINK) $(guest_account_OBJECTS) $(guest_account_LDADD) $(LIBS)
+initctl$(EXEEXT): $(initctl_OBJECTS) $(initctl_DEPENDENCIES) 
+	@rm -f initctl$(EXEEXT)
+	$(AM_V_CCLD)$(initctl_LINK) $(initctl_OBJECTS) $(initctl_LDADD) $(LIBS)
 plymouth$(EXEEXT): $(plymouth_OBJECTS) $(plymouth_DEPENDENCIES) 
 	@rm -f plymouth$(EXEEXT)
 	$(AM_V_CCLD)$(plymouth_LINK) $(plymouth_OBJECTS) $(plymouth_LDADD) $(LIBS)
 test-gobject-greeter$(EXEEXT): $(test_gobject_greeter_OBJECTS) $(test_gobject_greeter_DEPENDENCIES) 
 	@rm -f test-gobject-greeter$(EXEEXT)
 	$(AM_V_CCLD)$(test_gobject_greeter_LINK) $(test_gobject_greeter_OBJECTS) $(test_gobject_greeter_LDADD) $(LIBS)
-test-guest-account$(EXEEXT): $(test_guest_account_OBJECTS) $(test_guest_account_DEPENDENCIES) 
-	@rm -f test-guest-account$(EXEEXT)
-	$(AM_V_CCLD)$(test_guest_account_LINK) $(test_guest_account_OBJECTS) $(test_guest_account_LDADD) $(LIBS)
 test-qt-greeter$(EXEEXT): $(test_qt_greeter_OBJECTS) $(test_qt_greeter_DEPENDENCIES) 
 	@rm -f test-qt-greeter$(EXEEXT)
 	$(AM_V_CXXLD)$(test_qt_greeter_LINK) $(test_qt_greeter_OBJECTS) $(test_qt_greeter_LDADD) $(LIBS)
@@ -573,13 +685,17 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Xvnc-x-authority.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Xvnc-x-common.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Xvnc-x-server.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dbus_env-dbus-env.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/guest_account-guest-account.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/guest_account-status.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/initctl-initctl.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/initctl-status.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libsystem_la-libsystem.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/plymouth-plymouth.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/plymouth-status.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/status.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_gobject_greeter-status.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_gobject_greeter-test-gobject-greeter.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_guest_account-status.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_guest_account-test-guest-account.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_qt_greeter-test-qt-greeter.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_qt_greeter-test-qt-greeter_moc.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_runner-test-runner.Po@am__quote@
@@ -613,6 +729,14 @@ distclean-compile:
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LTCOMPILE) -c -o $@ $<
+
+libsystem_la-libsystem.lo: libsystem.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libsystem_la_CFLAGS) $(CFLAGS) -MT libsystem_la-libsystem.lo -MD -MP -MF $(DEPDIR)/libsystem_la-libsystem.Tpo -c -o libsystem_la-libsystem.lo `test -f 'libsystem.c' || echo '$(srcdir)/'`libsystem.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libsystem_la-libsystem.Tpo $(DEPDIR)/libsystem_la-libsystem.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='libsystem.c' object='libsystem_la-libsystem.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libsystem_la_CFLAGS) $(CFLAGS) -c -o libsystem_la-libsystem.lo `test -f 'libsystem.c' || echo '$(srcdir)/'`libsystem.c
 
 X-X.o: X.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(X_CFLAGS) $(CFLAGS) -MT X-X.o -MD -MP -MF $(DEPDIR)/X-X.Tpo -c -o X-X.o `test -f 'X.c' || echo '$(srcdir)/'`X.c
@@ -790,6 +914,86 @@ Xvnc-status.obj: status.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(Xvnc_CFLAGS) $(CFLAGS) -c -o Xvnc-status.obj `if test -f 'status.c'; then $(CYGPATH_W) 'status.c'; else $(CYGPATH_W) '$(srcdir)/status.c'; fi`
 
+dbus_env-dbus-env.o: dbus-env.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(dbus_env_CFLAGS) $(CFLAGS) -MT dbus_env-dbus-env.o -MD -MP -MF $(DEPDIR)/dbus_env-dbus-env.Tpo -c -o dbus_env-dbus-env.o `test -f 'dbus-env.c' || echo '$(srcdir)/'`dbus-env.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/dbus_env-dbus-env.Tpo $(DEPDIR)/dbus_env-dbus-env.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='dbus-env.c' object='dbus_env-dbus-env.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(dbus_env_CFLAGS) $(CFLAGS) -c -o dbus_env-dbus-env.o `test -f 'dbus-env.c' || echo '$(srcdir)/'`dbus-env.c
+
+dbus_env-dbus-env.obj: dbus-env.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(dbus_env_CFLAGS) $(CFLAGS) -MT dbus_env-dbus-env.obj -MD -MP -MF $(DEPDIR)/dbus_env-dbus-env.Tpo -c -o dbus_env-dbus-env.obj `if test -f 'dbus-env.c'; then $(CYGPATH_W) 'dbus-env.c'; else $(CYGPATH_W) '$(srcdir)/dbus-env.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/dbus_env-dbus-env.Tpo $(DEPDIR)/dbus_env-dbus-env.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='dbus-env.c' object='dbus_env-dbus-env.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(dbus_env_CFLAGS) $(CFLAGS) -c -o dbus_env-dbus-env.obj `if test -f 'dbus-env.c'; then $(CYGPATH_W) 'dbus-env.c'; else $(CYGPATH_W) '$(srcdir)/dbus-env.c'; fi`
+
+guest_account-guest-account.o: guest-account.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(guest_account_CFLAGS) $(CFLAGS) -MT guest_account-guest-account.o -MD -MP -MF $(DEPDIR)/guest_account-guest-account.Tpo -c -o guest_account-guest-account.o `test -f 'guest-account.c' || echo '$(srcdir)/'`guest-account.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/guest_account-guest-account.Tpo $(DEPDIR)/guest_account-guest-account.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='guest-account.c' object='guest_account-guest-account.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(guest_account_CFLAGS) $(CFLAGS) -c -o guest_account-guest-account.o `test -f 'guest-account.c' || echo '$(srcdir)/'`guest-account.c
+
+guest_account-guest-account.obj: guest-account.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(guest_account_CFLAGS) $(CFLAGS) -MT guest_account-guest-account.obj -MD -MP -MF $(DEPDIR)/guest_account-guest-account.Tpo -c -o guest_account-guest-account.obj `if test -f 'guest-account.c'; then $(CYGPATH_W) 'guest-account.c'; else $(CYGPATH_W) '$(srcdir)/guest-account.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/guest_account-guest-account.Tpo $(DEPDIR)/guest_account-guest-account.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='guest-account.c' object='guest_account-guest-account.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(guest_account_CFLAGS) $(CFLAGS) -c -o guest_account-guest-account.obj `if test -f 'guest-account.c'; then $(CYGPATH_W) 'guest-account.c'; else $(CYGPATH_W) '$(srcdir)/guest-account.c'; fi`
+
+guest_account-status.o: status.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(guest_account_CFLAGS) $(CFLAGS) -MT guest_account-status.o -MD -MP -MF $(DEPDIR)/guest_account-status.Tpo -c -o guest_account-status.o `test -f 'status.c' || echo '$(srcdir)/'`status.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/guest_account-status.Tpo $(DEPDIR)/guest_account-status.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='status.c' object='guest_account-status.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(guest_account_CFLAGS) $(CFLAGS) -c -o guest_account-status.o `test -f 'status.c' || echo '$(srcdir)/'`status.c
+
+guest_account-status.obj: status.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(guest_account_CFLAGS) $(CFLAGS) -MT guest_account-status.obj -MD -MP -MF $(DEPDIR)/guest_account-status.Tpo -c -o guest_account-status.obj `if test -f 'status.c'; then $(CYGPATH_W) 'status.c'; else $(CYGPATH_W) '$(srcdir)/status.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/guest_account-status.Tpo $(DEPDIR)/guest_account-status.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='status.c' object='guest_account-status.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(guest_account_CFLAGS) $(CFLAGS) -c -o guest_account-status.obj `if test -f 'status.c'; then $(CYGPATH_W) 'status.c'; else $(CYGPATH_W) '$(srcdir)/status.c'; fi`
+
+initctl-initctl.o: initctl.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(initctl_CFLAGS) $(CFLAGS) -MT initctl-initctl.o -MD -MP -MF $(DEPDIR)/initctl-initctl.Tpo -c -o initctl-initctl.o `test -f 'initctl.c' || echo '$(srcdir)/'`initctl.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/initctl-initctl.Tpo $(DEPDIR)/initctl-initctl.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='initctl.c' object='initctl-initctl.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(initctl_CFLAGS) $(CFLAGS) -c -o initctl-initctl.o `test -f 'initctl.c' || echo '$(srcdir)/'`initctl.c
+
+initctl-initctl.obj: initctl.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(initctl_CFLAGS) $(CFLAGS) -MT initctl-initctl.obj -MD -MP -MF $(DEPDIR)/initctl-initctl.Tpo -c -o initctl-initctl.obj `if test -f 'initctl.c'; then $(CYGPATH_W) 'initctl.c'; else $(CYGPATH_W) '$(srcdir)/initctl.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/initctl-initctl.Tpo $(DEPDIR)/initctl-initctl.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='initctl.c' object='initctl-initctl.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(initctl_CFLAGS) $(CFLAGS) -c -o initctl-initctl.obj `if test -f 'initctl.c'; then $(CYGPATH_W) 'initctl.c'; else $(CYGPATH_W) '$(srcdir)/initctl.c'; fi`
+
+initctl-status.o: status.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(initctl_CFLAGS) $(CFLAGS) -MT initctl-status.o -MD -MP -MF $(DEPDIR)/initctl-status.Tpo -c -o initctl-status.o `test -f 'status.c' || echo '$(srcdir)/'`status.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/initctl-status.Tpo $(DEPDIR)/initctl-status.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='status.c' object='initctl-status.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(initctl_CFLAGS) $(CFLAGS) -c -o initctl-status.o `test -f 'status.c' || echo '$(srcdir)/'`status.c
+
+initctl-status.obj: status.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(initctl_CFLAGS) $(CFLAGS) -MT initctl-status.obj -MD -MP -MF $(DEPDIR)/initctl-status.Tpo -c -o initctl-status.obj `if test -f 'status.c'; then $(CYGPATH_W) 'status.c'; else $(CYGPATH_W) '$(srcdir)/status.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/initctl-status.Tpo $(DEPDIR)/initctl-status.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='status.c' object='initctl-status.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(initctl_CFLAGS) $(CFLAGS) -c -o initctl-status.obj `if test -f 'status.c'; then $(CYGPATH_W) 'status.c'; else $(CYGPATH_W) '$(srcdir)/status.c'; fi`
+
 plymouth-plymouth.o: plymouth.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(plymouth_CFLAGS) $(CFLAGS) -MT plymouth-plymouth.o -MD -MP -MF $(DEPDIR)/plymouth-plymouth.Tpo -c -o plymouth-plymouth.o `test -f 'plymouth.c' || echo '$(srcdir)/'`plymouth.c
 @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/plymouth-plymouth.Tpo $(DEPDIR)/plymouth-plymouth.Po
@@ -853,38 +1057,6 @@ test_gobject_greeter-status.obj: status.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='status.c' object='test_gobject_greeter-status.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_gobject_greeter_CFLAGS) $(CFLAGS) -c -o test_gobject_greeter-status.obj `if test -f 'status.c'; then $(CYGPATH_W) 'status.c'; else $(CYGPATH_W) '$(srcdir)/status.c'; fi`
-
-test_guest_account-test-guest-account.o: test-guest-account.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_guest_account_CFLAGS) $(CFLAGS) -MT test_guest_account-test-guest-account.o -MD -MP -MF $(DEPDIR)/test_guest_account-test-guest-account.Tpo -c -o test_guest_account-test-guest-account.o `test -f 'test-guest-account.c' || echo '$(srcdir)/'`test-guest-account.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/test_guest_account-test-guest-account.Tpo $(DEPDIR)/test_guest_account-test-guest-account.Po
-@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='test-guest-account.c' object='test_guest_account-test-guest-account.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_guest_account_CFLAGS) $(CFLAGS) -c -o test_guest_account-test-guest-account.o `test -f 'test-guest-account.c' || echo '$(srcdir)/'`test-guest-account.c
-
-test_guest_account-test-guest-account.obj: test-guest-account.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_guest_account_CFLAGS) $(CFLAGS) -MT test_guest_account-test-guest-account.obj -MD -MP -MF $(DEPDIR)/test_guest_account-test-guest-account.Tpo -c -o test_guest_account-test-guest-account.obj `if test -f 'test-guest-account.c'; then $(CYGPATH_W) 'test-guest-account.c'; else $(CYGPATH_W) '$(srcdir)/test-guest-account.c'; fi`
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/test_guest_account-test-guest-account.Tpo $(DEPDIR)/test_guest_account-test-guest-account.Po
-@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='test-guest-account.c' object='test_guest_account-test-guest-account.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_guest_account_CFLAGS) $(CFLAGS) -c -o test_guest_account-test-guest-account.obj `if test -f 'test-guest-account.c'; then $(CYGPATH_W) 'test-guest-account.c'; else $(CYGPATH_W) '$(srcdir)/test-guest-account.c'; fi`
-
-test_guest_account-status.o: status.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_guest_account_CFLAGS) $(CFLAGS) -MT test_guest_account-status.o -MD -MP -MF $(DEPDIR)/test_guest_account-status.Tpo -c -o test_guest_account-status.o `test -f 'status.c' || echo '$(srcdir)/'`status.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/test_guest_account-status.Tpo $(DEPDIR)/test_guest_account-status.Po
-@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='status.c' object='test_guest_account-status.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_guest_account_CFLAGS) $(CFLAGS) -c -o test_guest_account-status.o `test -f 'status.c' || echo '$(srcdir)/'`status.c
-
-test_guest_account-status.obj: status.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_guest_account_CFLAGS) $(CFLAGS) -MT test_guest_account-status.obj -MD -MP -MF $(DEPDIR)/test_guest_account-status.Tpo -c -o test_guest_account-status.obj `if test -f 'status.c'; then $(CYGPATH_W) 'status.c'; else $(CYGPATH_W) '$(srcdir)/status.c'; fi`
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/test_guest_account-status.Tpo $(DEPDIR)/test_guest_account-status.Po
-@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='status.c' object='test_guest_account-status.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_guest_account_CFLAGS) $(CFLAGS) -c -o test_guest_account-status.obj `if test -f 'status.c'; then $(CYGPATH_W) 'status.c'; else $(CYGPATH_W) '$(srcdir)/status.c'; fi`
 
 test_runner-test-runner.o: test-runner.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_runner_CFLAGS) $(CFLAGS) -MT test_runner-test-runner.o -MD -MP -MF $(DEPDIR)/test_runner-test-runner.Tpo -c -o test_runner-test-runner.o `test -f 'test-runner.c' || echo '$(srcdir)/'`test-runner.c
@@ -1144,8 +1316,11 @@ distdir: $(DISTFILES)
 	done
 check-am: all-am
 check: check-am
-all-am: Makefile $(PROGRAMS)
+all-am: Makefile $(LTLIBRARIES) $(PROGRAMS) $(SCRIPTS)
 installdirs:
+	for dir in "$(DESTDIR)$(libdir)"; do \
+	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
+	done
 install: install-am
 install-exec: install-exec-am
 install-data: install-data-am
@@ -1174,8 +1349,8 @@ maintainer-clean-generic:
 	@echo "it deletes files that may require special tools to rebuild."
 clean: clean-am
 
-clean-am: clean-generic clean-libtool clean-noinstPROGRAMS \
-	mostlyclean-am
+clean-am: clean-generic clean-libLTLIBRARIES clean-libtool \
+	clean-noinstPROGRAMS mostlyclean-am
 
 distclean: distclean-am
 	-rm -rf ./$(DEPDIR)
@@ -1201,7 +1376,7 @@ install-dvi: install-dvi-am
 
 install-dvi-am:
 
-install-exec-am:
+install-exec-am: install-libLTLIBRARIES
 
 install-html: install-html-am
 
@@ -1241,26 +1416,27 @@ ps: ps-am
 
 ps-am:
 
-uninstall-am:
+uninstall-am: uninstall-libLTLIBRARIES
 
 .MAKE: install-am install-strip
 
 .PHONY: CTAGS GTAGS all all-am check check-am clean clean-generic \
-	clean-libtool clean-noinstPROGRAMS ctags distclean \
-	distclean-compile distclean-generic distclean-libtool \
-	distclean-tags distdir dvi dvi-am html html-am info info-am \
-	install install-am install-data install-data-am install-dvi \
-	install-dvi-am install-exec install-exec-am install-html \
-	install-html-am install-info install-info-am install-man \
-	install-pdf install-pdf-am install-ps install-ps-am \
-	install-strip installcheck installcheck-am installdirs \
-	maintainer-clean maintainer-clean-generic mostlyclean \
-	mostlyclean-compile mostlyclean-generic mostlyclean-libtool \
-	pdf pdf-am ps ps-am tags uninstall uninstall-am
+	clean-libLTLIBRARIES clean-libtool clean-noinstPROGRAMS ctags \
+	distclean distclean-compile distclean-generic \
+	distclean-libtool distclean-tags distdir dvi dvi-am html \
+	html-am info info-am install install-am install-data \
+	install-data-am install-dvi install-dvi-am install-exec \
+	install-exec-am install-html install-html-am install-info \
+	install-info-am install-libLTLIBRARIES install-man install-pdf \
+	install-pdf-am install-ps install-ps-am install-strip \
+	installcheck installcheck-am installdirs maintainer-clean \
+	maintainer-clean-generic mostlyclean mostlyclean-compile \
+	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
+	tags uninstall uninstall-am uninstall-libLTLIBRARIES
 
 
 test-qt-greeter_moc.cpp: test-qt-greeter.h
-	moc $< -o $@
+	$(MOC) $< -o $@
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

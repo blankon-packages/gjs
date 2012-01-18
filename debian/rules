@@ -18,6 +18,7 @@ override_dh_install:
 	#find debian/tmp/etc/ -name *.conf |xargs rm
 	#find debian/tmp/etc/init -name *.conf |xargs rm
 	dh_install --list-missing
+	mv debian/lightdm/usr/lib/lightdm/lightdm/lightdm-set-defaults debian/lightdm/usr/lib/lightdm
 	chmod +x debian/lightdm/usr/lib/lightdm/lightdm-greeter-session
 
 override_dh_installinit:

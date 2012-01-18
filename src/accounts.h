@@ -42,10 +42,6 @@ User *accounts_get_current_user (void);
 
 GType user_get_type (void);
 
-void user_set_use_pam (void);
-
-void user_set_use_passwd_file (gchar *passwd_file);
-
 const gchar *user_get_name (User *user);
 
 uid_t user_get_uid (User *user);
@@ -64,7 +60,7 @@ void user_set_xsession (User *user, const gchar *session);
 
 const gchar *user_get_locale (User *user);
 
-void user_set_locale (User *user, const gchar *language);
+void user_set_language (User *user, const gchar *language);
 
 G_END_DECLS
 

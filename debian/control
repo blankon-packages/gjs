@@ -44,24 +44,6 @@ Description: Display Manager
   * Has a well defined interface between the server and user interface
   * Cross-desktop (greeters can be written in any toolkit)
 
-Package: lightdm-gtk-greeter
-Architecture: any
-Depends: ${misc:Depends},
-         ${shlibs:Depends}
-Recommends: lightdm
-Provides: lightdm-greeter, lightdm-greeter-example-gtk, lightdm-gtk-greeter-config
-Description: LightDM GTK+ Greeter
- A LightDM greeter that uses the GTK+ toolkit.
-
-Package: lightdm-qt-greeter
-Architecture: any
-Depends: ${misc:Depends},
-         ${shlibs:Depends}
-Recommends: lightdm
-Provides: lightdm-greeter
-Description: LightDM Qt Greeter
- A LightDM greeter that uses the Qt toolkit.
-
 Package: liblightdm-gobject-1-0
 Architecture: any
 Depends: ${misc:Depends},

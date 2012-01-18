@@ -1,8 +1,8 @@
-Index: lightdm/tests/Makefile.am
+Index: ubuntu/tests/Makefile.am
 ===================================================================
---- lightdm.orig/tests/Makefile.am	2011-10-25 16:59:44.225590000 -0400
-+++ lightdm/tests/Makefile.am	2011-10-25 17:01:27.717046741 -0400
-@@ -71,6 +71,8 @@
+--- ubuntu.orig/tests/Makefile.am	2012-01-18 10:21:41.708528000 +0100
++++ ubuntu/tests/Makefile.am	2012-01-18 11:03:45.158334496 +0100
+@@ -77,6 +77,8 @@
  	test-login-qt-guest-logout
  endif
  
@@ -10,4 +10,4 @@ Index: lightdm/tests/Makefile.am
 +
  EXTRA_DIST = \
  	$(TESTS) \
- 	data/xgreeters/test-gobject-greeter.desktop \
+ 	data/system.conf \

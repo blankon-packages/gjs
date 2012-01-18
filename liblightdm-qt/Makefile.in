@@ -37,15 +37,19 @@ POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
 subdir = liblightdm-qt
-DIST_COMMON = $(liblightdm_qt_1include_HEADERS) $(srcdir)/Makefile.am \
-	$(srcdir)/Makefile.in $(srcdir)/liblightdm-qt-1.pc.in
+DIST_COMMON = $(liblightdm_qt_2include_HEADERS) $(srcdir)/Makefile.am \
+	$(srcdir)/Makefile.in $(srcdir)/liblightdm-qt-2.pc.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
-am__aclocal_m4_deps = $(top_srcdir)/configure.ac
+am__aclocal_m4_deps = $(top_srcdir)/m4/gtk-doc.m4 \
+	$(top_srcdir)/m4/intltool.m4 $(top_srcdir)/m4/introspection.m4 \
+	$(top_srcdir)/m4/libtool.m4 $(top_srcdir)/m4/ltoptions.m4 \
+	$(top_srcdir)/m4/ltsugar.m4 $(top_srcdir)/m4/ltversion.m4 \
+	$(top_srcdir)/m4/lt~obsolete.m4 $(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 mkinstalldirs = $(install_sh) -d
 CONFIG_HEADER = $(top_builddir)/config.h
-CONFIG_CLEAN_FILES = liblightdm-qt-1.pc
+CONFIG_CLEAN_FILES = liblightdm-qt-2.pc
 CONFIG_CLEAN_VPATH_FILES =
 am__vpath_adj_setup = srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`;
 am__vpath_adj = case $$p in \
@@ -69,25 +73,22 @@ am__base_list = \
   sed '$$!N;$$!N;$$!N;$$!N;$$!N;$$!N;$$!N;s/\n/ /g' | \
   sed '$$!N;$$!N;$$!N;$$!N;s/\n/ /g'
 am__installdirs = "$(DESTDIR)$(libdir)" "$(DESTDIR)$(pkgconfigdir)" \
-	"$(DESTDIR)$(liblightdm_qt_1includedir)"
+	"$(DESTDIR)$(liblightdm_qt_2includedir)"
 LTLIBRARIES = $(lib_LTLIBRARIES)
 am__DEPENDENCIES_1 =
-liblightdm_qt_1_la_DEPENDENCIES = $(am__DEPENDENCIES_1)
-am__objects_1 = liblightdm_qt_1_la-greeter_moc.lo \
-	liblightdm_qt_1_la-session_moc.lo \
-	liblightdm_qt_1_la-user_moc.lo
-am__objects_2 =
-am_liblightdm_qt_1_la_OBJECTS = liblightdm_qt_1_la-greeter.lo \
-	liblightdm_qt_1_la-language.lo liblightdm_qt_1_la-power.lo \
-	liblightdm_qt_1_la-session.lo liblightdm_qt_1_la-system.lo \
-	liblightdm_qt_1_la-user.lo $(am__objects_1) $(am__objects_2)
-liblightdm_qt_1_la_OBJECTS = $(am_liblightdm_qt_1_la_OBJECTS)
+liblightdm_qt_2_la_DEPENDENCIES = $(am__DEPENDENCIES_1)
+am__objects_1 =
+am_liblightdm_qt_2_la_OBJECTS = liblightdm_qt_2_la-greeter.lo \
+	liblightdm_qt_2_la-power.lo \
+	liblightdm_qt_2_la-sessionsmodel.lo \
+	liblightdm_qt_2_la-usersmodel.lo $(am__objects_1)
+liblightdm_qt_2_la_OBJECTS = $(am_liblightdm_qt_2_la_OBJECTS)
 AM_V_lt = $(am__v_lt_$(V))
 am__v_lt_ = $(am__v_lt_$(AM_DEFAULT_VERBOSITY))
 am__v_lt_0 = --silent
-liblightdm_qt_1_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX \
+liblightdm_qt_2_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CXXLD) \
-	$(liblightdm_qt_1_la_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) \
+	$(liblightdm_qt_2_la_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
@@ -112,13 +113,29 @@ CXXLINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) \
 AM_V_CXXLD = $(am__v_CXXLD_$(V))
 am__v_CXXLD_ = $(am__v_CXXLD_$(AM_DEFAULT_VERBOSITY))
 am__v_CXXLD_0 = @echo "  CXXLD " $@;
+COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
+	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
+LTCOMPILE = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
+	$(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) \
+	$(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) \
+	$(AM_CFLAGS) $(CFLAGS)
+AM_V_CC = $(am__v_CC_$(V))
+am__v_CC_ = $(am__v_CC_$(AM_DEFAULT_VERBOSITY))
+am__v_CC_0 = @echo "  CC    " $@;
+CCLD = $(CC)
+LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
+	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
+	$(AM_LDFLAGS) $(LDFLAGS) -o $@
+AM_V_CCLD = $(am__v_CCLD_$(V))
+am__v_CCLD_ = $(am__v_CCLD_$(AM_DEFAULT_VERBOSITY))
+am__v_CCLD_0 = @echo "  CCLD  " $@;
 AM_V_GEN = $(am__v_GEN_$(V))
 am__v_GEN_ = $(am__v_GEN_$(AM_DEFAULT_VERBOSITY))
 am__v_GEN_0 = @echo "  GEN   " $@;
-SOURCES = $(liblightdm_qt_1_la_SOURCES)
-DIST_SOURCES = $(liblightdm_qt_1_la_SOURCES)
+SOURCES = $(liblightdm_qt_2_la_SOURCES)
+DIST_SOURCES = $(liblightdm_qt_2_la_SOURCES)
 DATA = $(pkgconfig_DATA)
-HEADERS = $(liblightdm_qt_1include_HEADERS)
+HEADERS = $(liblightdm_qt_2include_HEADERS)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
@@ -142,7 +159,6 @@ CXXDEPMODE = @CXXDEPMODE@
 CXXFLAGS = @CXXFLAGS@
 CYGPATH_W = @CYGPATH_W@
 DATADIRNAME = @DATADIRNAME@
-DBUSBINDINGTOOL = @DBUSBINDINGTOOL@
 DEFS = @DEFS@
 DEPDIR = @DEPDIR@
 DLLTOOL = @DLLTOOL@
@@ -201,11 +217,7 @@ LIBOBJS = @LIBOBJS@
 LIBS = @LIBS@
 LIBTOOL = @LIBTOOL@
 LIGHTDM_CFLAGS = @LIGHTDM_CFLAGS@
-LIGHTDM_GTK_GREETER_CFLAGS = @LIGHTDM_GTK_GREETER_CFLAGS@
-LIGHTDM_GTK_GREETER_LIBS = @LIGHTDM_GTK_GREETER_LIBS@
 LIGHTDM_LIBS = @LIGHTDM_LIBS@
-LIGHTDM_QT_GREETER_CFLAGS = @LIGHTDM_QT_GREETER_CFLAGS@
-LIGHTDM_QT_GREETER_LIBS = @LIGHTDM_QT_GREETER_LIBS@
 LIPO = @LIPO@
 LN_S = @LN_S@
 LTLIBOBJS = @LTLIBOBJS@
@@ -213,6 +225,7 @@ MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
 MANIFEST_TOOL = @MANIFEST_TOOL@
 MKDIR_P = @MKDIR_P@
+MOC = @MOC@
 MSGFMT = @MSGFMT@
 MSGMERGE = @MSGMERGE@
 NM = @NM@
@@ -252,6 +265,7 @@ ac_ct_AR = @ac_ct_AR@
 ac_ct_CC = @ac_ct_CC@
 ac_ct_CXX = @ac_ct_CXX@
 ac_ct_DUMPBIN = @ac_ct_DUMPBIN@
+ac_ct_MOC = @ac_ct_MOC@
 am__include = @am__include@
 am__leading_dot = @am__leading_dot@
 am__quote = @am__quote@
@@ -297,41 +311,39 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-lib_LTLIBRARIES = liblightdm-qt-1.la
+lib_LTLIBRARIES = liblightdm-qt-2.la
+liblightdm_qt_2_la_LIBADD = \
+	$(LIBLIGHTDM_QT_LIBS) \
+	-L$(top_builddir)/liblightdm-gobject \
+	-llightdm-gobject-1
 
-# Generate metadata for QObjects
-MOC_FILES = \
-	greeter_moc.cpp \
-	session_moc.cpp \
-	user_moc.cpp 
-
-liblightdm_qt_1_la_LIBADD = $(LIBLIGHTDM_QT_LIBS)
-liblightdm_qt_1_la_CXXFLAGS = $(LIBLIGHTDM_QT_CFLAGS) \
+liblightdm_qt_2_la_CXXFLAGS = $(LIBLIGHTDM_QT_CFLAGS) \
+	-I$(top_srcdir)/liblightdm-gobject \
+	$(LIBLIGHTDM_GOBJECT_CFLAGS) \
 	-DXSESSIONS_DIR=\"$(datadir)/xsessions\"
 
-liblightdm_qt_1include_HEADERS = \
+liblightdm_qt_2include_HEADERS = \
 	QLightDM/Greeter \
-	QLightDM/Language \
 	QLightDM/Power \
-	QLightDM/Session \
-	QLightDM/System \
-	QLightDM/User
+	QLightDM/SessionsModel \
+	QLightDM/UsersModel \
+	QLightDM/greeter.h \
+	QLightDM/power.h \
+	QLightDM/sessionsmodel.h \
+	QLightDM/usersmodel.h
 
-liblightdm_qt_1includedir = $(includedir)/lightdm-qt-1/QLightDM
-liblightdm_qt_1_la_SOURCES = \
+liblightdm_qt_2includedir = $(includedir)/lightdm-qt-2/QLightDM
+liblightdm_qt_2_la_SOURCES = \
 	greeter.cpp \
-	language.cpp \
 	power.cpp \
-	session.cpp \
-	system.cpp \
-	user.cpp \
-	$(MOC_FILES) \
-	$(liblightdm_qt_1include_HEADERS)
+	sessionsmodel.cpp \
+	usersmodel.cpp \
+	$(liblightdm_qt_2include_HEADERS)
 
 pkgconfigdir = $(libdir)/pkgconfig
-pkgconfig_DATA = liblightdm-qt-1.pc
+pkgconfig_DATA = liblightdm-qt-2.pc
 CLEANFILES = \
-	$(MOC_FILES)
+	*_moc.cpp
 
 DISTCLEANFILES = \
 	Makefile.in \
@@ -371,7 +383,7 @@ $(top_srcdir)/configure: @MAINTAINER_MODE_TRUE@ $(am__configure_deps)
 $(ACLOCAL_M4): @MAINTAINER_MODE_TRUE@ $(am__aclocal_m4_deps)
 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
 $(am__aclocal_m4_deps):
-liblightdm-qt-1.pc: $(top_builddir)/config.status $(srcdir)/liblightdm-qt-1.pc.in
+liblightdm-qt-2.pc: $(top_builddir)/config.status $(srcdir)/liblightdm-qt-2.pc.in
 	cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@
 install-libLTLIBRARIES: $(lib_LTLIBRARIES)
 	@$(NORMAL_INSTALL)
@@ -404,8 +416,8 @@ clean-libLTLIBRARIES:
 	  echo "rm -f \"$${dir}/so_locations\""; \
 	  rm -f "$${dir}/so_locations"; \
 	done
-liblightdm-qt-1.la: $(liblightdm_qt_1_la_OBJECTS) $(liblightdm_qt_1_la_DEPENDENCIES) 
-	$(AM_V_CXXLD)$(liblightdm_qt_1_la_LINK) -rpath $(libdir) $(liblightdm_qt_1_la_OBJECTS) $(liblightdm_qt_1_la_LIBADD) $(LIBS)
+liblightdm-qt-2.la: $(liblightdm_qt_2_la_OBJECTS) $(liblightdm_qt_2_la_DEPENDENCIES) 
+	$(AM_V_CXXLD)$(liblightdm_qt_2_la_LINK) -rpath $(libdir) $(liblightdm_qt_2_la_OBJECTS) $(liblightdm_qt_2_la_LIBADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -413,15 +425,10 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liblightdm_qt_1_la-greeter.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liblightdm_qt_1_la-greeter_moc.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liblightdm_qt_1_la-language.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liblightdm_qt_1_la-power.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liblightdm_qt_1_la-session.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liblightdm_qt_1_la-session_moc.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liblightdm_qt_1_la-system.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liblightdm_qt_1_la-user.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liblightdm_qt_1_la-user_moc.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liblightdm_qt_2_la-greeter.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liblightdm_qt_2_la-power.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liblightdm_qt_2_la-sessionsmodel.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liblightdm_qt_2_la-usersmodel.Plo@am__quote@
 
 .cpp.o:
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXXCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
@@ -447,77 +454,37 @@ distclean-compile:
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(LTCXXCOMPILE) -c -o $@ $<
 
-liblightdm_qt_1_la-greeter.lo: greeter.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(liblightdm_qt_1_la_CXXFLAGS) $(CXXFLAGS) -MT liblightdm_qt_1_la-greeter.lo -MD -MP -MF $(DEPDIR)/liblightdm_qt_1_la-greeter.Tpo -c -o liblightdm_qt_1_la-greeter.lo `test -f 'greeter.cpp' || echo '$(srcdir)/'`greeter.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/liblightdm_qt_1_la-greeter.Tpo $(DEPDIR)/liblightdm_qt_1_la-greeter.Plo
+liblightdm_qt_2_la-greeter.lo: greeter.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(liblightdm_qt_2_la_CXXFLAGS) $(CXXFLAGS) -MT liblightdm_qt_2_la-greeter.lo -MD -MP -MF $(DEPDIR)/liblightdm_qt_2_la-greeter.Tpo -c -o liblightdm_qt_2_la-greeter.lo `test -f 'greeter.cpp' || echo '$(srcdir)/'`greeter.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/liblightdm_qt_2_la-greeter.Tpo $(DEPDIR)/liblightdm_qt_2_la-greeter.Plo
 @am__fastdepCXX_FALSE@	$(AM_V_CXX) @AM_BACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='greeter.cpp' object='liblightdm_qt_1_la-greeter.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='greeter.cpp' object='liblightdm_qt_2_la-greeter.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(liblightdm_qt_1_la_CXXFLAGS) $(CXXFLAGS) -c -o liblightdm_qt_1_la-greeter.lo `test -f 'greeter.cpp' || echo '$(srcdir)/'`greeter.cpp
+@am__fastdepCXX_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(liblightdm_qt_2_la_CXXFLAGS) $(CXXFLAGS) -c -o liblightdm_qt_2_la-greeter.lo `test -f 'greeter.cpp' || echo '$(srcdir)/'`greeter.cpp
 
-liblightdm_qt_1_la-language.lo: language.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(liblightdm_qt_1_la_CXXFLAGS) $(CXXFLAGS) -MT liblightdm_qt_1_la-language.lo -MD -MP -MF $(DEPDIR)/liblightdm_qt_1_la-language.Tpo -c -o liblightdm_qt_1_la-language.lo `test -f 'language.cpp' || echo '$(srcdir)/'`language.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/liblightdm_qt_1_la-language.Tpo $(DEPDIR)/liblightdm_qt_1_la-language.Plo
+liblightdm_qt_2_la-power.lo: power.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(liblightdm_qt_2_la_CXXFLAGS) $(CXXFLAGS) -MT liblightdm_qt_2_la-power.lo -MD -MP -MF $(DEPDIR)/liblightdm_qt_2_la-power.Tpo -c -o liblightdm_qt_2_la-power.lo `test -f 'power.cpp' || echo '$(srcdir)/'`power.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/liblightdm_qt_2_la-power.Tpo $(DEPDIR)/liblightdm_qt_2_la-power.Plo
 @am__fastdepCXX_FALSE@	$(AM_V_CXX) @AM_BACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='language.cpp' object='liblightdm_qt_1_la-language.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='power.cpp' object='liblightdm_qt_2_la-power.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(liblightdm_qt_1_la_CXXFLAGS) $(CXXFLAGS) -c -o liblightdm_qt_1_la-language.lo `test -f 'language.cpp' || echo '$(srcdir)/'`language.cpp
+@am__fastdepCXX_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(liblightdm_qt_2_la_CXXFLAGS) $(CXXFLAGS) -c -o liblightdm_qt_2_la-power.lo `test -f 'power.cpp' || echo '$(srcdir)/'`power.cpp
 
-liblightdm_qt_1_la-power.lo: power.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(liblightdm_qt_1_la_CXXFLAGS) $(CXXFLAGS) -MT liblightdm_qt_1_la-power.lo -MD -MP -MF $(DEPDIR)/liblightdm_qt_1_la-power.Tpo -c -o liblightdm_qt_1_la-power.lo `test -f 'power.cpp' || echo '$(srcdir)/'`power.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/liblightdm_qt_1_la-power.Tpo $(DEPDIR)/liblightdm_qt_1_la-power.Plo
+liblightdm_qt_2_la-sessionsmodel.lo: sessionsmodel.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(liblightdm_qt_2_la_CXXFLAGS) $(CXXFLAGS) -MT liblightdm_qt_2_la-sessionsmodel.lo -MD -MP -MF $(DEPDIR)/liblightdm_qt_2_la-sessionsmodel.Tpo -c -o liblightdm_qt_2_la-sessionsmodel.lo `test -f 'sessionsmodel.cpp' || echo '$(srcdir)/'`sessionsmodel.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/liblightdm_qt_2_la-sessionsmodel.Tpo $(DEPDIR)/liblightdm_qt_2_la-sessionsmodel.Plo
 @am__fastdepCXX_FALSE@	$(AM_V_CXX) @AM_BACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='power.cpp' object='liblightdm_qt_1_la-power.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='sessionsmodel.cpp' object='liblightdm_qt_2_la-sessionsmodel.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(liblightdm_qt_1_la_CXXFLAGS) $(CXXFLAGS) -c -o liblightdm_qt_1_la-power.lo `test -f 'power.cpp' || echo '$(srcdir)/'`power.cpp
+@am__fastdepCXX_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(liblightdm_qt_2_la_CXXFLAGS) $(CXXFLAGS) -c -o liblightdm_qt_2_la-sessionsmodel.lo `test -f 'sessionsmodel.cpp' || echo '$(srcdir)/'`sessionsmodel.cpp
 
-liblightdm_qt_1_la-session.lo: session.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(liblightdm_qt_1_la_CXXFLAGS) $(CXXFLAGS) -MT liblightdm_qt_1_la-session.lo -MD -MP -MF $(DEPDIR)/liblightdm_qt_1_la-session.Tpo -c -o liblightdm_qt_1_la-session.lo `test -f 'session.cpp' || echo '$(srcdir)/'`session.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/liblightdm_qt_1_la-session.Tpo $(DEPDIR)/liblightdm_qt_1_la-session.Plo
+liblightdm_qt_2_la-usersmodel.lo: usersmodel.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(liblightdm_qt_2_la_CXXFLAGS) $(CXXFLAGS) -MT liblightdm_qt_2_la-usersmodel.lo -MD -MP -MF $(DEPDIR)/liblightdm_qt_2_la-usersmodel.Tpo -c -o liblightdm_qt_2_la-usersmodel.lo `test -f 'usersmodel.cpp' || echo '$(srcdir)/'`usersmodel.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/liblightdm_qt_2_la-usersmodel.Tpo $(DEPDIR)/liblightdm_qt_2_la-usersmodel.Plo
 @am__fastdepCXX_FALSE@	$(AM_V_CXX) @AM_BACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='session.cpp' object='liblightdm_qt_1_la-session.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='usersmodel.cpp' object='liblightdm_qt_2_la-usersmodel.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(liblightdm_qt_1_la_CXXFLAGS) $(CXXFLAGS) -c -o liblightdm_qt_1_la-session.lo `test -f 'session.cpp' || echo '$(srcdir)/'`session.cpp
-
-liblightdm_qt_1_la-system.lo: system.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(liblightdm_qt_1_la_CXXFLAGS) $(CXXFLAGS) -MT liblightdm_qt_1_la-system.lo -MD -MP -MF $(DEPDIR)/liblightdm_qt_1_la-system.Tpo -c -o liblightdm_qt_1_la-system.lo `test -f 'system.cpp' || echo '$(srcdir)/'`system.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/liblightdm_qt_1_la-system.Tpo $(DEPDIR)/liblightdm_qt_1_la-system.Plo
-@am__fastdepCXX_FALSE@	$(AM_V_CXX) @AM_BACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='system.cpp' object='liblightdm_qt_1_la-system.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(liblightdm_qt_1_la_CXXFLAGS) $(CXXFLAGS) -c -o liblightdm_qt_1_la-system.lo `test -f 'system.cpp' || echo '$(srcdir)/'`system.cpp
-
-liblightdm_qt_1_la-user.lo: user.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(liblightdm_qt_1_la_CXXFLAGS) $(CXXFLAGS) -MT liblightdm_qt_1_la-user.lo -MD -MP -MF $(DEPDIR)/liblightdm_qt_1_la-user.Tpo -c -o liblightdm_qt_1_la-user.lo `test -f 'user.cpp' || echo '$(srcdir)/'`user.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/liblightdm_qt_1_la-user.Tpo $(DEPDIR)/liblightdm_qt_1_la-user.Plo
-@am__fastdepCXX_FALSE@	$(AM_V_CXX) @AM_BACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='user.cpp' object='liblightdm_qt_1_la-user.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(liblightdm_qt_1_la_CXXFLAGS) $(CXXFLAGS) -c -o liblightdm_qt_1_la-user.lo `test -f 'user.cpp' || echo '$(srcdir)/'`user.cpp
-
-liblightdm_qt_1_la-greeter_moc.lo: greeter_moc.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(liblightdm_qt_1_la_CXXFLAGS) $(CXXFLAGS) -MT liblightdm_qt_1_la-greeter_moc.lo -MD -MP -MF $(DEPDIR)/liblightdm_qt_1_la-greeter_moc.Tpo -c -o liblightdm_qt_1_la-greeter_moc.lo `test -f 'greeter_moc.cpp' || echo '$(srcdir)/'`greeter_moc.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/liblightdm_qt_1_la-greeter_moc.Tpo $(DEPDIR)/liblightdm_qt_1_la-greeter_moc.Plo
-@am__fastdepCXX_FALSE@	$(AM_V_CXX) @AM_BACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='greeter_moc.cpp' object='liblightdm_qt_1_la-greeter_moc.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(liblightdm_qt_1_la_CXXFLAGS) $(CXXFLAGS) -c -o liblightdm_qt_1_la-greeter_moc.lo `test -f 'greeter_moc.cpp' || echo '$(srcdir)/'`greeter_moc.cpp
-
-liblightdm_qt_1_la-session_moc.lo: session_moc.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(liblightdm_qt_1_la_CXXFLAGS) $(CXXFLAGS) -MT liblightdm_qt_1_la-session_moc.lo -MD -MP -MF $(DEPDIR)/liblightdm_qt_1_la-session_moc.Tpo -c -o liblightdm_qt_1_la-session_moc.lo `test -f 'session_moc.cpp' || echo '$(srcdir)/'`session_moc.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/liblightdm_qt_1_la-session_moc.Tpo $(DEPDIR)/liblightdm_qt_1_la-session_moc.Plo
-@am__fastdepCXX_FALSE@	$(AM_V_CXX) @AM_BACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='session_moc.cpp' object='liblightdm_qt_1_la-session_moc.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(liblightdm_qt_1_la_CXXFLAGS) $(CXXFLAGS) -c -o liblightdm_qt_1_la-session_moc.lo `test -f 'session_moc.cpp' || echo '$(srcdir)/'`session_moc.cpp
-
-liblightdm_qt_1_la-user_moc.lo: user_moc.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(liblightdm_qt_1_la_CXXFLAGS) $(CXXFLAGS) -MT liblightdm_qt_1_la-user_moc.lo -MD -MP -MF $(DEPDIR)/liblightdm_qt_1_la-user_moc.Tpo -c -o liblightdm_qt_1_la-user_moc.lo `test -f 'user_moc.cpp' || echo '$(srcdir)/'`user_moc.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/liblightdm_qt_1_la-user_moc.Tpo $(DEPDIR)/liblightdm_qt_1_la-user_moc.Plo
-@am__fastdepCXX_FALSE@	$(AM_V_CXX) @AM_BACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='user_moc.cpp' object='liblightdm_qt_1_la-user_moc.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(liblightdm_qt_1_la_CXXFLAGS) $(CXXFLAGS) -c -o liblightdm_qt_1_la-user_moc.lo `test -f 'user_moc.cpp' || echo '$(srcdir)/'`user_moc.cpp
+@am__fastdepCXX_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(liblightdm_qt_2_la_CXXFLAGS) $(CXXFLAGS) -c -o liblightdm_qt_2_la-usersmodel.lo `test -f 'usersmodel.cpp' || echo '$(srcdir)/'`usersmodel.cpp
 
 mostlyclean-libtool:
 	-rm -f *.lo
@@ -544,26 +511,26 @@ uninstall-pkgconfigDATA:
 	test -n "$$files" || exit 0; \
 	echo " ( cd '$(DESTDIR)$(pkgconfigdir)' && rm -f" $$files ")"; \
 	cd "$(DESTDIR)$(pkgconfigdir)" && rm -f $$files
-install-liblightdm_qt_1includeHEADERS: $(liblightdm_qt_1include_HEADERS)
+install-liblightdm_qt_2includeHEADERS: $(liblightdm_qt_2include_HEADERS)
 	@$(NORMAL_INSTALL)
-	test -z "$(liblightdm_qt_1includedir)" || $(MKDIR_P) "$(DESTDIR)$(liblightdm_qt_1includedir)"
-	@list='$(liblightdm_qt_1include_HEADERS)'; test -n "$(liblightdm_qt_1includedir)" || list=; \
+	test -z "$(liblightdm_qt_2includedir)" || $(MKDIR_P) "$(DESTDIR)$(liblightdm_qt_2includedir)"
+	@list='$(liblightdm_qt_2include_HEADERS)'; test -n "$(liblightdm_qt_2includedir)" || list=; \
 	for p in $$list; do \
 	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
 	  echo "$$d$$p"; \
 	done | $(am__base_list) | \
 	while read files; do \
-	  echo " $(INSTALL_HEADER) $$files '$(DESTDIR)$(liblightdm_qt_1includedir)'"; \
-	  $(INSTALL_HEADER) $$files "$(DESTDIR)$(liblightdm_qt_1includedir)" || exit $$?; \
+	  echo " $(INSTALL_HEADER) $$files '$(DESTDIR)$(liblightdm_qt_2includedir)'"; \
+	  $(INSTALL_HEADER) $$files "$(DESTDIR)$(liblightdm_qt_2includedir)" || exit $$?; \
 	done
 
-uninstall-liblightdm_qt_1includeHEADERS:
+uninstall-liblightdm_qt_2includeHEADERS:
 	@$(NORMAL_UNINSTALL)
-	@list='$(liblightdm_qt_1include_HEADERS)'; test -n "$(liblightdm_qt_1includedir)" || list=; \
+	@list='$(liblightdm_qt_2include_HEADERS)'; test -n "$(liblightdm_qt_2includedir)" || list=; \
 	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
 	test -n "$$files" || exit 0; \
-	echo " ( cd '$(DESTDIR)$(liblightdm_qt_1includedir)' && rm -f" $$files ")"; \
-	cd "$(DESTDIR)$(liblightdm_qt_1includedir)" && rm -f $$files
+	echo " ( cd '$(DESTDIR)$(liblightdm_qt_2includedir)' && rm -f" $$files ")"; \
+	cd "$(DESTDIR)$(liblightdm_qt_2includedir)" && rm -f $$files
 
 ID: $(HEADERS) $(SOURCES) $(LISP) $(TAGS_FILES)
 	list='$(SOURCES) $(HEADERS) $(LISP) $(TAGS_FILES)'; \
@@ -651,7 +618,7 @@ check-am: all-am
 check: check-am
 all-am: Makefile $(LTLIBRARIES) $(DATA) $(HEADERS)
 installdirs:
-	for dir in "$(DESTDIR)$(libdir)" "$(DESTDIR)$(pkgconfigdir)" "$(DESTDIR)$(liblightdm_qt_1includedir)"; do \
+	for dir in "$(DESTDIR)$(libdir)" "$(DESTDIR)$(pkgconfigdir)" "$(DESTDIR)$(liblightdm_qt_2includedir)"; do \
 	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
 	done
 install: install-am
@@ -704,7 +671,7 @@ info: info-am
 
 info-am:
 
-install-data-am: install-liblightdm_qt_1includeHEADERS \
+install-data-am: install-liblightdm_qt_2includeHEADERS \
 	install-pkgconfigDATA
 
 install-dvi: install-dvi-am
@@ -752,7 +719,7 @@ ps: ps-am
 ps-am:
 
 uninstall-am: uninstall-libLTLIBRARIES \
-	uninstall-liblightdm_qt_1includeHEADERS \
+	uninstall-liblightdm_qt_2includeHEADERS \
 	uninstall-pkgconfigDATA
 
 .MAKE: install-am install-strip
@@ -764,23 +731,24 @@ uninstall-am: uninstall-libLTLIBRARIES \
 	install install-am install-data install-data-am install-dvi \
 	install-dvi-am install-exec install-exec-am install-html \
 	install-html-am install-info install-info-am \
-	install-libLTLIBRARIES install-liblightdm_qt_1includeHEADERS \
+	install-libLTLIBRARIES install-liblightdm_qt_2includeHEADERS \
 	install-man install-pdf install-pdf-am install-pkgconfigDATA \
 	install-ps install-ps-am install-strip installcheck \
 	installcheck-am installdirs maintainer-clean \
 	maintainer-clean-generic mostlyclean mostlyclean-compile \
 	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
 	tags uninstall uninstall-am uninstall-libLTLIBRARIES \
-	uninstall-liblightdm_qt_1includeHEADERS \
+	uninstall-liblightdm_qt_2includeHEADERS \
 	uninstall-pkgconfigDATA
 
 
-greeter_moc.cpp: QLightDM/Greeter
-	moc $< -o $@
-session_moc.cpp: QLightDM/Session
-	moc $< -o $@
-user_moc.cpp: QLightDM/User
-	moc $< -o $@
+%_moc.cpp: QLightDM/%.h
+	$(MOC) $< -o $@
+
+power.cpp: power_moc.cpp
+greeter.cpp: greeter_moc.cpp
+sessionsmodel.cpp: sessionsmodel_moc.cpp
+usersmodel.cpp: usersmodel_moc.cpp
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

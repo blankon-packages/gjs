@@ -1,3 +1,27 @@
+lightdm (1.1.1-0ubuntu1) precise; urgency=low
+
+  * New upstream release:
+    * Support PAM requesting a change of password (lp: #911597)
+    * Support for reading users' backgrounds from Accounts Service 
+      (lp: #844081)
+    * Switching to a user without a password bypasses the greeter
+      (lp: #861177)      
+    * Move the GTK+ and Qt greeters into their own projects
+  * Drop the gtk and qt greeters packaging files from this source
+  * debian/liblightdm-gobject-1-0.symbols:
+    - list new lightdm_user_get_background symbol
+  * debian/patches/04_CVE-2011-4105.patch,
+    debian/patches/05_CVE-2011-3153.patch,
+    debian/patches/09_show_lang_chooser_option.patch,
+    debian/patches/10_available_languages.patch,
+    debian/patches/11_set_language_in_accountsservice.patch:
+    - dropped, those issues are fixed in the new version or apply to the
+      gtk greeter which is moved to its own source
+  * debian/rules:
+    - install lightdm-set-defaults back to its previous location
+
+ -- Sebastien Bacher <seb128@ubuntu.com>  Wed, 18 Jan 2012 11:10:03 +0100
+
 lightdm (1.0.6-0ubuntu4) precise; urgency=low
 
   [ Gunnar Hjalmarsson ]

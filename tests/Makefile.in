@@ -34,10 +34,11 @@ POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
 
-#	test-autologin-session-exit-error
-#	test-login-gobject-session-exit-error
-#	test-login-qt-session-exit-error
+#	test-session-exit-error
 #	test-greeter-no-exit
+#   test-gobject-change-password
+#   test-qt-change-password
+#   test-autologin-create-directory
 @COMPILE_LIBLIGHTDM_QT_TRUE@am__append_1 = \
 @COMPILE_LIBLIGHTDM_QT_TRUE@	test-login-qt \
 @COMPILE_LIBLIGHTDM_QT_TRUE@	test-login-qt-manual \
@@ -58,7 +59,11 @@ host_triplet = @host@
 subdir = tests
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
-am__aclocal_m4_deps = $(top_srcdir)/configure.ac
+am__aclocal_m4_deps = $(top_srcdir)/m4/gtk-doc.m4 \
+	$(top_srcdir)/m4/intltool.m4 $(top_srcdir)/m4/introspection.m4 \
+	$(top_srcdir)/m4/libtool.m4 $(top_srcdir)/m4/ltoptions.m4 \
+	$(top_srcdir)/m4/ltsugar.m4 $(top_srcdir)/m4/ltversion.m4 \
+	$(top_srcdir)/m4/lt~obsolete.m4 $(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 mkinstalldirs = $(install_sh) -d
@@ -136,7 +141,6 @@ CXXDEPMODE = @CXXDEPMODE@
 CXXFLAGS = @CXXFLAGS@
 CYGPATH_W = @CYGPATH_W@
 DATADIRNAME = @DATADIRNAME@
-DBUSBINDINGTOOL = @DBUSBINDINGTOOL@
 DEFS = @DEFS@
 DEPDIR = @DEPDIR@
 DLLTOOL = @DLLTOOL@
@@ -195,11 +199,7 @@ LIBOBJS = @LIBOBJS@
 LIBS = @LIBS@
 LIBTOOL = @LIBTOOL@
 LIGHTDM_CFLAGS = @LIGHTDM_CFLAGS@
-LIGHTDM_GTK_GREETER_CFLAGS = @LIGHTDM_GTK_GREETER_CFLAGS@
-LIGHTDM_GTK_GREETER_LIBS = @LIGHTDM_GTK_GREETER_LIBS@
 LIGHTDM_LIBS = @LIGHTDM_LIBS@
-LIGHTDM_QT_GREETER_CFLAGS = @LIGHTDM_QT_GREETER_CFLAGS@
-LIGHTDM_QT_GREETER_LIBS = @LIGHTDM_QT_GREETER_LIBS@
 LIPO = @LIPO@
 LN_S = @LN_S@
 LTLIBOBJS = @LTLIBOBJS@
@@ -207,6 +207,7 @@ MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
 MANIFEST_TOOL = @MANIFEST_TOOL@
 MKDIR_P = @MKDIR_P@
+MOC = @MOC@
 MSGFMT = @MSGFMT@
 MSGMERGE = @MSGMERGE@
 NM = @NM@
@@ -246,6 +247,7 @@ ac_ct_AR = @ac_ct_AR@
 ac_ct_CC = @ac_ct_CC@
 ac_ct_CXX = @ac_ct_CXX@
 ac_ct_DUMPBIN = @ac_ct_DUMPBIN@
+ac_ct_MOC = @ac_ct_MOC@
 am__include = @am__include@
 am__leading_dot = @am__leading_dot@
 am__quote = @am__quote@
@@ -311,15 +313,21 @@ TESTS = test-xserver-fail-start test-greeter-fail-start \
 	test-login-gobject-guest-no-setup-script \
 	test-login-gobject-guest-fail-setup-script \
 	test-login-gobject-guest-logout test-login-session-crash \
-	test-login-xserver-crash test-plymouth-active-vt \
-	test-plymouth-inactive-vt test-plymouth-no-seat \
-	test-script-hooks test-script-hook-fail-display-setup \
+	test-login-xserver-crash test-home-dir-on-authenticate \
+	test-plymouth-active-vt test-plymouth-inactive-vt \
+	test-plymouth-no-seat test-script-hooks \
+	test-script-hook-fail-display-setup \
 	test-script-hook-fail-greeter-setup \
 	test-script-hook-fail-session-setup test-switch-to-greeter \
-	test-switch-to-guest test-switch-to-user test-vnc-login \
-	test-xdmcp-login $(am__append_1)
+	test-switch-to-guest test-switch-to-user \
+	test-switch-to-user-existing-session \
+	test-switch-to-user-no-password test-vnc-login \
+	test-xdmcp-login test-no-accounts-service test-no-console-kit \
+	$(am__append_1)
 EXTRA_DIST = \
 	$(TESTS) \
+	data/system.conf \
+	data/session.conf \
 	data/xgreeters/test-gobject-greeter.desktop \
 	data/xgreeters/test-qt-greeter.desktop \
 	data/xsessions/alternative.desktop \
@@ -338,6 +346,7 @@ EXTRA_DIST = \
 	scripts/greeter-not-installed.conf \
 	scripts/greeter-xserver-crash.conf \
 	scripts/headless.conf \
+	scripts/home-dir-on-authenticate.conf \
 	scripts/login.conf \
 	scripts/login-guest.conf \
 	scripts/login-guest-disabled.conf \
@@ -355,7 +364,9 @@ EXTRA_DIST = \
 	scripts/login-session-crash.conf \
 	scripts/login-wrong-password.conf \
 	scripts/login-xserver-crash.conf \
+	scripts/no-accounts-service.conf \
 	scripts/no-config.conf \
+	scripts/no-console-kit.conf \
 	scripts/plymouth-active-vt.conf \
 	scripts/plymouth-inactive-vt.conf \
 	scripts/plymouth-no-seat.conf \
@@ -366,6 +377,8 @@ EXTRA_DIST = \
 	scripts/switch-to-greeter.conf \
 	scripts/switch-to-guest.conf \
 	scripts/switch-to-user.conf \
+	scripts/switch-to-user-existing-session.conf \
+	scripts/switch-to-user-no-password.conf \
 	scripts/vnc-login.conf \
 	scripts/xdmcp-login.conf \
 	scripts/xserver-fail-start.conf

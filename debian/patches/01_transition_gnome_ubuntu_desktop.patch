@@ -1,11 +1,11 @@
 # Description: some sessions have been renamed between Natty and Oneiric.
 #              Make the transition happens as less intrusive as possible.
 === modified file 'liblightdm-gobject/user.c'
-Index: lightdm/liblightdm-gobject/user.c
+Index: ubuntu/liblightdm-gobject/user.c
 ===================================================================
---- lightdm.orig/liblightdm-gobject/user.c	2011-10-25 16:59:44.225590000 -0400
-+++ lightdm/liblightdm-gobject/user.c	2011-10-25 17:01:22.865046788 -0400
-@@ -1118,6 +1118,22 @@
+--- ubuntu.orig/liblightdm-gobject/user.c	2012-01-18 10:21:41.708528000 +0100
++++ ubuntu/liblightdm-gobject/user.c	2012-01-18 11:03:38.966334779 +0100
+@@ -1145,6 +1145,22 @@
  
      priv->layout = g_key_file_get_string (priv->dmrc_file, "Desktop", "Layout", NULL);
      priv->session = g_key_file_get_string (priv->dmrc_file, "Desktop", "Session", NULL);
