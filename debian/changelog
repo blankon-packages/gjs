@@ -1,3 +1,11 @@
+lightdm (1.1.1-0ubuntu2) precise; urgency=low
+
+  * debian/patches/04_language_options.patch:
+    - Replace 'locale -a' output with accountsservice's list of
+      language options (LP: #918225).
+
+ -- Gunnar Hjalmarsson <ubuntu@gunnar.cc>  Wed, 18 Jan 2012 16:10:29 +0100
+
 lightdm (1.1.1-0ubuntu1) precise; urgency=low
 
   * New upstream release:
