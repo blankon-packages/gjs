@@ -1,0 +1,17 @@
+LightDM crashes when quitting after have XDMCP connection in PAMSession?
+Stop being able to log into users on other seats
+Add VNC support
+Test XDMCP client seat
+Per seat guest enable
+Close FDs on starting session (but keep greeter pipe open)
+Merge tests .script and .config
+Rename XAuthorization to XAuthority? And merge in authentication?
+Failsafe X and exponential backoff?
+GET ALL HINTS WORKING
+Always load dmrc from cache
+Make liblightdm-qt use AccountsService
+Fix XDM-AUTHENTICATION-KEY decode, add regression test
+
+***
+Fix guest accounts being created but the session doesn't start
+Add tests to check guest accounts are being created and destroyed

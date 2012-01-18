@@ -240,13 +240,6 @@ check_stopped (Display *display)
 }
 
 static void
-autologin_pam_message_cb (PAMSession *authentication, int num_msg, const struct pam_message **msg, Display *display)
-{
-    g_debug ("Aborting automatic login as PAM requests input");
-    pam_session_cancel (authentication);
-}
-
-static void
 autologin_authentication_result_cb (PAMSession *authentication, int result, Display *display)
 {
     g_signal_handlers_disconnect_matched (authentication, G_SIGNAL_MATCH_DATA, 0, 0, NULL, NULL, display);
@@ -288,7 +281,7 @@ autologin_authentication_result_cb (PAMSession *authentication, int result, Disp
 }
 
 static gboolean
-autologin (Display *display, const gchar *username, gboolean start_greeter_if_fail)
+autologin (Display *display, const gchar *username, const gchar *service, gboolean start_greeter_if_fail)
 {
     gboolean result;
     PAMSession *authentication;
@@ -297,8 +290,8 @@ autologin (Display *display, const gchar *username, gboolean start_greeter_if_fa
     display->priv->start_greeter_if_fail = start_greeter_if_fail;
 
     display->priv->in_user_session = TRUE;
-    authentication = pam_session_new (display->priv->pam_autologin_service, username);
-    g_signal_connect (authentication, "got-messages", G_CALLBACK (autologin_pam_message_cb), display);
+    authentication = pam_session_new (service, username);
+    pam_session_set_interactive (authentication, FALSE);
     g_signal_connect (authentication, "authentication-result", G_CALLBACK (autologin_authentication_result_cb), display);
 
     result = pam_session_authenticate (authentication, &error);
@@ -315,7 +308,7 @@ autologin (Display *display, const gchar *username, gboolean start_greeter_if_fa
 }
 
 static gboolean
-autologin_guest (Display *display, gboolean start_greeter_if_fail)
+autologin_guest (Display *display, const gchar *service, gboolean start_greeter_if_fail)
 {
     gchar *username;
     gboolean result;
@@ -327,7 +320,7 @@ autologin_guest (Display *display, gboolean start_greeter_if_fail)
         return FALSE;
     }
 
-    result = autologin (display, username, start_greeter_if_fail);
+    result = autologin (display, username, service, start_greeter_if_fail);
     g_free (username);
 
     return result;
@@ -367,7 +360,7 @@ greeter_session_stopped_cb (Session *session, Display *display)
     {
         if (greeter_get_guest_authenticated (display->priv->greeter))
         {
-            started_session = autologin_guest (display, FALSE);
+            started_session = autologin_guest (display, display->priv->pam_autologin_service, FALSE);
             if (!started_session)
                 g_debug ("Failed to start guest session");
         }
@@ -474,7 +467,7 @@ create_session (Display *display, PAMSession *authentication, const gchar *sessi
     if (display->priv->autologin_guest)
     {
         gchar *t = command;
-        command = g_strdup_printf (LIBEXEC_DIR "/lightdm-guest-session-wrapper %s", command);
+        command = g_strdup_printf (PKGLIBEXEC_DIR "/lightdm-guest-session-wrapper %s", command);
         g_debug("Guest session, running session command through wrapper: %s", command);
         g_free (t);
     }
@@ -500,6 +493,8 @@ create_session (Display *display, PAMSession *authentication, const gchar *sessi
         if (g_getenv ("DBUS_SESSION_BUS_ADDRESS"))
             session_set_env (session, "DBUS_SESSION_BUS_ADDRESS", g_getenv ("DBUS_SESSION_BUS_ADDRESS"));
         session_set_env (session, "LDM_BUS", "SESSION");
+        if (g_getenv ("LD_PRELOAD"))
+            session_set_env (session, "LD_PRELOAD", g_getenv ("LD_PRELOAD"));
         if (g_getenv ("LD_LIBRARY_PATH"))
             session_set_env (session, "LD_LIBRARY_PATH", g_getenv ("LD_LIBRARY_PATH"));
         if (g_getenv ("PATH"))
@@ -512,6 +507,9 @@ create_session (Display *display, PAMSession *authentication, const gchar *sessi
         session_set_env (session, "LIGHTDM_TEST_STATUS_SOCKET", g_getenv ("LIGHTDM_TEST_STATUS_SOCKET"));
         session_set_env (session, "LIGHTDM_TEST_CONFIG", g_getenv ("LIGHTDM_TEST_CONFIG"));
         session_set_env (session, "LIGHTDM_TEST_HOME_DIR", g_getenv ("LIGHTDM_TEST_HOME_DIR"));
+        session_set_env (session, "DBUS_SYSTEM_BUS_ADDRESS", g_getenv ("DBUS_SYSTEM_BUS_ADDRESS"));
+        session_set_env (session, "DBUS_SESSION_BUS_ADDRESS", g_getenv ("DBUS_SESSION_BUS_ADDRESS"));
+        session_set_env (session, "LD_PRELOAD", g_getenv ("LD_PRELOAD"));
         session_set_env (session, "LD_LIBRARY_PATH", g_getenv ("LD_LIBRARY_PATH"));
     }
 
@@ -780,16 +778,30 @@ display_server_ready_cb (DisplayServer *display_server, Display *display)
     if (display->priv->autologin_guest)
     {
         g_debug ("Automatically logging in as guest");
-        started_session = autologin_guest (display, TRUE);
+        started_session = autologin_guest (display, display->priv->pam_autologin_service, TRUE);
         if (!started_session)
             g_debug ("Failed to autologin as guest");
     }
     else if (display->priv->autologin_user)
     {
         g_debug ("Automatically logging in user %s", display->priv->autologin_user);
-        started_session = autologin (display, display->priv->autologin_user, TRUE);
+        started_session = autologin (display, display->priv->autologin_user, display->priv->pam_autologin_service, TRUE);
         if (!started_session)
             g_debug ("Failed to autologin user %s", display->priv->autologin_user);
+    }
+    else if (display->priv->select_user_hint)
+    {
+        g_debug ("Logging in user %s", display->priv->select_user_hint);
+        started_session = autologin (display, display->priv->select_user_hint, display->priv->pam_service, TRUE);
+        if (!started_session)
+            g_debug ("Failed to login user %s", display->priv->select_user_hint);
+    }
+    else if (display->priv->select_guest_hint)
+    {
+        g_debug ("Logging in as guest");
+        started_session = autologin_guest (display, display->priv->pam_service, TRUE);
+        if (!started_session)
+            g_debug ("Failed login as guest");
     }
 
     /* Finally start a greeter */
