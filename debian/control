@@ -61,11 +61,13 @@ Depends: ${misc:Depends},
 Description: Typelib file for liblightdm-1
  A GObject based library for LightDM clients to use to interface with LightDM.
 
-Package: liblightdm-qt-1-0
+Package: liblightdm-qt-2-0
 Architecture: any
 Depends: ${misc:Depends},
          ${shlibs:Depends}
 Recommends: lightdm         
+Conflicts: liblightdm-qt-1-0 (>= 1.1.1)
+Replaces: liblightdm-qt-1-0 (>= 1.1.1)
 Description: LightDM Qt client library
  A Qt based library for LightDM clients to use to interface with LightDM.
 
@@ -83,12 +85,14 @@ Description: LightDM client library (development files)
  This package contains header files and development information, which
  is useful for building LightDM greeters and user switchers.
 
-Package: liblightdm-qt-1-dev
+Package: liblightdm-qt-2-dev
 Section: libdevel
 Architecture: any
 Depends: ${misc:Depends},
-         liblightdm-qt-1-0 (= ${binary:Version}),
+         liblightdm-qt-2-0 (= ${binary:Version}),
          libqt4-dev
+Conflicts: liblightdm-qt-1-dev (>= 1.1.1)
+Replaces: liblightdm-qt-1-dev (>= 1.1.1)
 Description: LightDM client library (development files)
  A Qt based library for LightDM clients to use to interface with LightDM.
  .

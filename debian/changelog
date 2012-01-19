@@ -1,3 +1,12 @@
+lightdm (1.1.1-0ubuntu3) precise; urgency=low
+
+  [ Aurélien Gâteau ]
+  * debian/control, liblightdm-qt*.install:
+    - Rename liblightdm-qt packages to match upstream changes
+    - Conflicts, Replaces with the buggy version
+
+ -- Sebastien Bacher <seb128@ubuntu.com>  Thu, 19 Jan 2012 11:34:41 +0100
+
 lightdm (1.1.1-0ubuntu2) precise; urgency=low
 
   * debian/patches/04_language_options.patch:
