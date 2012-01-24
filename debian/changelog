@@ -2,8 +2,9 @@ lightdm (1.1.1-0ubuntu3+blankon1) rote; urgency=low
 
   * Initial impor
   * debian/control Maintainer to BlankOn
+  * debian/control remove gtk-doc-tools dh-translation from build-depend
 
- --  <aftian@di.blankon.in>  Tue, 24 Jan 2012 17:55:30 +0700
+ --  <aftian@canopus.idsirtii.or.id>  Tue, 24 Jan 2012 18:43:51 +0700
 
 lightdm (1.1.1-0ubuntu3) precise; urgency=low
 
