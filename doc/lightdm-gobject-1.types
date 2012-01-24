@@ -1,5 +1,0 @@
-lightdm_greeter_get_type
-lightdm_language_get_type
-lightdm_layout_get_type
-lightdm_session_get_type
-lightdm_user_get_type
