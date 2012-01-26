@@ -1,4 +1,8 @@
-01_transition_gnome_ubuntu_desktop.patch
-02_disable_tests.patch
-03_launch_dbus.patch
-04_language_options.patch
+01_set-default-path.patch
+02_default-config.patch
+03_quit-plymouth.patch
+04_default-gtk-greeter-config.patch
+05_dont-add-pkglibexecdir-path.patch
+06_move-progs-to-pkglibexecdir.patch
+07_CVE-2011-4105.patch
+08_CVE-2011-3153.patch

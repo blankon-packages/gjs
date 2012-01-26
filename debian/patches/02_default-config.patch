@@ -1,0 +1,35 @@
+Author: Yves-Alexis Perez <corsac@debian.org>
+Author: Lionel Le Folgoc <mrpouit@gmail.com>
+Description: adapt config to Debian
+Especially:
+
+* use X11 session wrapper
+* start on vt7
+* don't show userlist
+
+=== modified file 'data/lightdm.conf'
+Index: lightdm-1.0.1/data/lightdm.conf
+===================================================================
+--- lightdm-1.0.1.orig/data/lightdm.conf	2011-09-28 09:11:35.000000000 +0200
++++ lightdm-1.0.1/data/lightdm.conf	2011-10-05 22:15:15.872478075 +0200
+@@ -56,16 +56,16 @@
+ #xserver-command=X
+ #xserver-layout=
+ #xserver-config=
+-#xserver-allow-tcp=false
++xserver-allow-tcp=false
+ #xdmcp-manager=
+ #xdmcp-port=177
+ #xdmcp-key=
+ #greeter-session=example-gtk-gnome
+-#greeter-hide-users=false
+-#user-session=default
++greeter-hide-users=true
++user-session=lightdm-xsession
+ #allow-guest=true
+ #guest-session=UNIMPLEMENTED
+-#session-wrapper=lightdm-session
++session-wrapper=/etc/X11/Xsession
+ #display-setup-script=
+ #greeter-setup-script=
+ #session-setup-script=

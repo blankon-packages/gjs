@@ -1,33 +1,22 @@
-#!/usr/bin/make -f 
+#!/usr/bin/make -f
 
-LDFLAGS+=-Wl,--as-needed
+export DEB_LDFLAGS_MAINT_APPEND=-Wl,--as-needed -Wl,-O1
+export DEB_BUILD_MAINT_OPTIONS=hardening=+pie,+bindnow
 
-%:
-	dh $@ --with quilt,autoreconf,translations
+DEB_HOST_MULTIARCH ?= $(shell dpkg-architecture -qDEB_HOST_MULTIARCH)
 
-# NOTE: Using GNOME for now, but we still need a proper configuration system
-# See https://launchpad.net/bugs/799754
 override_dh_auto_configure:
-	dh_auto_configure -- --with-greeter-user=lightdm --with-user-session=ubuntu
-
-override_dh_install:
-	#Remove .la and .a files.
-	find debian/tmp/usr/lib/ -name *.a |xargs rm
-	find debian/tmp/usr/lib -name *.la |xargs rm
-	#Remove conf files from upstream
-	#find debian/tmp/etc/ -name *.conf |xargs rm
-	#find debian/tmp/etc/init -name *.conf |xargs rm
-	dh_install --list-missing
-	mv debian/lightdm/usr/lib/lightdm/lightdm/lightdm-set-defaults debian/lightdm/usr/lib/lightdm
-	chmod +x debian/lightdm/usr/lib/lightdm/lightdm-greeter-session
+	dh_auto_configure -- --with-greeter-user=lightdm --with-user-session=lightdm-xsession --enable-introspection=no
 
 override_dh_installinit:
-	dh_installinit --no-start
+	dh_installinit --noscripts
 
-override_dh_installpam:
-	dh_installpam
-	dh_installpam --name=lightdm-autologin
-	
-override_dh_makeshlibs:
-	dh_makeshlibs -pliblightdm-gobject-1-0 -V'liblightdm-gobject-1-0 (>= 0.9.2)' -- -c4
-	dh_makeshlibs -Nliblightdm-gobject-1-0
+override_dh_install:
+	find debian/tmp -name '*.la' -delete
+	rm debian/tmp/usr/lib/$(DEB_HOST_MULTIARCH)/lightdm/gdmflexiserver
+	dh_install --fail-missing
+
+%:
+	dh $@ --with autoreconf
+
+override_dh_auto_test:

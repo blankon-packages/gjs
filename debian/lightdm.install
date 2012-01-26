@@ -1,14 +1,13 @@
+usr/bin/dm-tool
 usr/sbin/lightdm
 usr/share/man
 usr/share/locale
-usr/share/man
-usr/lib/lightdm
-usr/bin
-etc/dbus-1/
+etc/dbus-1
+etc/init
 etc/lightdm/users.conf
-etc/lightdm/lightdm.conf usr/share/doc/lightdm/
-etc/lightdm/keys.conf usr/share/doc/lightdm/
-etc/apparmor.d
-debian/lightdm-session usr/sbin
-debian/guest-account usr/sbin
-debian/lightdm-greeter-session usr/lib/lightdm
+etc/lightdm/lightdm.conf
+etc/lightdm/keys.conf
+etc/apparmor.d/lightdm-guest-session
+debian/lightdm-xsession.desktop /usr/share/xsessions
+usr/lib/*/lightdm/lightdm-set-defaults
+usr/lib/*/lightdm/lightdm-guest-session-wrapper

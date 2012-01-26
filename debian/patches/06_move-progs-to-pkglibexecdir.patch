@@ -1,0 +1,24 @@
+Index: lightdm-1.0.3/utils/Makefile.am
+===================================================================
+--- lightdm-1.0.3.orig/utils/Makefile.am	2011-10-06 03:16:14.000000000 +0200
++++ lightdm-1.0.3/utils/Makefile.am	2011-10-08 13:30:03.382740381 +0200
+@@ -1,5 +1,5 @@
+ bin_PROGRAMS = dm-tool
+-libexec_PROGRAMS = lightdm-set-defaults
++pkglibexec_PROGRAMS = lightdm-set-defaults
+ dist_pkglibexec_SCRIPTS = gdmflexiserver
+ 
+ dm_tool_SOURCES = \
+Index: lightdm-1.0.3/src/Makefile.am
+===================================================================
+--- lightdm-1.0.3.orig/src/Makefile.am	2011-10-08 01:04:12.000000000 +0200
++++ lightdm-1.0.3/src/Makefile.am	2011-10-08 13:31:00.779184624 +0200
+@@ -93,7 +93,7 @@
+ 	$(LIGHTDM_LIBS) \
+ 	-lpam
+ 
+-libexec_PROGRAMS = lightdm-guest-session-wrapper
++pkglibexec_PROGRAMS = lightdm-guest-session-wrapper
+ 
+ lightdm_guest_session_wrapper_SOURCES = lightdm-guest-session-wrapper.c
+ 

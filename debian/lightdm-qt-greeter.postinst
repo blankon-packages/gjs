@@ -1,0 +1,25 @@
+#!/bin/sh
+
+set -e
+
+. /usr/share/debconf/confmodule
+
+# using this greeter?
+GREETER=
+if db_get shared/lightdm-greeter; then
+  GREETER="$RET"
+fi
+
+if [ -n "${GREETER}" ];
+then
+  LIGHTDM_SET_DEFAULTS=/usr/lib/*/lightdm/lightdm-set-defaults
+  if [ -x "${LIGHTDM_SET_DEFAULTS}" ];
+  then
+    "${LIGHTDM_SET_DEFAULTS}" --greeter "${GREETER}"
+  fi
+fi
+db_stop || true
+
+#DEBHELPER#
+
+exit 0
