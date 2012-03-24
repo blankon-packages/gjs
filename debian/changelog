@@ -1,3 +1,10 @@
+lightdm (1.0.6-3blankon2) rote; urgency=low
+
+  * restore to debian sid
+  * change debian/lightdm.pam with ubuntu oeneric
+  
+ -- Mas Supriyadi <pri_yess@yahoo.com>  Sat, 24 Mar 2012 21:24:06 +0700
+
 lightdm (1.0.6-3blankon1) rote; urgency=low
 
   * debian/control Maintainer

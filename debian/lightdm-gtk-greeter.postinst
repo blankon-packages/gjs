@@ -13,9 +13,9 @@ fi
 if [ -n "${GREETER}" ];
 then
   LIGHTDM_SET_DEFAULTS=/usr/lib/*/lightdm/lightdm-set-defaults
-  if [ -x "${LIGHTDM_SET_DEFAULTS}" ];
+  if [ -x ${LIGHTDM_SET_DEFAULTS} ];
   then
-    "${LIGHTDM_SET_DEFAULTS}" --greeter "${GREETER}"
+    ${LIGHTDM_SET_DEFAULTS} --greeter "${GREETER}"
   fi
 fi
 db_stop || true
