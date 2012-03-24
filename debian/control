@@ -1,7 +1,8 @@
 Source: lightdm
 Section: x11
 Priority: optional
-Maintainer: Debian Xfce Maintainers <pkg-xfce-devel@lists.alioth.debian.org>
+Maintainer: Blankon Developers <blankon-dev@googlegroups.com>
+XSBC-Original-Maintainer: Debian Xfce Maintainers <pkg-xfce-devel@lists.alioth.debian.org>
 Uploaders: Evgeni Golov <evgeni@debian.org>, 
  Yves-Alexis Perez <corsac@debian.org>, Emanuele Rocca <ema@debian.org>, 
  Simon Huggins <huggie@earth.li>          
@@ -13,7 +14,7 @@ Build-Depends: debhelper (>= 9), intltool, pkg-config, libglib2.0-dev,
 Standards-Version: 3.9.3
 Homepage: https://launchpad.net/lightdm
 Vcs-Svn: svn://svn.debian.org/pkg-xfce/goodies/trunk/lightdm
-Vcs-Browser: http://svn.debian.org/wsvn/pkg-xfce/goodies/trunk/lightdm
+Vcs-Browser: http://dev.blankonlinux.or.id/bzr/rote/lightdm
 
 Package: lightdm
 Section: x11

@@ -1,20 +1,62 @@
-lightdm (1.0.6-3blankon2) rote; urgency=low
+lightdm (1.0.10-1.blankon1) rote; urgency=low
 
-  * restore to debian sid
-  * change debian/lightdm.pam with ubuntu oeneric
-  
- -- Mas Supriyadi <supriyadi@surabaya.di.blankon.in>  Sat, 24 Mar 2012 22:11:31 +0700
+  * Change debian/control.
+  * Change debian/lightdm.pam with ubuntu oneric
 
-lightdm (1.0.6-3blankon1) rote; urgency=low
+ -- Mas Supriyadi <supriyadi@surabaya.di.blankon.in>  Sat, 24 Mar 2012 22:47:19 +0700
 
-  * debian/control Maintainer
-  
- -- Rahman Yusri Aftian <aftian@di.blankon.in>  Thu, 26 Jan 2012 23:28:56 +0700
+lightdm (1.0.10-1) unstable; urgency=low
+
+  * New upstream release.
+  * debian/lightdm-*-greeter.postinst:
+    - remove "" protection around variable since it won't expand the * that
+      way. Fix setting the correct greeter.                     closes: #664585
+  * debian/watch updated to match minor version with two digits.
+  * debian/lightdm.pam:
+    - add selinux lines, thanks Laurent Bigonville.             closes: #664805
+
+ -- Yves-Alexis Perez <corsac@debian.org>  Fri, 23 Mar 2012 10:58:07 +0100
+
+lightdm (1.0.9-1) unstable; urgency=low
+
+  * New upstream release.
+    - don't leak fds to child processes.                        closes: #658678
+  * debian/watch updated to track 1.0 branch.
+  * debian/patches:
+    - 07_CVE-2011-4105 removed, code not present anymore.
+    - 08_CVE-2011-3153 dropped, included upstream. 
+
+ -- Yves-Alexis Perez <corsac@debian.org>  Mon, 05 Mar 2012 07:48:53 +0100
+
+lightdm (1.0.6-5) unstable; urgency=low
+
+  * debian/po:
+    - pl.po updated, thanks to Michał Kułach.                   closes: 3657660
+  * debian/control:
+    - update standards version to 3.9.3.
+
+ -- Yves-Alexis Perez <corsac@debian.org>  Sat, 25 Feb 2012 19:02:03 +0100
+
+lightdm (1.0.6-4) unstable; urgency=low
+
+  * debian/po:
+    - da.po updated, thanks to “Joe Dalton”.                    closes: #650946
+    - id.po added, thanks to Mahyuddin Susanto.                 closes: #660620
+    - el.po updated, thanks to Thomas Vasileiou.                closes: #660708
+  * debian/control:
+    - add Provides: on x-display-manager.                       closes: #654343
+    - liblightdm-gobject-dev requires libdbus-glib-1-dev and libxklavier-dev
+      so add dependencies.
+    - update debhelper build-dep to 9.
+  * debian/watch updated for new tarballs location.
+
+ -- Yves-Alexis Perez <corsac@debian.org>  Sat, 25 Feb 2012 14:36:58 +0100
 
 lightdm (1.0.6-3) unstable; urgency=low
 
   * debian/patches:
-    - 07_CVE-2011-4105 refreshed, use AC_USE_SYSTEM_EXTENSIONS in configure.ac      so GNU extensions are used even on kFreeBSD.              closes: #649633
+    - 07_CVE-2011-4105 refreshed, use AC_USE_SYSTEM_EXTENSIONS in configure.ac
+      so GNU extensions are used even on kFreeBSD.              closes: #649633
   * debian/rules:
     - explicitly disable introspection. It seems only enabled on kFreeBSD
       builds for some reason.
@@ -25,7 +67,8 @@ lightdm (1.0.6-2) unstable; urgency=high
 
   * urgency=high for security fixes.
   * debian/patches:
-    - 07_CVE-2011-4105 added, make sure the file is not a link when chowning it. (CVE-2011-4105)
+    - 07_CVE-2011-4105 added, make sure the file is not a link when chowning
+      it. (CVE-2011-4105)
     - 08_CVE-2011-3153 added, fix information disclosure by droping privileges
       before reading and re-writing ~/.dmrc.
 
@@ -51,9 +94,12 @@ lightdm (1.0.3-1) unstable; urgency=low
   * New upstream release.
   * debian/watch updated to only track stable releases.
   * debian/patches:
-    - 01_set-default-path and 05_dont-add-pkglibexecdir-path refreshed for new      upstream release.
-    - 06_move-lightdm-set-defaults-to-pkglibexecdir renamed to 06_move-progs-to-pkglibexecdir, use the same patch to move
-      lightdm-guest-session-wrapper to pkglibexecdir and refresh the original      patch for new upstream.
+    - 01_set-default-path and 05_dont-add-pkglibexecdir-path refreshed for new
+      upstream release.
+    - 06_move-lightdm-set-defaults-to-pkglibexecdir renamed to
+      06_move-progs-to-pkglibexecdir, use the same patch to move
+      lightdm-guest-session-wrapper to pkglibexecdir and refresh the original
+      patch for new upstream.
   * debian/lightdm.install:
     - install lightdm-guest-session-wrapper.
 
@@ -150,7 +196,9 @@ lightdm (0.9.6-1) unstable; urgency=low
   * debian/lightdm.install
     - install lightdm-set-default and dm-tool there.
   * debian/lightdm-{gtk,qt}-greeter.{config,templates,postinst,prerm}:
-    - provide a way to select the current greeter through debconf. Other packages providing a greeter use the same templates/config to register themselves in debconf.
+    - provide a way to select the current greeter through debconf. Other
+      packages providing a greeter use the same templates/config to register
+      themselves in debconf.
   * debian/control:
     - add suggests on accountsservice.
 
@@ -169,9 +217,11 @@ lightdm (0.9.2-2) unstable; urgency=low
 
   * debian/control;
     - use real package name in greeter dependency.              closes: #636020
-    - recommends desktop-base (for default background) and gnome-theme-standards (for Adwaita GTK+ 3 theme) in GTK+ greeter.
+    - recommends desktop-base (for default background) and
+      gnome-theme-standards (for Adwaita GTK+ 3 theme) in GTK+ greeter.
   * debian/patches:
-    - 04_default-gtk-greeter-config added, tune GTK+ greeter config to match Debian themes.
+    - 04_default-gtk-greeter-config added, tune GTK+ greeter config to match
+      Debian themes.
 
  -- Yves-Alexis Perez <corsac@debian.org>  Sat, 30 Jul 2011 20:03:59 +0200
 
@@ -187,7 +237,8 @@ lightdm (0.9.2-1) unstable; urgency=low
     - lightdm-vala doesn't provide a greeter anymore.
   * debian/lightdm{,-gtk-greeter}.install:
     - ship GTK+ greeter config file in the lightdm-gtk-greeter package.
-  * debian/lightdm.{config,templates} and debian/po debconf files added from Ubuntu package.
+  * debian/lightdm.{config,templates} and debian/po debconf files added from
+    Ubuntu package.
 
  -- Yves-Alexis Perez <corsac@debian.org>  Fri, 29 Jul 2011 20:32:36 +0200
 
