@@ -39,7 +39,7 @@ Breaks: lightdm-gtk, lightdm (<< 0.9.2-1)
 Section: x11
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
-Recommends: desktop-base, gnome-themes-standard, gnome-icon-theme, policykit-1
+Recommends: krawu-theme, komodo-icon-theme, policykit-1
 Description: simple display manager (GTK+ greeter)
  A LightDM greeter that uses the GTK+ toolkit.
 
