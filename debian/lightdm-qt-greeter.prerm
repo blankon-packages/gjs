@@ -1,44 +1,9 @@
 #!/bin/bash
-# Debian lightdm package pre-removal script
-# © 2010 Yves-Alexis Perez, using lightdm script which is
-# Copyright 2001 Branden Robinson.
-# Licensed under the GNU General Public License, version 2.  See the file
-# /usr/share/common-licenses/GPL or <http://www.gnu.org/copyleft/gpl.txt>.
-# Acknowlegements to Stephen Early, Mark Eichin, and Manoj Srivastava.
 
 set -e
 
-THIS_PACKAGE="lightdm-qt-greeter"
-LIGHTDM_SET_DEFAULTS=/usr/lib/*/lightdm/lightdm-set-defaults
-
-if [ "$1" = "remove" -o "$1" = "deconfigure" ]; then
-  if [ -e /usr/share/debconf/confmodule ]; then
-    . /usr/share/debconf/confmodule
-    # disown this question
-    db_unregister shared/lightdm-greeter || true
-    # does the question still exist?
-    if db_get shared/lightdm-greeter; then
-      db_metaget shared/lightdm-greeter owners
-      db_subst shared/lightdm-greeter choices "$RET"
-      db_get shared/lightdm-greeter
-      # are we removing the currently selected lightdm greeter?
-      if [ "$THIS_PACKAGE" = "$RET" ]; then
-        # ask the user to choose a new default
-        db_fset shared/lightdm-greeter seen false
-        db_input critical shared/lightdm-greeter || true
-        db_go
-
-        GREETER=
-        if db_get shared/lightdm-greeter; then
-          GREETER="$RET"
-        fi
-        if [ -n "${GREETER}" ] && [ -x "${LIGHTDM_SET_DEFAULTS}" ];
-        then
-            "${LIGHTDM_SET_DEFAULTS}" --greeter "${GREETER}"
-        fi
-      fi
-    fi
-  fi
+if [ "$1" = "remove" ]; then
+  update-alternatives --remove lightdm-greeter /usr/share/xgreeters/lightdm-qt-greeter.desktop
 fi
 
 #DEBHELPER#

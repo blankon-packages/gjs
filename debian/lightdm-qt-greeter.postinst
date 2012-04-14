@@ -2,23 +2,10 @@
 
 set -e
 
-. /usr/share/debconf/confmodule
-
-# using this greeter?
-GREETER=
-if db_get shared/lightdm-greeter; then
-  GREETER="$RET"
+if [ "$1" = "configure" ]; then
+  update-alternatives --install /usr/share/xgreeters/lightdm-greeter.desktop \
+  lightdm-greeter /usr/share/xgreeters/lightdm-qt-greeter.desktop 60
 fi
-
-if [ -n "${GREETER}" ];
-then
-  LIGHTDM_SET_DEFAULTS=/usr/lib/*/lightdm/lightdm-set-defaults
-  if [ -x "${LIGHTDM_SET_DEFAULTS}" ];
-  then
-    "${LIGHTDM_SET_DEFAULTS}" --greeter "${GREETER}"
-  fi
-fi
-db_stop || true
 
 #DEBHELPER#
 

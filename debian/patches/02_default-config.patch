@@ -8,10 +8,10 @@ Especially:
 * don't show userlist
 
 === modified file 'data/lightdm.conf'
-Index: lightdm-1.0.1/data/lightdm.conf
+Index: lightdm-1.0.10/data/lightdm.conf
 ===================================================================
---- lightdm-1.0.1.orig/data/lightdm.conf	2011-09-28 09:11:35.000000000 +0200
-+++ lightdm-1.0.1/data/lightdm.conf	2011-10-05 22:15:15.872478075 +0200
+--- lightdm-1.0.10.orig/data/lightdm.conf	2011-10-18 05:05:20.000000000 +0200
++++ lightdm-1.0.10/data/lightdm.conf	2012-03-25 22:17:31.684690315 +0200
 @@ -56,16 +56,16 @@
  #xserver-command=X
  #xserver-layout=
@@ -21,9 +21,10 @@ Index: lightdm-1.0.1/data/lightdm.conf
  #xdmcp-manager=
  #xdmcp-port=177
  #xdmcp-key=
- #greeter-session=example-gtk-gnome
+-#greeter-session=example-gtk-gnome
 -#greeter-hide-users=false
 -#user-session=default
++greeter-session=lightdm-greeter
 +greeter-hide-users=true
 +user-session=lightdm-xsession
  #allow-guest=true

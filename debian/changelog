@@ -1,3 +1,24 @@
+lightdm (1.0.11-1blankon1) rote; urgency=low
+
+  * New upstream updates.
+  * Merge Whit sid
+
+ -- Rahman Yusri Aftian <aftian@di.blankon.in>  Sat, 14 Apr 2012 04:36:43 +0000
+
+lightdm (1.0.11-1) unstable; urgency=low
+
+  * New upstream bugfix release.
+
+ -- Yves-Alexis Perez <corsac@debian.org>  Thu, 05 Apr 2012 19:16:31 +0200
+
+lightdm (1.0.10-2) unstable; urgency=low
+
+  * Replace greeter choice in debconf by alternatives, which prevents tricky
+    bugs caused by managing a conffile of a package by another one.
+                                                       closes: #665710, #657660
+
+ -- Yves-Alexis Perez <corsac@debian.org>  Sun, 01 Apr 2012 14:33:39 +0200
+
 lightdm (1.0.10-1.blankon3) rote; urgency=low
 
   * debian/control
