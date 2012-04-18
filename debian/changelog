@@ -1,3 +1,9 @@
+lightdm (1.0.11-1blankon2) rote; urgency=low
+
+  * remove lightdm-xsession.desktop
+
+ -- Pendekar BlankOn <mijortsa@localhost>  Wed, 18 Apr 2012 07:08:20 +0700
+
 lightdm (1.0.11-1blankon1) rote; urgency=low
 
   * New upstream updates.
