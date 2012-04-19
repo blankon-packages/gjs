@@ -8,6 +8,6 @@ etc/lightdm/users.conf
 etc/lightdm/lightdm.conf
 etc/lightdm/keys.conf
 etc/apparmor.d/lightdm-guest-session
-#debian/lightdm-xsession.desktop /usr/share/xsessions
+debian/lightdm-xsession.desktop /usr/share/xsessions
 usr/lib/*/lightdm/lightdm-set-defaults
 usr/lib/*/lightdm/lightdm-guest-session-wrapper

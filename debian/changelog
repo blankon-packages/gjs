@@ -1,3 +1,10 @@
+lightdm (1.0.11-1blankon3) rote; urgency=low
+
+  * Added lightdm-xsession.desktop.
+  * lightdm-xsession.desktop exec blankon
+
+ -- Rahman Yusri Aftian <aftian@di.blankon.in>  Thu, 19 Apr 2012 12:29:14 +0000
+
 lightdm (1.0.11-1blankon2) rote; urgency=low
 
   * remove lightdm-xsession.desktop
