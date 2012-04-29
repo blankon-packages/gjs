@@ -1,3 +1,9 @@
+lightdm (1.2.0-1blankon4) rote; urgency=low
+
+  * Added debian/patches 06_blankon_webkit_greeter.patch
+  
+ -- Rahman Yusri Aftian <aftian@di.blankon.in>  Sun, 29 Apr 2012 14:06:44 +0000
+
 lightdm (1.2.0-1blankon3) rote; urgency=low
 
   * Move depends 
