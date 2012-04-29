@@ -1,7 +1,9 @@
-Index: lightdm-1.0.3/src/session.c
+Author: Yves-Alexis Perez <corsac@debian.org>
+Description: don't add PKGLIBEXEC_DIR to the user PATH
+Index: lightdm-1.1.1/src/session.c
 ===================================================================
---- lightdm-1.0.3.orig/src/session.c	2011-10-08 13:29:42.102575779 +0200
-+++ lightdm-1.0.3/src/session.c	2011-10-08 13:29:55.526679659 +0200
+--- lightdm-1.1.1.orig/src/session.c
++++ lightdm-1.1.1/src/session.c
 @@ -217,26 +217,6 @@
      }
  }
@@ -29,7 +31,7 @@ Index: lightdm-1.0.3/src/session.c
  gboolean
  session_start (Session *session)
  {
-@@ -436,7 +416,6 @@
+@@ -438,7 +418,6 @@
      pam_session_setup (session->priv->authentication);
      set_env_from_authentication (session, session->priv->authentication);
      set_locale (session);

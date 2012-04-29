@@ -1,7 +1,7 @@
 Source: lightdm
 Section: x11
 Priority: optional
-Maintainer: Blankon Developers <blankon-dev@googlegroups.com>
+Maintainer: BlankOn Developers <BlankOn-dev@googlegroups.com>
 XSBC-Original-Maintainer: Debian Xfce Maintainers <pkg-xfce-devel@lists.alioth.debian.org>
 Uploaders: Evgeni Golov <evgeni@debian.org>, 
  Yves-Alexis Perez <corsac@debian.org>, Emanuele Rocca <ema@debian.org>, 
@@ -9,7 +9,7 @@ Uploaders: Evgeni Golov <evgeni@debian.org>,
 Build-Depends: debhelper (>= 9), intltool, pkg-config, libglib2.0-dev, 
  libdbus-glib-1-dev, libxcb1-dev, libxdmcp-dev, libpam-dev, libxklavier-dev, 
  libgtk-3-dev, libck-connector-dev, gnome-doc-utils, libqt4-dev,
- valac, gobject-introspection, dpkg-dev (>= 1.16.1), dh-autoreconf,
+ valac, gobject-introspection, dpkg-dev (>= 1.16.1),
  gtk-doc-tools
 Standards-Version: 3.9.3
 Homepage: https://launchpad.net/lightdm
@@ -32,28 +32,6 @@ Description: simple display manager
   * Fully themeable
   * Cross-desktop (greeters can be written in any toolkit)
 
-Package: lightdm-gtk-greeter
-Provides: lightdm-greeter
-Replaces: lightdm-gtk, lightdm (<< 0.9.2-1)
-Breaks: lightdm-gtk, lightdm (<< 0.9.2-1)
-Section: x11
-Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}
-Recommends: krawu-theme, komodo-icon-theme, policykit-1
-Description: simple display manager (GTK+ greeter)
- A LightDM greeter that uses the GTK+ toolkit.
-
-Package: lightdm-qt-greeter
-Provides: lightdm-greeter
-Replaces: lightdm-qt
-Breaks: lightdm-qt
-Section: x11
-Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}
-Recommends: policykit-1
-Description: simple display manager (Qt greeter)
- A LightDM greeter that uses the Qt toolkit.
-
 Package: lightdm-vala
 Section: x11
 Architecture: any
@@ -70,7 +48,7 @@ Description: simple display manager (gobject library)
  This package contains the gobject library for lightdm, used by the GTK+
  greeter.
 
-Package: liblightdm-qt-1-0
+Package: liblightdm-qt-2-0
 Section: libdevel
 Architecture: any
 Pre-depends: ${misc:Pre-Depends}
@@ -81,8 +59,8 @@ Description: simple display manager (Qt library)
 Package: liblightdm-gobject-dev
 Section: libdevel
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, libdbus-glib-1-dev, 
- libxklavier-dev
+Depends: liblightdm-gobject-1-0 (= ${binary:Version}), ${shlibs:Depends},
+ ${misc:Depends}, libdbus-glib-1-dev, libxklavier-dev
 Description: simple display manager (gobject development files)
  This package contains the development files for lightdm.
  They can be used to build new greeters applications GTK+ based.
@@ -90,7 +68,8 @@ Description: simple display manager (gobject development files)
 Package: liblightdm-qt-dev
 Section: libdevel
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}
+Depends: liblightdm-qt-2-0 (= ${binary:Version}), ${shlibs:Depends}, 
+ ${misc:Depends}
 Description: simple display manager (Qt development files)
  This package contains the development files for lightdm.
  They can be used to build new greeters applications Qt based.

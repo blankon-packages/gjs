@@ -17,6 +17,6 @@ override_dh_install:
 	dh_install --fail-missing
 
 %:
-	dh $@ --with autoreconf
+	dh $@
 
 override_dh_auto_test:

@@ -1,103 +1,50 @@
-lightdm (1.0.11-1blankon3) rote; urgency=low
+lightdm (1.2.0-1blankon1) rote; urgency=low
 
-  * Added lightdm-xsession.desktop.
-  * lightdm-xsession.desktop exec blankon
+  * debian/control maintainer
+  * debian/lightdm-xsession.desktop default to blankon-session
 
- -- Rahman Yusri Aftian <aftian@di.blankon.in>  Thu, 19 Apr 2012 12:29:14 +0000
+ -- Rahman Yusri Aftian <aftian@di.blankon.in>  Sun, 29 Apr 2012 20:03:05 +0700
 
-lightdm (1.0.11-1blankon2) rote; urgency=low
+lightdm (1.2.0-1) experimental; urgency=low
 
-  * remove lightdm-xsession.desktop
-
- -- Pendekar BlankOn <mijortsa@localhost>  Wed, 18 Apr 2012 07:08:20 +0700
-
-lightdm (1.0.11-1blankon1) rote; urgency=low
-
-  * New upstream updates.
-  * Merge Whit sid
-
- -- Rahman Yusri Aftian <aftian@di.blankon.in>  Sat, 14 Apr 2012 04:36:43 +0000
-
-lightdm (1.0.11-1) unstable; urgency=low
-
-  * New upstream bugfix release.
-
- -- Yves-Alexis Perez <corsac@debian.org>  Thu, 05 Apr 2012 19:16:31 +0200
-
-lightdm (1.0.10-2) unstable; urgency=low
-
-  * Replace greeter choice in debconf by alternatives, which prevents tricky
-    bugs caused by managing a conffile of a package by another one.
-                                                       closes: #665710, #657660
-
- -- Yves-Alexis Perez <corsac@debian.org>  Sun, 01 Apr 2012 14:33:39 +0200
-
-lightdm (1.0.10-1.blankon3) rote; urgency=low
-
-  * debian/control
-    - REcommends krawu-theme, komodo-icon-theme
-
- -- Rahman Yusri Aftian <aftian@di.blankon.in>  Thu, 29 Mar 2012 23:18:37 +0000
-
-lightdm (1.0.10-1.blankon2) rote; urgency=low
-
-  * gtk & qt -gretaer.postins. added " (interactive at pabrik-cc)
-  
- -- Rahman Yusri Aftian <aftian@di.blankon.in>  Sun, 25 Mar 2012 11:15:55 +0700
-
-lightdm (1.0.10-1.blankon1) rote; urgency=low
-
-  * Change debian/control.
-  * Change debian/lightdm.pam with ubuntu oneric
-
- -- Mas Supriyadi <supriyadi@surabaya.di.blankon.in>  Sat, 24 Mar 2012 22:47:19 +0700
-
-lightdm (1.0.10-1) unstable; urgency=low
-
-  * New upstream release.
-  * debian/lightdm-*-greeter.postinst:
-    - remove "" protection around variable since it won't expand the * that
-      way. Fix setting the correct greeter.                     closes: #664585
-  * debian/watch updated to match minor version with two digits.
-  * debian/lightdm.pam:
-    - add selinux lines, thanks Laurent Bigonville.             closes: #664805
-
- -- Yves-Alexis Perez <corsac@debian.org>  Fri, 23 Mar 2012 10:58:07 +0100
-
-lightdm (1.0.9-1) unstable; urgency=low
-
+  [ Yves-Alexis Perez ]
   * New upstream release.
     - don't leak fds to child processes.                        closes: #658678
-  * debian/watch updated to track 1.0 branch.
-  * debian/patches:
-    - 07_CVE-2011-4105 removed, code not present anymore.
-    - 08_CVE-2011-3153 dropped, included upstream. 
-
- -- Yves-Alexis Perez <corsac@debian.org>  Mon, 05 Mar 2012 07:48:53 +0100
-
-lightdm (1.0.6-5) unstable; urgency=low
-
-  * debian/po:
-    - pl.po updated, thanks to Michał Kułach.                   closes: 3657660
-  * debian/control:
-    - update standards version to 3.9.3.
-
- -- Yves-Alexis Perez <corsac@debian.org>  Sat, 25 Feb 2012 19:02:03 +0100
-
-lightdm (1.0.6-4) unstable; urgency=low
-
   * debian/po:
     - da.po updated, thanks to “Joe Dalton”.                    closes: #650946
-    - id.po added, thanks to Mahyuddin Susanto.                 closes: #660620
-    - el.po updated, thanks to Thomas Vasileiou.                closes: #660708
   * debian/control:
     - add Provides: on x-display-manager.                       closes: #654343
     - liblightdm-gobject-dev requires libdbus-glib-1-dev and libxklavier-dev
       so add dependencies.
-    - update debhelper build-dep to 9.
+    - drop lightdm-{gtk,qt}-greeter packages since they have been moved to
+      standalone packages.
+    - rename lightdm-qt-1-0 package to -2-0 to follow soname bump.
+    - drop dh-autoreconf build-dep.
+    - fix liblightdm*-dev package not depending on the library package itself.
+    - update standards version to 3.9.3.
   * debian/watch updated for new tarballs location.
+  * debian/patches:
+    - 01_set-default-path refreshed.
+    - 02_default-config.patch refreshed
+      + use lightdm-greeter as greeter name, which is provided as an
+        alternative by the various greeters.
+    - 04_default-gtk-greeter-config dropped since lightm-gtk-greeter has been
+      moved to standalone package.
+    - 06_move-progs-to-pkglibexecdir dropped, included upstream.
+    - 07_CVE-2011-4105 dropped, code doesn't exist anymore.
+    - 08_CVE-2011-3153 dropped, included upstream.
+  * debian/rules:
+    - don't install libsystem as it's only useful for tests.
+    - drop autoreconf since we don't need it anymore.
+  * debian/lightdm-{gtk,qt}-greeter.{config.install.templates,postinst,prerm}
+    dropped.
+  * debian/lightdm.pam:
+     - add selinux lines, thanks Laurent Bigonville.            closes: #664805
 
- -- Yves-Alexis Perez <corsac@debian.org>  Sat, 25 Feb 2012 14:36:58 +0100
+  [ Lionel Le Folgoc ]
+  * debian/patches: add missing DEP3 headers.
+
+ -- Yves-Alexis Perez <corsac@debian.org>  Fri, 06 Apr 2012 21:32:13 +0200
 
 lightdm (1.0.6-3) unstable; urgency=low
 
@@ -202,7 +149,7 @@ lightdm (1.0.0-1) unstable; urgency=low
   * debian/control:
     - added build-deb on dpkg-dev (>= 1.16.1) for hardening support.
     - dropped hardening-includes from build-depends, now superseded
-    - update debhelper build-dep to 8.9.4 for compat mode v9.
+    - update debhelper build-dep to 9 for compat mode v9.
     - add Pre-Depends: ${misc:Pre-Depends} to the lib packages.
     - add Recommends: on gnome-icon-theme to gtk greeter.       closes: #643291
   * debian/liblightdm-gobject-1-0.install,

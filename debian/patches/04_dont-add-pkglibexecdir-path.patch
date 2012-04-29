@@ -1,0 +1,18 @@
+Author: Yves-Alexis Perez <corsac@debian.org>
+Description: don't add PKGLIBEXEC_DIR to the user PATH
+Index: lightdm-1.2.0/src/session-child.c
+===================================================================
+--- lightdm-1.2.0.orig/src/session-child.c	2012-04-05 19:21:59.185164553 +0200
++++ lightdm-1.2.0/src/session-child.c	2012-04-05 19:22:50.593671042 +0200
+@@ -456,11 +456,6 @@
+         g_free (value);
+     }
+ 
+-    /* Put our tools directory in the path as a hack so we can use the legacy gdmflexiserver interface */
+-    path = pam_getenv (pam_handle, "PATH");
+-    if (path)
+-        pam_putenv (pam_handle, g_strdup_printf ("PATH=%s:%s", PKGLIBEXEC_DIR, path));
+-
+     /* Catch terminate signal and pass it to the child */
+     signal (SIGTERM, signal_cb);
+ 

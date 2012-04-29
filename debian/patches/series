@@ -1,6 +1,4 @@
 01_set-default-path.patch
 02_default-config.patch
 03_quit-plymouth.patch
-04_default-gtk-greeter-config.patch
-05_dont-add-pkglibexecdir-path.patch
-06_move-progs-to-pkglibexecdir.patch
+04_dont-add-pkglibexecdir-path.patch

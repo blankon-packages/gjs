@@ -26,9 +26,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: el\n"
 "Report-Msgid-Bugs-To: lightdm@packages.debian.org\n"
-"POT-Creation-Date: 2012-02-19 16:42+0100\n"
-"PO-Revision-Date: 2012-02-21 04:44+0200\n"
-"Last-Translator: Thomas Vasileiou <thomas-v@wildmail.com>\n"
+"POT-Creation-Date: 2012-03-27 21:31+0200\n"
+"PO-Revision-Date: 2005-12-19 18:40+0200\n"
+"Last-Translator: Konstantinos Margaritis <markos@debian.org>\n"
 "Language-Team: Greek <debian-l10n-greek@lists.debian.org>\n"
 "Language: el\n"
 "MIME-Version: 1.0\n"
@@ -38,26 +38,48 @@ msgstr ""
 #. Type: select
 #. Description
 #: ../lightdm.templates:3001
+#, fuzzy
 msgid "Default display manager:"
-msgstr "Προκαθορισμένος διαχειριστής οθόνης:"
+msgstr "Επιλέξτε τον επιθυμητό διαχειριστή οθόνης."
 
 #. Type: select
 #. Description
 #: ../lightdm.templates:3001
-msgid "A display manager is a program that provides graphical login capabilities for the X Window System."
-msgstr "Ο διαχειριστής οθόνης είναι ένα πρόγραμμα που προσφέρει τη δυνατότητα σύνδεσης στο σύστημα παραθύρων X μέσω γραφικού περιβάλλοντος."
+msgid ""
+"A display manager is a program that provides graphical login capabilities "
+"for the X Window System."
+msgstr ""
+"Ο διαχειριστής οθόνης είναι ένα πρόγραμμα που προσφέρει τη δυνατότητα "
+"σύνδεσης στο σύστημα παραθύρων X μέσω γραφικού περιβάλλοντος."
 
 #. Type: select
 #. Description
 #: ../lightdm.templates:3001
-msgid "Only one display manager can manage a given X server, but multiple display manager packages are installed. Please select which display manager should run by default."
-msgstr "Μόνο ένας διαχειριστής οθόνης μπορεί να χειρίζεται ένα συγκεκριμένο εξυπηρετητή X, αλλά περισσότεροι από ένας είναι εγκατεστημένοι. Παρακαλώ επιλέξτε τον διαχειριστή οθόνης που θα εκτελείται ως προκαθορισμένος."
+#, fuzzy
+msgid ""
+"Only one display manager can manage a given X server, but multiple display "
+"manager packages are installed. Please select which display manager should "
+"run by default."
+msgstr ""
+"Μόνο ένας διαχειριστής οθόνης μπορεί να χειρίζεται ένα συγκεκριμένο "
+"εξυπηρετητή X, αλλά περισσότεροι από ένας είναι εγκατεστημένοι. Παρακαλώ "
+"επιλέξτε τον διαχειριστή οθόνης που θα εκτελείται ως προκαθορισμένος."
 
 #. Type: select
 #. Description
 #: ../lightdm.templates:3001
-msgid "Multiple display managers can run simultaneously if they are configured to manage different servers; to achieve this, configure the display managers accordingly, edit each of their init scripts in /etc/init.d, and disable the check for a default display manager."
-msgstr "Πολλαπλοί διαχειριστές οθόνης μπορούν να τρέχουν ταυτόχρονα, αν έχουν ρυθμιστεί να χειρίζονται διαφορετικούς διακομιστές. Για να το επιτύχετε, ρυθμίστε τους διαχειριστές οθόνης κατάλληλα, επεξεργαστείτε τα αρχεία εκκίνησής τους στον κατάλογο /etc/init.d, και απενεργοποιήστε τον έλεγχο για προκαθορισμένο διαχειριστή οθόνης."
+#, fuzzy
+msgid ""
+"Multiple display managers can run simultaneously if they are configured to "
+"manage different servers; to achieve this, configure the display managers "
+"accordingly, edit each of their init scripts in /etc/init.d, and disable the "
+"check for a default display manager."
+msgstr ""
+"Πολλαπλοί διαχειριστές οθόνης μπορούν να τρέχουν ταυτόχρονα, αν έχουν "
+"ρυθμιστεί να χειρίζονται διαφορετικούς διακομιστές X. Για να επιτευχθεί "
+"αυτό, ρυθμίστε τους διαχειριστές οθόνης κατάλληλα, επεξεργαστείτε τα αρχεία "
+"εκκίνησής τους στον κατάλογο /etc/init.d, και απενεργοποιήστε τον έλεγχο για "
+"προκαθορισμένο διαχειριστή οθόνης."
 
 #, fuzzy
 #~ msgid "Stop the xdm daemon?"
