@@ -1,3 +1,9 @@
+lightdm (1.2.0-1blankon5) rote; urgency=low
+
+  * debian/control drop  lightdm-gtk-greeter |  lightdm-qt-greeter 
+  
+ -- Rahman Yusri Aftian <aftian@di.blankon.in>  Mon, 30 Apr 2012 18:14:31 +0700
+
 lightdm (1.2.0-1blankon4) rote; urgency=low
 
   * Added debian/patches 06_blankon_webkit_greeter.patch
