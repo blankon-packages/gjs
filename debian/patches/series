@@ -3,4 +3,3 @@
 03_quit-plymouth.patch
 04_dont-add-pkglibexecdir-path.patch
 06_blankon_webkit_greeter.patch
-

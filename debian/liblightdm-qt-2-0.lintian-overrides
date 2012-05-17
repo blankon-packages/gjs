@@ -1,0 +1,2 @@
+# we do use -fstack-protector
+liblightdm-qt-2-0: hardening-no-stackprotector usr/lib/x86_64-linux-gnu/liblightdm-qt-2.so.0.0.0

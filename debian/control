@@ -20,7 +20,7 @@ Package: lightdm
 Section: x11
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}, 
-  lightdm-webkit-greeter, dbus, consolekit, adduser
+ lightdm-webkit-greeter, dbus, consolekit, adduser
 Recommends: xserver-xorg
 Suggests: accountsservice
 Provides: x-display-manager
