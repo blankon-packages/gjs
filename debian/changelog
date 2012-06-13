@@ -1,3 +1,17 @@
+lightdm (1.2.2-2blankon1) rote; urgency=low
+
+  * New upstream updates.
+  * Merhe whit sid
+
+ -- Rahman Yusri Aftian <aftian@di.blankon.in>  Thu, 14 Jun 2012 04:20:47 +0700
+
+lightdm (1.2.2-2) unstable; urgency=low
+
+  * debian/rules:
+    - re-enable tests now that gcc-4.7 has been fixed.
+
+ -- Yves-Alexis Perez <corsac@debian.org>  Wed, 13 Jun 2012 19:51:16 +0200
+
 lightdm (1.2.2-1blankon2) rote; urgency=low
 
   * lightdm-xsession.desktop to blankon-session
