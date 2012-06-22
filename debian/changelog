@@ -1,3 +1,21 @@
+lightdm (1.2.2-3blankon1) rote; urgency=low
+
+  * New upstream updates.
+  * Merhe whit sid
+
+ -- Mahyuddin <yudi.al@gmail.com>  Fri, 22 Jun 2012 22:56:40 +0700
+
+lightdm (1.2.2-3) unstable; urgency=low
+
+  * debian/lightdm.pam:
+    - enable pam_loginuid.                                      closes: #677435
+  * debian/lightdm.lightdm-autologin.pam added, support auto-login when
+    configured in /etc/lightdm/lightdm.conf.                    closes: #636104
+  * debian/rules:
+    - install both pam files.
+
+ -- Yves-Alexis Perez <corsac@debian.org>  Mon, 18 Jun 2012 21:13:57 +0200
+
 lightdm (1.2.2-2blankon1) rote; urgency=low
 
   * New upstream updates.
