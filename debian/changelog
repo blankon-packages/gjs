@@ -1,3 +1,28 @@
+lightdm (1.2.2-4blankon2) rote-updates; urgency=low
+
+  * Fix autologin for rote
+
+ -- Mahyuddin yudi.al@gmail.com>  Sun, 14 Oct 2012 23:26:39 +0700
+
+lightdm (1.2.2-4blankon1) suroboyo; urgency=low
+
+  * New upstream release
+  * Merge with debian sid
+  * Upload for suroboyo
+
+ -- Mahyuddin <yudi.al@gmail.com>  Sat, 13 Oct 2012 00:08:52 +0700
+
+lightdm (1.2.2-4) unstable; urgency=low
+
+  * debian/control:
+    - suggests upower.                                          closes: #679538
+    - make lightdm depends on lightdm-gtk-greeter | lightdm-greeter, thanks
+      Ralf Jung for the report.                                 closes: #684714
+  * debian/lightdm.install:
+    - stop installing lightdm upstart script since it's broken. closes: #679409
+
+ -- Yves-Alexis Perez <corsac@debian.org>  Thu, 11 Oct 2012 12:44:37 +0200
+
 lightdm (1.2.2-3blankon1) rote; urgency=low
 
   * New upstream updates.

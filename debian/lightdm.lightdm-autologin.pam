@@ -3,8 +3,7 @@ auth    requisite       pam_nologin.so
 auth    required        pam_env.so readenv=1
 auth    required        pam_env.so readenv=1 envfile=/etc/default/locale
 #auth    sufficient      pam_thinkfinger.so
-@include common-auth
-auth    optional        pam_gnome_keyring.so
+auth    required        pam_permit.so
 @include common-account
 # SELinux needs to be the first session rule. This ensures that any 
 # lingering context has been cleared. Without out this it is possible 
@@ -21,5 +20,4 @@ session required        pam_loginuid.so
 session [success=ok ignore=ignore module_unknown=ignore default=bad] pam_selinux.so open
 # When the module is present, "required" would be sufficient (When SELinux
 # is disabled, this returns success.)
-session optional        pam_gnome_keyring.so auto_start
 @include common-password

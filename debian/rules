@@ -14,7 +14,11 @@ override_dh_installinit:
 override_dh_install:
 	find debian/tmp -name '*.la' -delete
 	rm debian/tmp/usr/lib/$(DEB_HOST_MULTIARCH)/lightdm/gdmflexiserver
-	dh_install --fail-missing
+	dh_install --fail-missing -X etc/init/lightdm.conf
+
+override_dh_installpam:
+		dh_installpam
+		dh_installpam --name=lightdm-autologin
 
 %:
 	dh $@ --parallel

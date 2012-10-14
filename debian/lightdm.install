@@ -3,7 +3,6 @@ usr/sbin/lightdm
 usr/share/man
 usr/share/locale
 etc/dbus-1
-etc/init
 etc/lightdm/users.conf
 etc/lightdm/lightdm.conf
 etc/lightdm/keys.conf

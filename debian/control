@@ -22,7 +22,7 @@ Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}, 
  lightdm-webkit-greeter, dbus, consolekit, adduser
 Recommends: xserver-xorg
-Suggests: accountsservice
+Suggests: accountsservice, upower
 Provides: x-display-manager
 Description: simple display manager
  An X display manager that:
