@@ -4,14 +4,6 @@ lightdm (1.2.2-4blankon2) rote-updates; urgency=low
 
  -- Mahyuddin yudi.al@gmail.com>  Sun, 14 Oct 2012 23:26:39 +0700
 
-lightdm (1.2.2-4blankon1) suroboyo; urgency=low
-
-  * New upstream release
-  * Merge with debian sid
-  * Upload for suroboyo
-
- -- Mahyuddin <yudi.al@gmail.com>  Sat, 13 Oct 2012 00:08:52 +0700
-
 lightdm (1.2.2-4) unstable; urgency=low
 
   * debian/control:
