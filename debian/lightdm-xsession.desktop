@@ -1,6 +1,6 @@
 [Desktop Entry]
 Version=1.0
 Name=Default Xsession
-Exec=blankon-session
+Exec=gnome-session-blankon
 Icon=
 Type=Application

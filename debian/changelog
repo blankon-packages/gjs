@@ -1,3 +1,9 @@
+lightdm (1.2.2-4blankon2.2) suroboyo; urgency=low
+
+  * Change lightdm-xsession.desktop to gnome-session-blankon
+
+ -- Rahman Yusri Aftian <aftian@di.blankon.in>  Tue, 05 Nov 2013 20:55:06 +0700
+
 lightdm (1.2.2-4blankon2.1) suroboyo; urgency=low
 
   * Upload for suroboyo 
