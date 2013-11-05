@@ -1,3 +1,9 @@
+lightdm (1.2.2-4blankon2.1) suroboyo; urgency=low
+
+  * Upload for suroboyo 
+
+ -- Rahman Yusri Aftian <aftian@di.blankon.in>  Tue, 05 Nov 2013 15:12:11 +0700
+
 lightdm (1.2.2-4blankon2) rote-updates; urgency=low
 
   * Fix autologin for rote
