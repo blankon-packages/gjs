@@ -1,3 +1,9 @@
+lightdm (1.2.2-4blankon2.4) tambora; urgency=medium
+
+  * Tambora release
+
+ -- mijortsa <azis.astrojim@surabaya.di.blankon.in>  Thu, 06 Mar 2014 13:58:13 +0700
+
 lightdm (1.2.2-4blankon2.2) suroboyo; urgency=low
 
   * Change lightdm-xsession.desktop to gnome-session-blankon
