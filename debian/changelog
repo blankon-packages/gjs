@@ -1,52 +1,202 @@
-lightdm (1.2.2-4blankon2.4) tambora; urgency=medium
+lightdm (1.9.11-1blankon1) tambora; urgency=medium
 
-  * Tambora release
+  * New upstream release 
 
- -- mijortsa <azis.astrojim@surabaya.di.blankon.in>  Thu, 06 Mar 2014 13:58:13 +0700
+ -- mijortsa <azis.astrojim@surabaya.di.blankon.in>  Tue, 18 Mar 2014 14:20:46 +0700
 
-lightdm (1.2.2-4blankon2.2) suroboyo; urgency=low
+lightdm (1.9.11-1) experimental; urgency=medium
 
-  * Change lightdm-xsession.desktop to gnome-session-blankon
+  * New upstream development release.
+  * debian/watch updated to track versions over 10.
+  * debian/patches:
+    - 02_fix-build-glib-before-2.40 removed, included upstream.
 
- -- Rahman Yusri Aftian <aftian@di.blankon.in>  Tue, 05 Nov 2013 20:55:06 +0700
+ -- Yves-Alexis Perez <corsac@debian.org>  Thu, 13 Mar 2014 09:19:21 +0100
 
-lightdm (1.2.2-4blankon2.1) suroboyo; urgency=low
+lightdm (1.9.9-1) experimental; urgency=medium
 
-  * Upload for suroboyo 
+  * New upstream development release.
+  * debian/liblightdm-gobject-1-0.symbols, debian/liblightdm-qt-3-0.symbols:
+    - add a symbol file to handle library dependencies more carefully.
+  * debian/patches:
+    - 02_fix-build-glib-before-2.40 added, fix FTBFS with glib before 2.40.
 
- -- Rahman Yusri Aftian <aftian@di.blankon.in>  Tue, 05 Nov 2013 15:12:11 +0700
+ -- Yves-Alexis Perez <corsac@debian.org>  Wed, 12 Mar 2014 11:00:42 +0100
 
-lightdm (1.2.2-4blankon2) rote-updates; urgency=low
+lightdm (1.9.8-1) experimental; urgency=medium
 
-  * Fix autologin for rote
+  * New upstream development release.
 
- -- Mahyuddin <yudi.al@gmail.com>  Sun, 14 Oct 2012 23:26:39 +0700
+ -- Yves-Alexis Perez <corsac@debian.org>  Fri, 21 Feb 2014 22:05:10 +0100
 
-lightdm (1.2.2-4blankon1) suroboyo; urgency=low
-	
-  * New upstream release
-  * Merge with debian sid
-  * Upload for suroboyo
-	
- -- Mahyuddin <yudi.al@gmail.com>  Sat, 13 Oct 2012 00:08:52 +0700
+lightdm (1.9.6-1) experimental; urgency=medium
 
-lightdm (1.2.2-4) unstable; urgency=low
+  * New upstream development release.
 
+ -- Yves-Alexis Perez <corsac@debian.org>  Wed, 22 Jan 2014 21:18:16 +0100
+
+lightdm (1.9.5-1) experimental; urgency=medium
+
+  * New upstream development release.
+  * debian/watch updated to track 1.9 branch.
+  * debian/patches:
+    - 04_dont-add-pkglibexecdir-path dropped, gdm-flexiserver script has been
+      dropped from LightDM so the PATH addition was dropped as well.
+    - 01_set-default-path and 06_allow_libpamsystemd_and_ck_together
+      refreshed.
+  * debian/rules:
+    - stop removing gdmflexiserver since it doesn't exist anymore.
+    - configure libexecdir to be /u/l/*/lightdm.
+  * debian/lightdm.install:
+    - drop install of lightdm-set-defaults.
+    - rename lightdm-guest-session-wrapper to lightdm-guest-session.
+
+ -- Yves-Alexis Perez <corsac@debian.org>  Sun, 29 Dec 2013 22:28:33 +0100
+
+lightdm (1.8.5-3) unstable; urgency=low
+
+  * debian/lightdm.postrm: warn if user/group deletion failed.  closes: #731220
+  * debian/control:
+    - update standards version to 3.9.5.
+
+ -- Yves-Alexis Perez <corsac@debian.org>  Sun, 29 Dec 2013 14:55:54 +0100
+
+lightdm (1.8.5-2) unstable; urgency=medium
+
+  * debian/patches:
+    - 06_allow_libpamsystemd_and_ck_together added. Create a ConsoleKit
+      session, even if a logind session already exists. That makes transition
+      from ConsoleKit to systemd/logind somehow easier, but means some events
+      might happen twice.                                       closes: #728361
+
+ -- Yves-Alexis Perez <corsac@debian.org>  Mon, 02 Dec 2013 21:15:54 +0100
+
+lightdm (1.8.5-1) unstable; urgency=low
+
+  * New upstream bugfix release.
+  * debian/patches:
+    - 02_default-config removed, replaced by a config snippet.
+  * debian/01_debian.conf:
+    - add config snippet for Debian specific config
+  * debian/lightdm.install:
+    - install 01_debian.conf to /usr/share/lightdm/lightdm.conf.d/
+
+ -- Yves-Alexis Perez <corsac@debian.org>  Thu, 07 Nov 2013 10:20:11 +0100
+
+lightdm (1.8.3-1) unstable; urgency=low
+
+  * New upstream release.
+  * debian/rules:
+    - enable all hardening flags.
+
+ -- Yves-Alexis Perez <corsac@debian.org>  Thu, 31 Oct 2013 09:31:16 +0100
+
+lightdm (1.8.2-1) unstable; urgency=low
+
+  * New upstream release.
+  * debian/patches:
+    - 01_set-default-path, 02_default-config, 05_debianize-pam-files
+      refreshed.
+    - 03_quit-plymouth disabled for now, to check if problem is really fixed
+      upstream.
+  * debian/control:
+    - rename liblightdm-qt-2-0 to liblightdm-qt-3-0 to match updated soname.
+
+ -- Yves-Alexis Perez <corsac@debian.org>  Sun, 20 Oct 2013 20:45:55 +0200
+
+lightdm (1.6.3-1) unstable; urgency=low
+
+  * New upstream release.
+
+ -- Yves-Alexis Perez <corsac@debian.org>  Wed, 09 Oct 2013 21:22:43 +0200
+
+lightdm (1.6.2-1) unstable; urgency=low
+
+  [ Yves-Alexis Perez ]
+  * debian/po:
+    - update pl.po, thanks Michał Kułach.                       closes: #711378
+  * New upstream release.
+    - fix wrong permissions on .Xauthority file and don't pollute homedir with
+      temporary files.                                          closes: #721744
+  * debian/watch updated to track 1.6 branch.
+  * debian/control:
+    - update standards version to 3.9.4.
+
+  [ Evgeni Golov ]
+  * Correct Vcs-* URLs to point to anonscm.debian.org
+
+ -- Yves-Alexis Perez <corsac@debian.org>  Wed, 11 Sep 2013 07:41:13 +0200
+
+lightdm (1.6.0-3) unstable; urgency=low
+
+  * debian/control:
+    - drop valac-0.18 dependency for now since it's not available in sid
+      anyway.                                                   closes: #707176
+
+ -- Yves-Alexis Perez <corsac@debian.org>  Sat, 11 May 2013 23:48:35 +0200
+
+lightdm (1.6.0-2) unstable; urgency=low
+
+  [ Niv Sardi ]
+  * Build with GIR
+
+  [ Yves-Alexis Perez ]
+  * Upload to unstable.
+  * debian/rules:
+    - hardening=+pie segfaults but +bindnow does work so keep it enabled.
+  * debian/docs removed: stop shipping NEWS file since it's the same as
+    changelog.
+
+ -- Yves-Alexis Perez <corsac@debian.org>  Sun, 05 May 2013 14:09:23 +0200
+
+lightdm (1.6.0-1) experimental; urgency=low
+
+  * New upstream release.
+
+ -- Yves-Alexis Perez <corsac@debian.org>  Wed, 17 Apr 2013 22:06:36 +0200
+
+lightdm (1.5.3-1) experimental; urgency=low
+
+  * New upstream unstable release.
+  * debian/docs: ship NEWS file.                                closes: #689870
+  * debian/watch:
+    - support .xz tarballs.
+  * debian/patches:
+    - 01_set-default-path, 03_quit-plymouth, 04_dont-add-pkglibexecdir-path
+      and 05_debianize-pam-files refreshed.
+  * debian/control:
+    - add build-dep on libgcrypt11-dev.
+  * debian/rules:
+    - disable pie hardening flags for now, it segfaults at startup.
+    - fix gdmflexiserver removal
+    - fix permissions on apparmor profiles.
+  * debian/lightdm.install:
+    - install apparmor profiles.
+
+ -- Yves-Alexis Perez <corsac@debian.org>  Sun, 07 Apr 2013 14:30:05 +0200
+
+lightdm (1.4.0-1) experimental; urgency=low
+
+  * New upstream release.
+  * debian/patches:
+    - 01_set-default-path, 02_default-config and
+      04_dont-add-pkglibexecdir-path refreshed for new release.
+    - 05_debianize-pam-files added, Debianize the lightdm and
+      lightdm-autologin pam config files.
   * debian/control:
     - suggests upower.                                          closes: #679538
     - make lightdm depends on lightdm-gtk-greeter | lightdm-greeter, thanks
       Ralf Jung for the report.                                 closes: #684714
+    - add build-dep on itstool.
   * debian/lightdm.install:
     - stop installing lightdm upstart script since it's broken. closes: #679409
+    - install /u/s/help.* 
+    - install PAM files
+  * debian/rules:
+    - stop installing own PAM files.
+  * debian/*.pam: drop obsolete PAM files.
 
- -- Yves-Alexis Perez <corsac@debian.org>  Thu, 11 Oct 2012 12:44:37 +0200
-
-lightdm (1.2.2-3blankon1) rote; urgency=low
-
-  * New upstream updates.
-  * Merhe whit sid
-
- -- Mahyuddin <yudi.al@gmail.com>  Fri, 22 Jun 2012 22:56:40 +0700
+ -- Yves-Alexis Perez <corsac@debian.org>  Sun, 07 Oct 2012 09:16:34 +0200
 
 lightdm (1.2.2-3) unstable; urgency=low
 
@@ -59,32 +209,12 @@ lightdm (1.2.2-3) unstable; urgency=low
 
  -- Yves-Alexis Perez <corsac@debian.org>  Mon, 18 Jun 2012 21:13:57 +0200
 
-lightdm (1.2.2-2blankon1) rote; urgency=low
-
-  * New upstream updates.
-  * Merhe whit sid
-
- -- Rahman Yusri Aftian <aftian@di.blankon.in>  Thu, 14 Jun 2012 04:20:47 +0700
-
 lightdm (1.2.2-2) unstable; urgency=low
 
   * debian/rules:
     - re-enable tests now that gcc-4.7 has been fixed.
 
  -- Yves-Alexis Perez <corsac@debian.org>  Wed, 13 Jun 2012 19:51:16 +0200
-
-lightdm (1.2.2-1blankon2) rote; urgency=low
-
-  * lightdm-xsession.desktop to blankon-session
-
- -- Rahman Yusri Aftian <aftian@di.blankon.in>  Thu, 17 May 2012 19:43:42 +0700
-
-lightdm (1.2.2-1blankon1) rote; urgency=low
-
-  * New upstream release.
-  * Merge whit sid
-
- -- Rahman Yusri Aftian <aftian@di.blankon.in>  Thu, 17 May 2012 09:17:24 +0700
 
 lightdm (1.2.2-1) unstable; urgency=low
 
@@ -98,37 +228,6 @@ lightdm (1.2.2-1) unstable; urgency=low
     checks, we do enable build flags.
 
  -- Yves-Alexis Perez <corsac@debian.org>  Tue, 15 May 2012 22:44:04 +0200
-
-lightdm (1.2.0-1blankon5) rote; urgency=low
-
-  * debian/control drop  lightdm-gtk-greeter |  lightdm-qt-greeter 
-  
- -- Rahman Yusri Aftian <aftian@di.blankon.in>  Mon, 30 Apr 2012 18:14:31 +0700
-
-lightdm (1.2.0-1blankon4) rote; urgency=low
-
-  * Added debian/patches 06_blankon_webkit_greeter.patch
-  
- -- Rahman Yusri Aftian <aftian@di.blankon.in>  Sun, 29 Apr 2012 14:06:44 +0000
-
-lightdm (1.2.0-1blankon3) rote; urgency=low
-
-  * Move depends 
-
- -- Rahman Yusri Aftian <aftian@di.blankon.in>  Sun, 29 Apr 2012 20:42:36 +0700
-
-lightdm (1.2.0-1blankon2) rote; urgency=low
-
-  * debian/control added depends lightdm-webkit-greeter
-
- -- Rahman Yusri Aftian <aftian@di.blankon.in>  Sun, 29 Apr 2012 20:19:05 +0700
-
-lightdm (1.2.0-1blankon1) rote; urgency=low
-
-  * debian/control maintainer
-  * debian/lightdm-xsession.desktop default to blankon-session
-
- -- Rahman Yusri Aftian <aftian@di.blankon.in>  Sun, 29 Apr 2012 20:03:05 +0700
 
 lightdm (1.2.0-1) experimental; urgency=low
 

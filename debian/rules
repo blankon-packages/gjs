@@ -1,24 +1,24 @@
 #!/usr/bin/make -f
 
-export DEB_LDFLAGS_MAINT_APPEND=-Wl,--as-needed -Wl,-O1
-export DEB_BUILD_MAINT_OPTIONS=hardening=+pie,+bindnow
+include /usr/share/dpkg/pkg-info.mk
+include /usr/share/dpkg/architecture.mk
 
-DEB_HOST_MULTIARCH ?= $(shell dpkg-architecture -qDEB_HOST_MULTIARCH)
+export DEB_LDFLAGS_MAINT_APPEND=-Wl,--as-needed -Wl,-O1
+export DEB_BUILD_MAINT_OPTIONS=hardening=+all
 
 override_dh_auto_configure:
-	dh_auto_configure -- --with-greeter-user=lightdm --with-user-session=lightdm-xsession --enable-introspection=no --disable-silent-rules
+	dh_auto_configure -- --with-greeter-user=lightdm --with-user-session=lightdm-xsession --enable-introspection=yes --disable-silent-rules --libexecdir=/usr/lib/$(DEB_HOST_MULTIARCH)/$(DEB_SOURCE)/
+
+override_dh_installchangelogs:
+	dh_installchangelogs -- NEWS
 
 override_dh_installinit:
 	dh_installinit --noscripts
 
 override_dh_install:
 	find debian/tmp -name '*.la' -delete
-	rm debian/tmp/usr/lib/$(DEB_HOST_MULTIARCH)/lightdm/gdmflexiserver
+	find debian/tmp/etc/apparmor.d -type f -exec chmod 0644 '{}' \;
 	dh_install --fail-missing -X etc/init/lightdm.conf
-
-override_dh_installpam:
-		dh_installpam
-		dh_installpam --name=lightdm-autologin
 
 %:
 	dh $@ --parallel

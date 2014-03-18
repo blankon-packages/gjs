@@ -1,0 +1,53 @@
+--- a/src/session.c
++++ b/src/session.c
+@@ -781,8 +781,8 @@ session_real_run (Session *session)
+ 
+     if (login1_is_running ())
+         session->priv->login1_session = read_string_from_child (session);
+-    if (!session->priv->login1_session)
+-        session->priv->console_kit_cookie = read_string_from_child (session);
++
++    session->priv->console_kit_cookie = read_string_from_child (session);
+ }
+ 
+ void
+@@ -793,7 +793,7 @@ session_lock (Session *session)
+     {
+         if (session->priv->login1_session)
+             login1_lock_session (session->priv->login1_session);
+-        else if (session->priv->console_kit_cookie)
++        if (session->priv->console_kit_cookie)
+             ck_lock_session (session->priv->console_kit_cookie);
+     }
+ }
+@@ -806,7 +806,7 @@ session_unlock (Session *session)
+     {
+         if (session->priv->login1_session)
+             login1_unlock_session (session->priv->login1_session);
+-        else if (session->priv->console_kit_cookie)
++        if (session->priv->console_kit_cookie)
+             ck_unlock_session (session->priv->console_kit_cookie);
+     }
+ }
+--- a/src/session-child.c
++++ b/src/session-child.c
+@@ -476,8 +476,8 @@ session_child_run (int argc, char **argv
+         write_string (login1_session);
+     }
+ 
+-    if (!login1_session)
+-    {
++
++
+         /* Open a Console Kit session */
+         g_variant_builder_init (&ck_parameters, G_VARIANT_TYPE ("(a(sv))"));
+         g_variant_builder_open (&ck_parameters, G_VARIANT_TYPE ("a(sv)"));
+@@ -506,7 +506,7 @@ session_child_run (int argc, char **argv
+             pam_putenv (pam_handle, value);
+             g_free (value);
+         }
+-    }
++
+ 
+     /* Write X authority */
+     if (x_authority)

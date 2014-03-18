@@ -20,12 +20,12 @@ if [ "$1" = "purge" ] ; then
         fi
         if getent passwd lightdm >/dev/null; then
                 if [ -x /usr/sbin/deluser ]; then
-                        deluser --system lightdm
+                        deluser --system lightdm ||echo " Could not remove lightdm user, please make sure lightdm is not running before attempting to purge lightdm" 
                 fi
         fi
         if getent group lightdm >/dev/null; then
                 if [ -x /usr/sbin/delgroup ]; then
-                        delgroup --system lightdm
+                        delgroup --system lightdm || echo "Could not remove lightdm group, please make sure lightdm is not running before attempting to purge lightdm"
                 fi
         fi
 fi

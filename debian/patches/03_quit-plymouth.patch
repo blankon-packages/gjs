@@ -4,11 +4,9 @@ plymouth is quitted from the /etc/init.d/plymouth script, but it'll hang if
 plymouth has been deactivated before, so just quit it for now.
 Bug-Debian: http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=632737
 Bug: https://bugs.launchpad.net/ubuntu/+source/lightdm/+bug/799069
-Index: lightdm-1.0.1/src/xserver-local.c
-===================================================================
---- lightdm-1.0.1.orig/src/xserver-local.c	2011-10-04 10:31:50.000000000 +0200
-+++ lightdm-1.0.1/src/xserver-local.c	2011-10-05 22:15:18.216522949 +0200
-@@ -139,7 +139,7 @@
+--- a/src/xserver-local.c
++++ b/src/xserver-local.c
+@@ -142,7 +142,7 @@ xserver_local_new (void)
              g_debug ("X server %s will replace Plymouth", xserver_get_address (XSERVER (self)));
              self->priv->replacing_plymouth = TRUE;
              self->priv->vt = active_vt;

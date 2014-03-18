@@ -1,5 +1,3 @@
 01_set-default-path.patch
-02_default-config.patch
-03_quit-plymouth.patch
-04_dont-add-pkglibexecdir-path.patch
-06_blankon_webkit_greeter.patch
+05_debianize-pam-files.patch
+06_allow_libpamsystemd_and_ck_together.patch

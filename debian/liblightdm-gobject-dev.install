@@ -3,3 +3,4 @@ usr/lib/*/pkgconfig/liblightdm-gobject-*.pc
 usr/lib/*/liblightdm-gobject-*.a
 usr/lib/*/liblightdm-gobject-*.so
 usr/share/gtk-doc
+usr/share/gir-1.0/*.gir
