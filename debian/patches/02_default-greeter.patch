@@ -1,0 +1,22 @@
+diff -Naur lightdm-1.9.11.orig/data/lightdm.conf lightdm-1.9.11/data/lightdm.conf
+--- lightdm-1.9.11.orig/data/lightdm.conf	2014-03-13 02:56:34.000000000 +0700
++++ lightdm-1.9.11/data/lightdm.conf	2014-03-18 18:45:51.313053881 +0700
+@@ -85,15 +85,15 @@
+ #xdmcp-key=
+ #unity-compositor-command=unity-system-compositor
+ #unity-compositor-timeout=60
+-#greeter-session=example-gtk-gnome
+-#greeter-hide-users=false
++greeter-session=lightdm-webkit-greeter
++greeter-hide-users=true
+ #greeter-allow-guest=true
+ #greeter-show-manual-login=false
+ #greeter-show-remote-login=true
+ #user-session=default
+ #allow-guest=true
+ #guest-session=
+-#session-wrapper=lightdm-session
++session-wrapper=/etc/X11/Xsession
+ #greeter-wrapper=
+ #guest-wrapper=
+ #display-setup-script=

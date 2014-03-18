@@ -1,3 +1,10 @@
+lightdm (1.9.11-1blankon2) tambora; urgency=medium
+
+  * debian/patch:
+    - 02_default-greeter.patch
+
+ -- mijortsa <azis.astrojim@surabaya.di.blankon.in>  Tue, 18 Mar 2014 19:19:37 +0700
+
 lightdm (1.9.11-1blankon1) tambora; urgency=medium
 
   * New upstream release 
