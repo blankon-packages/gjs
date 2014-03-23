@@ -1,3 +1,4 @@
 version=3
-https://launchpad.net/lightdm/1.9 \
-https://launchpad.net/lightdm/.*/lightdm-(\d\.\d+\.\d+)\.tar\.(?:gz|bz2|xz)
+
+opts=dversionmangle=s/-dfsg\d*$//,uversionmangle=s/-.*// \
+ http://download.virtualbox.org/virtualbox/([\d\.\-]+)/VirtualBox-([\d\.\-]+).tar.bz2
