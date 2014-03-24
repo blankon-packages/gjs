@@ -3,194 +3,69 @@
 # Modifications should be made to debian/control.in instead.
 # This file is regenerated automatically in the clean target.
 
-Source: cheese
-Section: gnome
+Source: gjs
+Section: interpreters
 Priority: optional
-Maintainer: Debian GNOME Maintainers <pkg-gnome-maintainers@lists.alioth.debian.org>
-Uploaders: Andreas Henriksson <andreas@fatal.se>, Laurent Bigonville <bigon@debian.org>, Michael Biebl <biebl@debian.org>, Sjoerd Simons <sjoerd@debian.org>
-Standards-Version: 3.9.5
-Homepage: https://wiki.gnome.org/Apps/Cheese
-Vcs-Browser: http://anonscm.debian.org/viewvc/pkg-gnome/desktop/unstable/cheese/
-Vcs-Svn: svn://anonscm.debian.org/pkg-gnome/desktop/unstable/cheese/
-Build-Depends: cdbs (>= 0.4.93~),
-               debhelper (>= 9),
-               dh-autoreconf,
-               docbook-xsl,
+Maintainer: BlankOn Developers <blankon-dev@googlegroups.com>
+XSBC-Original-Maintainer: Debian GNOME Maintainers <pkg-gnome-maintainers@lists.alioth.debian.org>
+Uploaders: Emilio Pozuelo Monfort <pochu@debian.org>, Josselin Mouette <joss@debian.org>, Michael Biebl <biebl@debian.org>, Sjoerd Simons <sjoerd@debian.org>
+Build-Depends: debhelper (>= 9),
+               cdbs,
                gnome-common,
-               gnome-pkg-tools (>= 0.10),
-               gtk-doc-tools (>= 1.14),
-               intltool (>= 0.50.0),
-               rarian-compat,
-               valac (>= 0.22),
-               libglib2.0-dev (>= 2.38.0),
-               libgdk-pixbuf2.0-dev,
-               libgtk-3-dev (>= 3.10.0),
-               libgnome-desktop-3-dev (>= 3.10.0),
-               libgstreamer1.0-dev (>= 0.11.0),
-               libgstreamer-plugins-base1.0-dev (>= 0.11.0),
-               libgstreamer-plugins-bad1.0-dev (>= 0.11.0),
-               libcairo2-dev (>= 1.10.0),
-               libpango1.0-dev (>= 1.28.0),
-               librsvg2-dev (>= 2.32.0),
-               libclutter-1.0-dev (>= 1.16),
-               libclutter-gtk-1.0-dev (>= 0.91.8),
-               libclutter-gst-2.0-dev (>= 1.9.0),
-               x11proto-core-dev,
-               libcanberra-gtk3-dev (>= 0.26),
-               gnome-video-effects-dev,
-               gobject-introspection (>= 0.9.12-4~),
-               libgirepository1.0-dev (>= 0.9.6),
-               libxtst-dev,
-               libgudev-1.0-dev,
-               pkg-config (>= 0.24),
-               appdata-tools,
-               yelp-tools
+               gnome-pkg-tools,
+               autotools-dev,
+               dh-autoreconf,
+               pkg-config,
+               libglib2.0-dev (>= 2.36.0),
+               libgirepository1.0-dev (>= 1.38.0),
+               gobject-introspection (>= 1.38.0),
+               libmozjs-17.0-dev,
+               libreadline-dev,
+               dbus-x11,
+               uuid-runtime,
+               libcairo2-dev
+Standards-Version: 3.9.4
+Vcs-Svn: svn://anonscm.debian.org/pkg-gnome/desktop/unstable/gjs
+Vcs-Browser: http://anonscm.debian.org/viewvc/pkg-gnome/desktop/unstable/gjs
+Homepage: https://wiki.gnome.org/Gjs
 
-Package: cheese
+Package: gjs
 Architecture: any
 Depends: ${shlibs:Depends},
-         ${misc:Depends},
-         cheese-common (= ${source:Version}),
-         gnome-video-effects
-Recommends: gvfs,
-            gnome-icon-theme,
-            hicolor-icon-theme,
-            nautilus-sendto,
-            yelp
-Suggests: gnome-video-effects-frei0r
-Description: tool to take pictures and videos from your webcam
- A webcam application that supports image and video capture. Makes
- it easy to take photos and videos of you, your friends, pets or whatever
- you want. Allows you to apply fancy visual effects, fine-control image
- settings and has features such as Multi-Burst mode, Countdown timer
- for photos.
-
-Package: cheese-common
-Architecture: all
-Depends: ${misc:Depends}
-Replaces: cheese (<< 2.30.1-1)
-Breaks: cheese (<< 2.30.1-1)
-Multi-Arch: foreign
-Description: Common files for the Cheese tool to take pictures and videos
- A webcam application that supports image and video capture. Makes
- it easy to take photos and videos of you, your friends, pets or whatever
- you want. Allows you to apply fancy visual effects, fine-control image
- settings and has features such as Multi-Burst mode, Countdown timer
- for photos.
+         ${misc:Depends}
+Description: Mozilla-based javascript bindings for the GNOME platform
+ Makes it possible for applications to use all of GNOME's platform
+ libraries using the Javascript language. It's mainly based on the
+ Mozilla javascript engine and the GObject introsepection framework.
  .
- This package contains the common files and translations.
+ This package contains the interactive console application.
 
-Package: libcheese-gtk23
+Package: libgjs0d
 Architecture: any
 Section: libs
 Depends: ${shlibs:Depends},
-         ${misc:Depends},
-         cheese-common (= ${source:Version})
-Pre-Depends: ${misc:Pre-Depends}
-Multi-Arch: same
-Description: tool to take pictures and videos from your webcam - widgets
- A webcam application that supports image and video capture. Makes
- it easy to take photos and videos of you, your friends, pets or whatever
- you want. Allows you to apply fancy visual effects, fine-control image
- settings and has features such as Multi-Burst mode, Countdown timer
- for photos.
+         ${misc:Depends}
+Conflicts: libgjs0, libgjs0a, libgjs0b, libgjs0c
+Replaces: libgjs0, libgjs0a, libgjs0b, libgjs0c
+Provides: ${gjs:Provides}
+Description: Mozilla-based javascript bindings for the GNOME platform
+ Makes it possible for applications to use all of GNOME's platform
+ libraries using the Javascript language. It's mainly based on the
+ Mozilla javascript engine and the GObject introspection framework.
  .
- This package contains the GTK+ shared library.
+ This is the shared library applications link to.
 
-Package: libcheese-gtk-dev
+Package: libgjs-dev
 Architecture: any
 Section: libdevel
-Depends: libcheese-gtk23 (= ${binary:Version}),
-         libcheese-dev (= ${binary:Version}),
-         libglib2.0-dev (>= 2.28.0),
-         libgtk-3-dev (>= 3.4.4),
-         libgstreamer1.0-dev (>= 0.11.0),
-         libgstreamer-plugins-base1.0-dev (>= 0.11.0),
-         libclutter-gtk-1.0-dev (>= 0.91.8),
-         libcanberra-gtk3-dev (>= 0.26),
-         ${misc:Depends}
-Suggests: libcheese-doc
-Description: tool to take pictures and videos from your webcam - widgets dev
- A webcam application that supports image and video capture. Makes
- it easy to take photos and videos of you, your friends, pets or whatever
- you want. Allows you to apply fancy visual effects, fine-control image
- settings and has features such as Multi-Burst mode, Countdown timer
- for photos.
- .
- This package contains the GTK+ development headers.
-
-Package: libcheese7
-Architecture: any
-Section: libs
-Depends: ${shlibs:Depends},
-         ${misc:Depends},
-         cheese-common (= ${source:Version}),
-         gstreamer1.0-plugins-base (>= 0.11.0),
-         gstreamer1.0-plugins-good (>= 0.11.0),
-         gstreamer1.0-plugins-bad,
-         gstreamer1.0-x
-Pre-Depends: ${misc:Pre-Depends}
-Multi-Arch: same
-Description: tool to take pictures and videos from your webcam - base library
- A webcam application that supports image and video capture. Makes
- it easy to take photos and videos of you, your friends, pets or whatever
- you want. Allows you to apply fancy visual effects, fine-control image
- settings and has features such as Multi-Burst mode, Countdown timer
- for photos.
- .
- This package contains the base shared library.
-
-Package: libcheese-dev
-Architecture: any
-Section: libdevel
-Depends: libcheese7 (= ${binary:Version}),
-         gir1.2-cheese-3.0 (= ${binary:Version}),
-         libglib2.0-dev (>= 2.28.0),
-         libclutter-1.0-dev (>= 1.10.0),
-         libgstreamer1.0-dev (>= 0.11.0),
-         libgstreamer-plugins-base1.0-dev (>= 0.11.0),
-         libclutter-gst-2.0-dev (>= 1.9.0),
-         libgdk-pixbuf2.0-dev,
-         ${misc:Depends}
-Suggests: libcheese-doc
-Replaces: libcheese-gtk-dev (<< 3.0.1-1)
-Breaks: libcheese-gtk-dev (<< 3.0.1-1)
-Description: tool to take pictures and videos from your webcam - base dev
- A webcam application that supports image and video capture. Makes
- it easy to take photos and videos of you, your friends, pets or whatever
- you want. Allows you to apply fancy visual effects, fine-control image
- settings and has features such as Multi-Burst mode, Countdown timer
- for photos.
- .
- This package contains the base development headers.
-
-Package: libcheese-doc
-Architecture: all
-Section: doc
-Depends: ${misc:Depends}
-Suggests: devhelp
-Replaces: libcheese-gtk-dev (<< 3.2.2-2)
-Breaks: libcheese-gtk-dev (<< 3.2.2-2)
-Description: tool to take pictures and videos from your webcam - documentation
- A webcam application that supports image and video capture. Makes
- it easy to take photos and videos of you, your friends, pets or whatever
- you want. Allows you to apply fancy visual effects, fine-control image
- settings and has features such as Multi-Burst mode, Countdown timer
- for photos.
- .
- This package contains the API documentation.
-
-Package: gir1.2-cheese-3.0
-Architecture: any
-Section: introspection
 Depends: ${misc:Depends},
-         ${gir:Depends}
-Description: tool to take pictures and videos from your webcam - gir bindings
- A webcam application that supports image and video capture. Makes
- it easy to take photos and videos of you, your friends, pets or whatever
- you want. Allows you to apply fancy visual effects, fine-control image
- settings and has features such as Multi-Burst mode, Countdown timer
- for photos.
+         libgjs0d (= ${binary:Version}),
+         libgirepository1.0-dev (>= 1.36.0),
+         libmozjs-17.0-dev
+Description: Mozilla-based javascript bindings for the GNOME platform
+ Makes it possible for applications to use all of GNOME's platform
+ libraries using the Javascript language. It's mainly based on the
+ Mozilla javascript engine and the GObject introspection framework.
  .
- This package can be used by other packages using the GIRepository format to
- generate dynamic bindings.
+ This package contains the development files applications need to
+ build against.
