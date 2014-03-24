@@ -40,8 +40,8 @@ Architecture: any
 Section: libs
 Depends: ${shlibs:Depends},
          ${misc:Depends}
-Conflicts: libgjs0, libgjs0a, libgjs0b, libgjs0c
-Replaces: libgjs0, libgjs0a, libgjs0b, libgjs0c
+Conflicts: libgjs0, libgjs0a, libgjs0b
+Replaces: libgjs0, libgjs0a, libgjs0b
 Provides: ${gjs:Provides}
 Description: Mozilla-based javascript bindings for the GNOME platform
  Makes it possible for applications to use all of GNOME's platform

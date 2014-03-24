@@ -1,3 +1,10 @@
+gjs (1.38.1-1blankon3) tambora; urgency=low
+
+  * debian/control : remove libgjs0c.
+  * debian/control.in : remove libgjs0c.
+
+ -- Aris Febrianto <ariesfebrianto@gmail.com>  Mon, 24 Mar 2014 23:02:47 +0700
+
 gjs (1.38.1-1blankon2) tambora; urgency=low
 
   * Initial release tambora
