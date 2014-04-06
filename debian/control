@@ -8,7 +8,7 @@ Section: interpreters
 Priority: optional
 Maintainer: BlankOn Developers <blankon-dev@googlegroups.com>
 XSBC-Original-Maintainer: Debian GNOME Maintainers <pkg-gnome-maintainers@lists.alioth.debian.org>
-Uploaders: Emilio Pozuelo Monfort <pochu@debian.org>, Josselin Mouette <joss@debian.org>, Michael Biebl <biebl@debian.org>, Sjoerd Simons <sjoerd@debian.org>
+Uploaders: Andreas Henriksson <andreas@fatal.se>, Emilio Pozuelo Monfort <pochu@debian.org>, Josselin Mouette <joss@debian.org>, Michael Biebl <biebl@debian.org>, Sjoerd Simons <sjoerd@debian.org>
 Build-Depends: debhelper (>= 9),
                cdbs,
                gnome-common,
@@ -17,12 +17,13 @@ Build-Depends: debhelper (>= 9),
                dh-autoreconf,
                pkg-config,
                libglib2.0-dev (>= 2.36.0),
-               libgirepository1.0-dev (>= 1.38.0),
-               gobject-introspection (>= 1.38.0),
-               libmozjs-17.0-dev,
+               libgirepository1.0-dev (>= 1.39.3),
+               gobject-introspection (>= 1.39.3),
+               libmozjs-24-dev,
                libreadline-dev,
                dbus-x11,
                uuid-runtime,
+               libgtk-3-dev,
                libcairo2-dev
 Standards-Version: 3.9.4
 Vcs-Svn: svn://anonscm.debian.org/pkg-gnome/desktop/unstable/gjs
@@ -40,13 +41,13 @@ Description: Mozilla-based javascript bindings for the GNOME platform
  .
  This package contains the interactive console application.
 
-Package: libgjs0d
+Package: libgjs0e
 Architecture: any
 Section: libs
 Depends: ${shlibs:Depends},
          ${misc:Depends}
-Conflicts: libgjs0, libgjs0a, libgjs0b
-Replaces: libgjs0, libgjs0a, libgjs0b
+Conflicts: libgjs0, libgjs0a, libgjs0b, libgjs0c, libgjs0d
+Replaces: libgjs0, libgjs0a, libgjs0b, libgjs0c, libgjs0d
 Provides: ${gjs:Provides}
 Description: Mozilla-based javascript bindings for the GNOME platform
  Makes it possible for applications to use all of GNOME's platform
@@ -59,9 +60,9 @@ Package: libgjs-dev
 Architecture: any
 Section: libdevel
 Depends: ${misc:Depends},
-         libgjs0d (= ${binary:Version}),
+         libgjs0e (= ${binary:Version}),
          libgirepository1.0-dev (>= 1.36.0),
-         libmozjs-17.0-dev
+         libmozjs-24-dev
 Description: Mozilla-based javascript bindings for the GNOME platform
  Makes it possible for applications to use all of GNOME's platform
  libraries using the Javascript language. It's mainly based on the
