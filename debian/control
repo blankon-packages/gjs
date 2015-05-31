@@ -5,8 +5,7 @@
 Source: gjs
 Section: interpreters
 Priority: optional
-Maintainer: BlankOn Developres <blankon-dev@googlegorups.com>
-XSBC-Original-Maintainer: Debian GNOME Maintainers <pkg-gnome-maintainers@lists.alioth.debian.org>
+Maintainer: Debian GNOME Maintainers <pkg-gnome-maintainers@lists.alioth.debian.org>
 Uploaders: Andreas Henriksson <andreas@fatal.se>, Michael Biebl <biebl@debian.org>
 Build-Depends: debhelper (>= 9),
                cdbs,
@@ -25,7 +24,6 @@ Build-Depends: debhelper (>= 9),
                libgtk-3-dev,
                libcairo2-dev,
                xvfb,
-               xauth,
                at-spi2-core
 Standards-Version: 3.9.5
 Vcs-Svn: svn://anonscm.debian.org/pkg-gnome/desktop/unstable/gjs

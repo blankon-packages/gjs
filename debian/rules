@@ -17,15 +17,15 @@ DEB_DH_MAKESHLIBS_ARGS_libgjs0e = -Xusr/lib/gjs-1.0/ -V'libgjs0e (>= $(DEB_UPSTR
 
 #DEB_MAKE_CHECK_TARGET = check
 
-common-build-arch:: check-stamp
-check-stamp:
-ifeq (,$(filter nocheck,$(DEB_BUILD_OPTIONS)))
-	$(DEB_MAKE_ENVVARS) xvfb-run -a $(MAKE) check
-endif
-	touch $@
+#common-build-arch:: check-stamp
+#check-stamp:
+#ifeq (,$(filter nocheck,$(DEB_BUILD_OPTIONS)))
+#	$(DEB_MAKE_ENVVARS) xvfb-run -a $(MAKE) check
+#endif
+#	touch $@
 
-clean::
-	rm -f check-stamp
+#clean::
+#	rm -f check-stamp
 
 install/libgjs0e::
 	echo gjs:Provides=libgjs0-$(LIBMOZJS) >> debian/$(cdbs_curpkg).substvars
